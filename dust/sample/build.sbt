@@ -1,1 +1,0 @@
-name := "dust-sample"

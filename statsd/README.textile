@@ -1,1 +1,0 @@
-documentation/manual/home.textile
