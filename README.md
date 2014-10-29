@@ -2,6 +2,8 @@
 
 This plugin provides a simple emailer.
 
+![Travis build status](https://travis-ci.org/playframework/play-mailer.svg?branch=master)
+
 ## installation
 
 play 2.3.x:
