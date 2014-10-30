@@ -30,8 +30,9 @@ smtp.mock (defaults to no, will only log all the email properties instead of sen
 ## using it from java 
 
 ```java
-import play.api.libs.mailer.*;
-MailerAPI mail = Play.application().plugin(MailerPlugin.class).email();
+import play.api.libs.mailer.MailerAPI;
+import play.libs.mailer.MailerPlugin;
+MailerAPI mail = MailerPlugin.email();
 mail.setSubject("mailer");
 mail.setRecipient("Peter Hausel Junior <noreply@email.com>","example@foo.com");
 mail.setFrom("Peter Hausel <noreply@email.com>");
@@ -52,7 +53,7 @@ mail.send( "text", "<html>html</html>");
 
 ```scala
 import play.api.libs.mailer._
-val mail = use[MailerPlugin].email
+val mail = MailerPlugin.email
 mail.setSubject("mailer")
 mail.setRecipient("Peter Hausel Junior <noreply@email.com>","example@foo.com")
 //or use a list

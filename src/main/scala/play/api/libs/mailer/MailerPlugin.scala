@@ -488,9 +488,16 @@ case object MockMailer extends MailerBuilder {
 }
 
 /**
+ * plugin access
+ */
+object MailerPlugin {
+  def email(implicit app: play.api.Application) = app.plugin(classOf[MailerPlugin]).get.email
+}
+
+/**
  * plugin interface
  */
-trait MailerPlugin extends  play.api.Plugin {
+trait MailerPlugin extends play.api.Plugin {
   def email: MailerAPI
 }
 

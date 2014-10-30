@@ -4,10 +4,9 @@ import java.io.File;
 
 import org.apache.commons.mail.EmailAttachment;
 
-import play.api.libs.mailer.*;
-import play.api.libs.mailer.MailerPlugin;
-
 import play.Play;
+import play.api.libs.mailer.MailerAPI;
+import play.libs.mailer.MailerPlugin;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
@@ -15,7 +14,7 @@ import views.html.index;
 public class ApplicationJava extends Controller {
   
   public static Result index() {
-    MailerAPI mail = Play.application().plugin(MailerPlugin.class).email();
+    MailerAPI mail = MailerPlugin.email();
     mail.setSubject("simplest mailer test");
     mail.setRecipient("some display name <sometoadd@email.com>");
     mail.setFrom("some display name <somefromadd@email.com>");
