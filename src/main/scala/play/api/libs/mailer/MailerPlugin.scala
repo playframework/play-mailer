@@ -1,14 +1,11 @@
-package com.typesafe.plugin
+package play.api.libs.mailer
 
-import java.io.File
-
-import org.apache.commons.mail._
-
-import java.io.FilterOutputStream
-import java.io.PrintStream
+import java.io.{File, FilterOutputStream, PrintStream}
 import javax.mail.internet.InternetAddress
 
+import org.apache.commons.mail._
 import play.api._
+import play.libs.mailer.MailerApiJavaInterop
 
 trait MailerAPI extends MailerApiJavaInterop {
 
