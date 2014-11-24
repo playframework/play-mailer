@@ -2,7 +2,7 @@ package controllers
 
 import java.io.File
 
-import com.typesafe.plugin.{MailerPlugin, MailerAPI}
+import play.api.libs.mailer._
 import org.apache.commons.mail.EmailAttachment
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current

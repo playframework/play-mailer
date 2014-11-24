@@ -1,4 +1,4 @@
-package com.typesafe.plugin
+package play.api.libs.mailer
 
 import java.io.File
 import javax.mail.Part

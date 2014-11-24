@@ -30,8 +30,8 @@ smtp.mock (defaults to no, will only log all the email properties instead of sen
 ## using it from java 
 
 ```java
-import com.typesafe.plugin.*;
-MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
+import play.api.libs.mailer.*;
+MailerAPI mail = Play.application().plugin(MailerPlugin.class).email();
 mail.setSubject("mailer");
 mail.setRecipient("Peter Hausel Junior <noreply@email.com>","example@foo.com");
 mail.setFrom("Peter Hausel <noreply@email.com>");
@@ -51,7 +51,7 @@ mail.send( "text", "<html>html</html>");
 ## using it from scala
 
 ```scala
-import com.typesafe.plugin._
+import play.api.libs.mailer._
 val mail = use[MailerPlugin].email
 mail.setSubject("mailer")
 mail.setRecipient("Peter Hausel Junior <noreply@email.com>","example@foo.com")
@@ -71,7 +71,7 @@ mail.send( "text" )
 mail.send( "text", "<html>html</html>")
 ```
 
-use[MailerPlugin] needs an implicit play.api.Application available to it.  If you do not have one available already from where you are trying to create the mailer you may want to add this line to get the current Application.
+`use[MailerPlugin]` needs an implicit `play.api.Application` available to it.  If you do not have one available already from where you are trying to create the mailer you may want to add this line to get the current Application.
 
 ```scala
 import play.api.Play.current

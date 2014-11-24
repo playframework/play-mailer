@@ -1,6 +1,8 @@
-package com.typesafe.plugin;
+package play.libs.mailer;
 
 import java.io.File;
+
+import play.api.libs.mailer.MailerAPI;
 
 public interface MailerApiJavaInterop {
 
