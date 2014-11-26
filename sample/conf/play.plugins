@@ -1,1 +1,1 @@
-1500:com.typesafe.plugin.CommonsMailerPlugin
+1500:play.api.libs.mailer.CommonsMailerPlugin
