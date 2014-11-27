@@ -13,7 +13,7 @@ import play.api.Play.current
 object ApplicationScala  extends Controller {
 
   def index = Action {
-    val mail: MailerAPI = play.Play.application.plugin(classOf[MailerPlugin]).email
+    val mail = MailerPlugin.email
     mail.setSubject("simplest mailer test")
     mail.setRecipient("some display name <sometoadd@email.com>")
     mail.setFrom("some display name <somefromadd@email.com>")
