@@ -319,8 +319,11 @@ trait MailerBuilder extends MailerAPI {
  * (the implementation si based on
  *  the EmailNotifier trait by Aishwarya Singhal
  *  and also Justin Long's gist)
+ *
+ *  @param smtpTimeout the socket I/O timeout value in milliseconds.
+ *  @param smtpConnectionTimeout  the socket connection timeout value in milliseconds.
  */
-abstract class CommonsMailer(smtpHost: String, smtpPort: Int, smtpSsl: Boolean, smtpTls: Boolean, smtpUser: Option[String], smtpPass: Option[String], debugMode: Boolean) extends MailerBuilder {
+abstract class CommonsMailer(smtpHost: String, smtpPort: Int, smtpSsl: Boolean, smtpTls: Boolean, smtpUser: Option[String], smtpPass: Option[String], debugMode: Boolean, smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int]) extends MailerBuilder {
 
   def send(email: MultiPartEmail): String
 
@@ -357,6 +360,10 @@ abstract class CommonsMailer(smtpHost: String, smtpPort: Int, smtpSsl: Boolean, 
       val split = e.indexOf(":")
       email.addHeader(e.substring(0,split), e.substring(split+1))
     })
+
+    smtpTimeout.foreach(email.setSocketTimeout(_))
+    smtpConnectionTimeout.foreach(email.setSocketConnectionTimeout(_))
+
     attachmentContext.get.foreach { case attachment =>
       val description = attachment.description.getOrElse(attachment.name)
       val disposition = attachment.disposition.getOrElse(EmailAttachment.ATTACHMENT)
@@ -402,6 +409,7 @@ abstract class CommonsMailer(smtpHost: String, smtpPort: Int, smtpSsl: Boolean, 
         }
       }))
     }
+
     email
   }
 
@@ -511,7 +519,9 @@ class CommonsMailerPlugin(app: play.api.Application) extends MailerPlugin {
     val smtpUser = app.configuration.getString("smtp.user")
     val smtpPassword = app.configuration.getString("smtp.password")
     val debugMode = app.configuration.getBoolean("smtp.debug").getOrElse(false)
-    new CommonsMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode) {
+    val smtpTimeout = app.configuration.getInt("smtp.timeout")
+    val smtpConnectionTimeout = app.configuration.getInt("smtp.connectiontimeout")
+    new CommonsMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode, smtpTimeout, smtpConnectionTimeout) {
       override def send(email: MultiPartEmail) = email.send()
       override def createMultiPartEmail() = new MultiPartEmail()
       override def createHtmlEmail() = new HtmlEmail()
