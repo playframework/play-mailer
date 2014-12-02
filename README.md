@@ -24,6 +24,8 @@ smtp.user (optional)
 smtp.password (optional)
 smtp.debug (defaults to no, to take effect you also need to set the log level to "DEBUG" for the application logger)
 smtp.mock (defaults to no, will only log all the email properties instead of sending an email)
+smtp.timeout (defaults to 60s)
+smtp.connectiontimeout (defaults to 60s)
 ```
 
 
