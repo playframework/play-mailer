@@ -3,7 +3,7 @@ package play.api.libs.mailer
 import java.io.File
 import javax.mail.Part
 
-import org.apache.commons.mail.{HtmlEmail, MultiPartEmail}
+import org.apache.commons.mail.{EmailConstants, HtmlEmail, MultiPartEmail}
 import org.specs2.mutable._
 
 class MailerPluginSpec extends Specification {
@@ -42,7 +42,11 @@ class MailerPluginSpec extends Specification {
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
     override def getContainer = super.getContainer
   }
-  object MockCommonsMailer extends CommonsMailer("typesafe.org", 1234, true, false, Some("user"), Some("password"), false) {
+  object MockCommonsMailer extends MockCommonsMailerWithTimeouts(None, None)
+
+  class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
+    extends CommonsMailer("typesafe.org", 1234, true, false, Some("user"), Some("password"), false, smtpTimeout, smtpConnectionTimeout) {
+
     override def send(email: MultiPartEmail) = ""
     override def createEmail(bodyText: String, bodyHtml: String) = super.createEmail(bodyText, bodyHtml)
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
@@ -61,6 +65,20 @@ class MailerPluginSpec extends Specification {
       email.getMailSession.getProperty("mail.smtp.host") mustEqual "typesafe.org"
       email.getMailSession.getProperty("mail.smtp.starttls.enable") mustEqual "false"
       email.getMailSession.getProperty("mail.debug") mustEqual "false"
+    }
+
+    "configure the SMTP timeouts if configured" in {
+      val mail = new MockCommonsMailerWithTimeouts(Some(10), Some(99))
+      val email = mail.createEmail("A text only message", "")
+      email.getSocketTimeout mustEqual 10
+      email.getSocketConnectionTimeout mustEqual 99
+    }
+
+    "leave default SMTP timeouts if they are not configured" in {
+      val mail = new MockCommonsMailerWithTimeouts(None, None)
+      val email = mail.createEmail("A text only message", "")
+      email.getSocketTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
+      email.getSocketConnectionTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
     }
 
     "create an empty email" in {
