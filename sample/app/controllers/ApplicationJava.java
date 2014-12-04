@@ -5,7 +5,6 @@ import java.io.File;
 import org.apache.commons.mail.EmailAttachment;
 
 import play.Play;
-import play.api.libs.mailer.MailerAPI;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
 import play.mvc.Controller;
