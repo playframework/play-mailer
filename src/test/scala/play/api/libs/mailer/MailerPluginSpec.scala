@@ -8,30 +8,9 @@ import org.specs2.mutable._
 
 class MailerPluginSpec extends Specification {
 
-  "The MailerAPI" should {
-    "fill internal contexts" in {
-      object MockMailer extends MailerBuilder {
-        override def send(bodyText: String, bodyHtml: String) = ""
-        def getAttachmentContext = attachmentContext.get()
-        def getContext = context.get()
-      }
-      val mail = MockMailer
-      mail.setSubject("simplest mailer test")
-      mail.setRecipient("some display name <sometoadd@email.com>")
-      mail.setFrom("some display name <somefromadd@email.com>")
-      mail.addAttachment("some", new File("some.png"))
-      mail.send("A text message", "")
-      val attachments = mail.getAttachmentContext
-      attachments must have size 1
-      attachments.head.name mustEqual "some"
-      attachments.head.data must beNone setMessage "No data defined"
-      attachments.head.description must beNone setMessage "No description defined"
-      attachments.head.disposition must beNone setMessage "No disposition defined"
-      attachments.head.mimetype must beNone setMessage "No mimetype defined"
-      attachments.head.filePath must beSome("some.png")
-    }
+  object SimpleMailerAPI extends MailerAPI{
+    override def send(data: Email): String = ""
   }
-
   class MockMultiPartEmail extends MultiPartEmail {
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
     override def getContainer = super.getContainer
@@ -46,19 +25,18 @@ class MailerPluginSpec extends Specification {
 
   class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
     extends CommonsMailer("typesafe.org", 1234, true, false, Some("user"), Some("password"), false, smtpTimeout, smtpConnectionTimeout) {
-
     override def send(email: MultiPartEmail) = ""
-    override def createEmail(bodyText: String, bodyHtml: String) = super.createEmail(bodyText, bodyHtml)
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
-    def getAttachmentContext = attachmentContext.get()
-    def getContext = context.get()
   }
 
   "The CommonsMailer" should {
     "configure SMTP" in {
-      val mail = MockCommonsMailer
-      val email = mail.createEmail("A text only message", "")
+      val mailer = MockCommonsMailer
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>"
+      ))
       email.getSmtpPort mustEqual "1234"
       email.getSslSmtpPort mustEqual "1234"
       email.getMailSession.getProperty("mail.smtp.auth") mustEqual "true"
@@ -68,31 +46,44 @@ class MailerPluginSpec extends Specification {
     }
 
     "configure the SMTP timeouts if configured" in {
-      val mail = new MockCommonsMailerWithTimeouts(Some(10), Some(99))
-      val email = mail.createEmail("A text only message", "")
+      val mailer = new MockCommonsMailerWithTimeouts(Some(10), Some(99))
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>"
+      ))
       email.getSocketTimeout mustEqual 10
       email.getSocketConnectionTimeout mustEqual 99
     }
 
     "leave default SMTP timeouts if they are not configured" in {
-      val mail = new MockCommonsMailerWithTimeouts(None, None)
-      val email = mail.createEmail("A text only message", "")
+      val mailer = new MockCommonsMailerWithTimeouts(None, None)
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>"
+      ))
       email.getSocketTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
       email.getSocketConnectionTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
     }
 
     "create an empty email" in {
-      val mail = MockCommonsMailer
-      mail.setSubject("Subject")
-      mail.setRecipient("Guillaume Grossetie <ggrossetie@localhost.com>")
-      mail.setFrom("James Roper <jroper@typesafe.com>")
-      val messageId = mail.send("")
+      val mailer = MockCommonsMailer
+      val messageId = mailer.send(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>",
+        to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>")
+      ))
       messageId mustEqual ""
     }
 
     "create a simple email" in {
-      val mail = createSimpleEmail
-      val email = mail.createEmail("A text message", "<html><body><p>An <b>html</b> message</p></body></html>")
+      val mailer = MockCommonsMailer
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>",
+        to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        bodyText = Some("A text message"),
+        bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
+      ))
       simpleEmailMust(email)
       email must beAnInstanceOf[HtmlEmail]
       email must beAnInstanceOf[MockHtmlEmail]
@@ -101,17 +92,22 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email with attachment" in {
-      val mail = createSimpleEmail
-      mail.addAttachment("play icon", getPlayIcon)
-      val email = mail.createEmail("Text message", "")
+      val mailer = MockCommonsMailer
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>",
+        to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        bodyText = Some("A text message"),
+        attachments = Seq(AttachmentFile("play icon", getPlayIcon))
+      ))
       simpleEmailMust(email)
       email must beAnInstanceOf[MultiPartEmail]
       email must beAnInstanceOf[MockMultiPartEmail]
       email.asInstanceOf[MockMultiPartEmail].getContainer.getCount mustEqual 2
       val textPart = email.asInstanceOf[MockMultiPartEmail].getContainer.getBodyPart(0)
       textPart.getContentType mustEqual "text/plain"
-      textPart.getContent mustEqual "Text message"
-      email.asInstanceOf[MockMultiPartEmail].getPrimaryBodyPart.getContent mustEqual "Text message"
+      textPart.getContent mustEqual "A text message"
+      email.asInstanceOf[MockMultiPartEmail].getPrimaryBodyPart.getContent mustEqual "A text message"
       val attachmentPart = email.asInstanceOf[MockMultiPartEmail].getContainer.getBodyPart(1)
       attachmentPart.getFileName mustEqual "play icon"
       attachmentPart.getDescription mustEqual "play icon"
@@ -119,23 +115,72 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email with inline attachment and description" in {
-      val mail = createSimpleEmail
-      mail.addAttachment("play icon", getPlayIcon, "A beautiful icon", Part.INLINE)
-      val email = mail.createEmail("Text message", "")
+      val mailer = MockCommonsMailer
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>",
+        to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        bodyText = Some("A text message"),
+        attachments = Seq(AttachmentFile("play icon", getPlayIcon, Some("A beautiful icon"), Some(Part.INLINE)))
+      ))
       simpleEmailMust(email)
       email must beAnInstanceOf[MultiPartEmail]
       email must beAnInstanceOf[MockMultiPartEmail]
       email.asInstanceOf[MockMultiPartEmail].getContainer.getCount mustEqual 2
       val textPart = email.asInstanceOf[MockMultiPartEmail].getContainer.getBodyPart(0)
       textPart.getContentType mustEqual "text/plain"
-      textPart.getContent mustEqual "Text message"
-      email.asInstanceOf[MockMultiPartEmail].getPrimaryBodyPart.getContent mustEqual "Text message"
+      textPart.getContent mustEqual "A text message"
+      email.asInstanceOf[MockMultiPartEmail].getPrimaryBodyPart.getContent mustEqual "A text message"
       val attachmentPart = email.asInstanceOf[MockMultiPartEmail].getContainer.getBodyPart(1)
       attachmentPart.getFileName mustEqual "play icon"
       attachmentPart.getDescription mustEqual "A beautiful icon"
       attachmentPart.getDisposition mustEqual Part.INLINE
     }
   }
+
+  "The MailerAPI" should {
+    "convert email from Java to Scala" in {
+      val data = new play.libs.mailer.Email()
+      data.setSubject("Subject")
+      data.setFrom("James Roper <jroper@typesafe.com>")
+      data.addTo("Guillaume Grossetie <ggrossetie@localhost.com>")
+      data.addCc("Daniel Spasojevic <dspasojevic@github.com>")
+      data.addBcc("Sparkbitpl <sparkbitpl@github.com>")
+      data.setBodyText("A text message")
+      data.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>")
+      data.setCharset("UTF-16")
+      data.addHeader("key", "value")
+      data.addAttachment("play icon", getPlayIcon, "A beautiful icon", Part.ATTACHMENT)
+      data.addAttachment("data.txt", "data".getBytes, "text/plain", "Simple data", Part.INLINE)
+
+      val convert = SimpleMailerAPI.convert(data)
+      convert.subject mustEqual "Subject"
+      convert.from mustEqual "James Roper <jroper@typesafe.com>"
+      convert.to.size mustEqual 1
+      convert.to.head mustEqual "Guillaume Grossetie <ggrossetie@localhost.com>"
+      convert.cc.size mustEqual 1
+      convert.cc.head mustEqual "Daniel Spasojevic <dspasojevic@github.com>"
+      convert.bcc.size mustEqual 1
+      convert.bcc.head mustEqual "Sparkbitpl <sparkbitpl@github.com>"
+      convert.bodyText mustEqual Some("A text message")
+      convert.bodyHtml mustEqual Some("<html><body><p>An <b>html</b> message</p></body></html>")
+      convert.charset mustEqual Some("UTF-16")
+      convert.headers.size mustEqual 1
+      convert.headers.head mustEqual ("key", "value")
+      convert.attachments.size mustEqual 2
+      convert.attachments(0) must beAnInstanceOf[AttachmentFile]
+      convert.attachments(0).asInstanceOf[AttachmentFile].name mustEqual "play icon"
+      convert.attachments(0).asInstanceOf[AttachmentFile].file mustEqual getPlayIcon
+      convert.attachments(0).asInstanceOf[AttachmentFile].description mustEqual Some("A beautiful icon")
+      convert.attachments(0).asInstanceOf[AttachmentFile].disposition mustEqual Some(Part.ATTACHMENT)
+      convert.attachments(1) must beAnInstanceOf[AttachmentData]
+      convert.attachments(1).asInstanceOf[AttachmentData].name mustEqual "data.txt"
+      convert.attachments(1).asInstanceOf[AttachmentData].data mustEqual "data".getBytes
+      convert.attachments(1).asInstanceOf[AttachmentData].description mustEqual Some("Simple data")
+      convert.attachments(1).asInstanceOf[AttachmentData].disposition mustEqual Some(Part.INLINE)
+    }
+  }
+
   def simpleEmailMust(email: MultiPartEmail) {
     email.getSubject mustEqual "Subject"
     email.getFromAddress.getPersonal mustEqual "James Roper"
@@ -147,13 +192,5 @@ class MailerPluginSpec extends Specification {
 
   def getPlayIcon: File = {
     new File(Thread.currentThread().getContextClassLoader.getResource("play_icon_full_color.png").toURI)
-  }
-
-  def createSimpleEmail = {
-    val mail = MockCommonsMailer
-    mail.setSubject("Subject")
-    mail.setFrom("James Roper <jroper@typesafe.com>")
-    mail.setRecipient("Guillaume Grossetie <ggrossetie@localhost.com>")
-    mail
   }
 }
