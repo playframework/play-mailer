@@ -1,6 +1,7 @@
 package play.api.libs.mailer
 
 import java.io.{File, FilterOutputStream, PrintStream}
+import javax.inject.Inject
 import javax.mail.internet.InternetAddress
 
 import org.apache.commons.mail._
@@ -35,7 +36,7 @@ trait MailerPlugin extends play.api.Plugin {
 /**
  * plugin implementation
  */
-class CommonsMailerPlugin(app: play.api.Application) extends MailerPlugin {
+class CommonsMailerPlugin @Inject() (implicit app: play.api.Application) extends MailerPlugin {
 
   private lazy val mock = app.configuration.getBoolean("smtp.mock").getOrElse(false)
 

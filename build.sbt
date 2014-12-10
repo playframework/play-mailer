@@ -2,7 +2,7 @@ name := "play-mailer"
     
 organization := "com.typesafe.play"
 
-version := "2.3.6-SNAPSHOT"
+version := "2.4.0-M2-SNAPSHOT"
 
 scalaVersion := "2.11.1"
 
@@ -11,7 +11,7 @@ crossScalaVersions := Seq("2.11.1", "2.10.4")
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play" % "2.3.6" % "provided",
+  "com.typesafe.play" %% "play" % "2.4.0-M2" % "provided",
   "org.apache.commons" % "commons-email" % "1.3.3",
   "org.specs2" %% "specs2-core" % "2.4.9" % "test"
 )
