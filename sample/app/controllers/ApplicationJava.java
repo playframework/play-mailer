@@ -22,7 +22,7 @@ public class ApplicationJava extends Controller {
     email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
     email.setBodyText("A text message");
     email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
-    MailerPlugin.send(email)
+    MailerPlugin.send(email);
     return ok(index.render("Your new application is ready."));
   }
   
