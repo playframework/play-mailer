@@ -73,10 +73,10 @@ sealed trait Attachment
 
 case class Email(subject: String,
                  from: String,
+                 to: Seq[String] = Seq.empty,
                  bodyText: Option[String] = None,
                  bodyHtml: Option[String] = None,
                  charset: Option[String] = None,
-                 to: Seq[String] = Seq.empty,
                  cc: Seq[String] = Seq.empty,
                  bcc: Seq[String] = Seq.empty,
                  replyTo: Option[String] = None,
@@ -129,10 +129,10 @@ trait MailerAPI extends MailerJavaAPI {
     Email(
       Option(data.getSubject).getOrElse(""),
       Option(data.getFrom).getOrElse(""),
+      data.getTo.asScala.toSeq,
       Option(data.getBodyText),
       Option(data.getBodyHtml),
       Option(data.getCharset),
-      data.getTo.asScala.toSeq,
       data.getCc.asScala.toSeq,
       data.getBcc.asScala.toSeq,
       Option(data.getReplyTo),

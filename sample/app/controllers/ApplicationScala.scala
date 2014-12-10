@@ -11,9 +11,9 @@ object ApplicationScala  extends Controller {
 
   def index = Action {
     val email = Email(
-      subject = "Simple email",
-      from = "Mister FROM <from@email.com>",
-      to = Seq("Miss TO <to@email.com>"),
+      "Simple email",
+      "Mister FROM <from@email.com>",
+      Seq("Miss TO <to@email.com>"),
       attachments = Seq(
         AttachmentFile("favicon.png", new File(current.classloader.getResource("public/images/favicon.png").getPath)),
         AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
