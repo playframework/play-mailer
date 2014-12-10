@@ -45,7 +45,7 @@ email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", 
 // sends text, HTML or both...
 email.setBodyText("A text message");
 email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
-MailerPlugin.send(email)
+MailerPlugin.send(email);
 ```
 
 ## using it from scala
@@ -54,9 +54,9 @@ MailerPlugin.send(email)
 import play.api.libs.mailer._
 
 val email = Email(
-  subject = "Simple email",
-  from = "Mister FROM <from@email.com>",
-  to = Seq("Miss TO <to@email.com>"),
+  "Simple email",
+  "Mister FROM <from@email.com>",
+  Seq("Miss TO <to@email.com>"),
   // adds attachment
   attachments = Seq(
     AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
