@@ -8,8 +8,9 @@ import org.specs2.mutable._
 
 class MailerPluginSpec extends Specification {
 
-  object SimpleMailerAPI extends MailerAPI{
+  object SimpleMailerAPI extends MailerAPI {
     override def send(data: Email): String = ""
+    override def convert(data: play.libs.mailer.Email) = super.convert(data)
   }
   class MockMultiPartEmail extends MultiPartEmail {
     override def getPrimaryBodyPart = super.getPrimaryBodyPart

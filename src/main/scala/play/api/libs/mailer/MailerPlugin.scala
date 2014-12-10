@@ -110,7 +110,7 @@ trait MailerAPI extends MailerJavaAPI {
     send(email)
   }
 
-  def convert(data: play.libs.mailer.Email):Email = {
+  protected def convert(data: play.libs.mailer.Email):Email = {
     val attachments = data.getAttachments.asScala.map {
       case attachment =>
         if (Option(attachment.getFile).isDefined) {
