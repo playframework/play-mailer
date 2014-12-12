@@ -7,20 +7,21 @@ import org.apache.commons.mail.EmailAttachment
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
 
-/**
- * @author bloemgracht
- */
 object ApplicationScala  extends Controller {
 
   def index = Action {
-    val mail = MailerPlugin.email
-    mail.setSubject("simplest mailer test")
-    mail.setRecipient("some display name <sometoadd@email.com>")
-    mail.setFrom("some display name <somefromadd@email.com>")
-    mail.addAttachment("favicon.png", new File(current.classloader.getResource("public/images/favicon.png").getPath))
-    val data: Array[Byte] = "data".getBytes
-    mail.addAttachment("data.txt", data, "text/plain", "A simple file", EmailAttachment.INLINE)
-    mail.send("A text only message", "<html><body><p>An <b>html</b> message</p></body></html>")
+    val email = Email(
+      "Simple email",
+      "Mister FROM <from@email.com>",
+      Seq("Miss TO <to@email.com>"),
+      attachments = Seq(
+        AttachmentFile("favicon.png", new File(current.classloader.getResource("public/images/favicon.png").getPath)),
+        AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
+      ),
+      bodyText = Some("A text message"),
+      bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
+    )
+    MailerPlugin.send(email)
     Ok(views.html.index("Your new application is ready."))
   }
 }

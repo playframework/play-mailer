@@ -28,53 +28,49 @@ smtp.timeout (defaults to 60s)
 smtp.connectiontimeout (defaults to 60s)
 ```
 
-
 ## using it from java 
 
 ```java
-import play.api.libs.mailer.MailerAPI;
+import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
-MailerAPI mail = MailerPlugin.email();
-mail.setSubject("mailer");
-mail.setRecipient("Peter Hausel Junior <noreply@email.com>","example@foo.com");
-mail.setFrom("Peter Hausel <noreply@email.com>");
-//adds attachment
-mail.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
-//adds inline attachment from byte array
-byte[] data = "data".getBytes();
-mail.addAttachment("data.txt", data, "text/plain", "A simple file", EmailAttachment.INLINE);
-//sends html
-mail.sendHtml("<html>html</html>" );
-//sends text/text
-mail.send( "text" );
-//sends both text and html
-mail.send( "text", "<html>html</html>");
+
+Email email = new Email();
+email.setSubject("Simple email");
+email.setFrom("Mister FROM <from@email.com>");
+email.addTo("Miss TO <to@email.com>");
+// adds attachment
+email.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
+// adds inline attachment from byte array
+email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
+// sends text, HTML or both...
+email.setBodyText("A text message");
+email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
+MailerPlugin.send(email);
 ```
 
 ## using it from scala
 
 ```scala
 import play.api.libs.mailer._
-val mail = MailerPlugin.email
-mail.setSubject("mailer")
-mail.setRecipient("Peter Hausel Junior <noreply@email.com>","example@foo.com")
-//or use a list
-mail.setBcc(List("Dummy <example@example.org>", "Dummy2 <example@example.org>"):_*)
-mail.setFrom("Peter Hausel <noreply@email.com>")
-//adds attachment
-mail.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"))
-//adds inline attachment from byte array
-val data: Array[Byte] = "data".getBytes
-mail.addAttachment("data.txt", data, "text/plain", "A simple file", EmailAttachment.INLINE)
-//sends html
-mail.sendHtml("<html>html</html>" )
-//sends text/text
-mail.send( "text" )
-//sends both text and html
-mail.send( "text", "<html>html</html>")
+
+val email = Email(
+  "Simple email",
+  "Mister FROM <from@email.com>",
+  Seq("Miss TO <to@email.com>"),
+  // adds attachment
+  attachments = Seq(
+    AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
+    //adds inline attachment from byte array
+    AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
+  ),
+  // sends text, HTML or both...
+  bodyText = Some("A text message"),
+  bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
+)
+MailerPlugin.send(email)
 ```
 
-`use[MailerPlugin]` needs an implicit `play.api.Application` available to it.  If you do not have one available already from where you are trying to create the mailer you may want to add this line to get the current Application.
+`MailerPlugin.send()` method needs an implicit `play.api.Application` available to it.  If you do not have one available already from where you are trying to create the mailer you may want to add this line to get the current Application.
 
 ```scala
 import play.api.Play.current

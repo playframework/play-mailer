@@ -5,7 +5,7 @@ import java.io.File;
 import org.apache.commons.mail.EmailAttachment;
 
 import play.Play;
-import play.api.libs.mailer.MailerAPI;
+import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -14,15 +14,15 @@ import views.html.index;
 public class ApplicationJava extends Controller {
   
   public static Result index() {
-    MailerAPI mail = MailerPlugin.email();
-    mail.setSubject("simplest mailer test");
-    mail.setRecipient("some display name <sometoadd@email.com>");
-    mail.setFrom("some display name <somefromadd@email.com>");
-    mail.addAttachment("favicon.png", new File(Play.application().classloader().getResource("public/images/favicon.png").getPath()));
-    byte[] data = "data".getBytes();
-    mail.addAttachment("data.txt", data, "text/plain", "A simple file", EmailAttachment.INLINE);
-    mail.send("A text only message", "<html><body><p>An <b>html</b> message</p></body></html>" );
-
+    final Email email = new Email();
+    email.setSubject("Simple email");
+    email.setFrom("Mister FROM <from@email.com>");
+    email.addTo("Miss TO <to@email.com>");
+    email.addAttachment("favicon.png", new File(Play.application().classloader().getResource("public/images/favicon.png").getPath()));
+    email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
+    email.setBodyText("A text message");
+    email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
+    MailerPlugin.send(email);
     return ok(index.render("Your new application is ready."));
   }
   
