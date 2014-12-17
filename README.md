@@ -9,6 +9,7 @@ This plugin provides a simple emailer.
 play 2.3.x:
 
 * add ```"com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.1"``` to your dependencies (```project/Build.scala```)
+* add ```"Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"``` to your resolvers
 
 and then
 * add ```1500:com.typesafe.plugin.CommonsMailerPlugin``` to your ```conf/play.plugins```
@@ -51,23 +52,18 @@ MailerPlugin.send(email);
 ## using it from scala
 
 ```scala
-import play.api.libs.mailer._
 
-val email = Email(
-  "Simple email",
-  "Mister FROM <from@email.com>",
-  Seq("Miss TO <to@email.com>"),
-  // adds attachment
-  attachments = Seq(
-    AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
-    //adds inline attachment from byte array
-    AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
-  ),
-  // sends text, HTML or both...
-  bodyText = Some("A text message"),
-  bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
-)
-MailerPlugin.send(email)
+import com.typesafe.plugin._
+
+val mail = use[MailerPlugin].email
+mail.setSubject("Simple email")
+mail.setFrom("Mister FROM <from@email.com>")
+mail.setRecipient("Miss TO <to@email.com>")
+mail.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"))
+val data: Array[Byte] = "data".getBytes
+mail.addAttachment("data.txt", data, "text/plain", "A simple file", EmailAttachment.INLINE)
+mail.send( "text", "<html>html</html>")
+//mail.sendHtml("<html>html</html>" )
 ```
 
 `MailerPlugin.send()` method needs an implicit `play.api.Application` available to it.  If you do not have one available already from where you are trying to create the mailer you may want to add this line to get the current Application.
