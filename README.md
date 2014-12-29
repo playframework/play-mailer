@@ -1,21 +1,22 @@
-# Emailer  
+# About
 
 This plugin provides a simple emailer.
 
 ![Travis build status](https://travis-ci.org/playframework/play-mailer.svg?branch=master)
 
-## installation
+## Setup
 
-play 2.3.x:
+ 1. Add a library dependency on play-mailer:
 
-* add ```"com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.1"``` to your dependencies (```project/Build.scala```)
+ ```scala
+"com.typesafe.play" %% "play-mailer" % "{version}"
+ ```
+ See below for the version matrix.
 
-and then
-* add ```1500:com.typesafe.plugin.CommonsMailerPlugin``` to your ```conf/play.plugins```
+ 1. Add ```1500:play.api.libs.mailer.CommonsMailerPlugin``` to your ```conf/play.plugins```
+ 1. Configure the mailer in your ```conf/application.conf```:
 
-furthermore, the following parameters can be configured in ```conf/application.conf```
-
-```
+ ```
 smtp.host (mandatory)
 smtp.port (defaults to 25)
 smtp.ssl (defaults to no)
@@ -26,9 +27,11 @@ smtp.debug (defaults to no, to take effect you also need to set the log level to
 smtp.mock (defaults to no, will only log all the email properties instead of sending an email)
 smtp.timeout (defaults to 60s)
 smtp.connectiontimeout (defaults to 60s)
-```
+ ```
 
-## using it from java 
+## Usage
+
+### Java
 
 ```java
 import play.libs.mailer.Email;
@@ -48,7 +51,7 @@ email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
 MailerPlugin.send(email);
 ```
 
-## using it from scala
+### Scala
 
 ```scala
 import play.api.libs.mailer._
@@ -60,7 +63,7 @@ val email = Email(
   // adds attachment
   attachments = Seq(
     AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
-    //adds inline attachment from byte array
+    // adds inline attachment from byte array
     AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
   ),
   // sends text, HTML or both...
@@ -74,6 +77,29 @@ MailerPlugin.send(email)
 
 ```scala
 import play.api.Play.current
+```
+
+## Versionning
+
+The Play Mailer plugin supports several different versions of Play.
+
+| Plugin version      | Play version       | 
+|---------------------|--------------------|
+| 2.x                 | 2.3.x              |
+| 3.x (milestone)     | 2.4.x              |
+
+## Current Versions
+
+For Play 2.3:
+
+```scala
+"com.typesafe.play" %% "play-mailer" % "2.4.0"
+```
+
+For Play 2.4 **milestone**:
+
+```scala
+"com.typesafe.play" %% "play-mailer" % "3.0.0-M1"
 ```
 
 ## Licence

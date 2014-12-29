@@ -1,6 +1,6 @@
-name := "play-plugins-mailer"
+name := "play-mailer"
     
-organization := "com.typesafe.play.plugins"
+organization := "com.typesafe.play"
 
 version := "2.3.6-SNAPSHOT"
 
