@@ -2,7 +2,7 @@ name := "play-mailer"
     
 organization := "com.typesafe.play"
 
-version := "2.4.0-M2-SNAPSHOT"
+version := "3.0.0-M1-SNAPSHOT"
 
 scalaVersion := "2.11.1"
 
