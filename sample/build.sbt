@@ -10,7 +10,7 @@ scalaVersion := "2.11.1"
 resolvers += Resolver.file("LocalIvy", file(Path.userHome + File.separator + ".ivy2" + File.separator + "local"))(Resolver.ivyStylePatterns)
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.6-SNAPSHOT"
+  "com.typesafe.play" %% "play-mailer" % "2.4.0-RC1"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
