@@ -12,7 +12,9 @@ resolvers += Resolver.file("LocalIvy", file(Path.userHome + File.separator + ".i
 resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.4.0-M2-SNAPSHOT"
+  "com.typesafe.play" %% "play-mailer" % "3.0.0-M1-SNAPSHOT"
 )
+
+routesGenerator := InjectedRoutesGenerator
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)

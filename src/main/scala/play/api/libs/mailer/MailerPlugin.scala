@@ -5,98 +5,21 @@ import javax.inject.Inject
 import javax.mail.internet.InternetAddress
 
 import org.apache.commons.mail._
-import play.api._
+import play.api.inject._
+import play.api.{Logger, Configuration, Environment}
+
 import scala.collection.JavaConverters._
 
-trait MailerJavaAPI {
-  /**
-   * Sends an email with the provided data.
-   *
-   * @param data data to send
-   * @return the message id
-   */
-  def send(data: play.libs.mailer.Email): String
+class MailerModule extends Module {
+  def bindings(environment: Environment, configuration: Configuration) = Seq(
+    bind[MailerClient].to[CommonsMailer],
+    bind[MailerClient].qualifiedWith("mock").to[MockMailer]
+  )
 }
 
-/**
- * plugin access
- */
-object MailerPlugin {
+// API
 
-  def send(email: Email)(implicit app: play.api.Application) = app.plugin(classOf[MailerPlugin]).get.instance.send(email)
-}
-
-/**
- * plugin interface
- */
-trait MailerPlugin extends play.api.Plugin {
-  def instance: MailerAPI
-}
-
-/**
- * plugin implementation
- */
-class CommonsMailerPlugin @Inject() (implicit app: play.api.Application) extends MailerPlugin {
-
-  private lazy val mock = app.configuration.getBoolean("smtp.mock").getOrElse(false)
-
-  private lazy val mailerInstance: MailerAPI = {
-    if (mock) {
-      MockMailer
-    } else {
-      val smtpHost = app.configuration.getString("smtp.host").getOrElse(throw new RuntimeException("smtp.host needs to be set in application.conf in order to use this plugin (or set smtp.mock to true)"))
-      val smtpPort = app.configuration.getInt("smtp.port").getOrElse(25)
-      val smtpSsl = app.configuration.getBoolean("smtp.ssl").getOrElse(false)
-      val smtpTls = app.configuration.getBoolean("smtp.tls").getOrElse(false)
-      val smtpUser = app.configuration.getString("smtp.user")
-      val smtpPassword = app.configuration.getString("smtp.password")
-      val debugMode = app.configuration.getBoolean("smtp.debug").getOrElse(false)
-      val smtpTimeout = app.configuration.getInt("smtp.timeout")
-      val smtpConnectionTimeout = app.configuration.getInt("smtp.connectiontimeout")
-      new CommonsMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode, smtpTimeout, smtpConnectionTimeout) {
-        override def send(email: MultiPartEmail): String = email.send()
-        override def createMultiPartEmail(): MultiPartEmail = new MultiPartEmail()
-        override def createHtmlEmail(): HtmlEmail = new HtmlEmail()
-      }
-    }
-  }
-
-  override lazy val enabled = !app.configuration.getString("apachecommonsmailerplugin").filter(_ == "disabled").isDefined
-
-  override def onStart() {
-    mailerInstance
-  }
-
-  def instance = mailerInstance
-}
-
-sealed trait Attachment
-
-case class Email(subject: String,
-                 from: String,
-                 to: Seq[String] = Seq.empty,
-                 bodyText: Option[String] = None,
-                 bodyHtml: Option[String] = None,
-                 charset: Option[String] = None,
-                 cc: Seq[String] = Seq.empty,
-                 bcc: Seq[String] = Seq.empty,
-                 replyTo: Option[String] = None,
-                 attachments: Seq[Attachment] = Seq.empty,
-                 headers: Seq[(String, String)] = Seq.empty)
-
-case class AttachmentFile(name: String,
-                          file: File,
-                          description: Option[String] = None,
-                          disposition: Option[String] = None) extends Attachment
-
-case class AttachmentData(name: String,
-                          data: Array[Byte],
-                          mimetype: String,
-                          description: Option[String] = None,
-                          disposition: Option[String] = None) extends Attachment
-
-
-trait MailerAPI extends MailerJavaAPI {
+trait MailerClient extends MailerJavaClient {
 
   /**
    * Sends an email with the provided data.
@@ -111,7 +34,7 @@ trait MailerAPI extends MailerJavaAPI {
     send(email)
   }
 
-  protected def convert(data: play.libs.mailer.Email):Email = {
+  protected def convert(data: play.libs.mailer.Email): Email = {
     val attachments = data.getAttachments.asScala.map {
       case attachment =>
         if (Option(attachment.getFile).isDefined) {
@@ -142,33 +65,54 @@ trait MailerAPI extends MailerJavaAPI {
   }
 }
 
-
-case object MockMailer extends MailerAPI {
-
-  override def send(email: Email): String = {
-    Logger.info("mock implementation, send email")
-    Logger.info(s"subject: ${email.subject}")
-    Logger.info(s"from: ${email.from}")
-    email.bodyText.foreach(bodyText => Logger.info(s"bodyText: $bodyText"))
-    email.bodyHtml.foreach(bodyHtml => Logger.info(s"bodyHtml: $bodyHtml"))
-    email.to.foreach(to => Logger.info(s"to: $to"))
-    email.cc.foreach(cc => Logger.info(s"cc: $cc"))
-    email.bcc.foreach(bcc => Logger.info(s"to: $bcc"))
-    email.replyTo.foreach(replyTo => Logger.info(s"replyTo: $replyTo"))
-    email.attachments.foreach(attachment => Logger.info(s"attachment: $attachment"))
-    email.headers.foreach(header => Logger.info(s"header: $header"))
-    ""
-  }
+trait MailerJavaClient {
+  /**
+   * Sends an email with the provided data.
+   *
+   * @param data data to send
+   * @return the message id
+   */
+  def send(data: play.libs.mailer.Email): String
 }
 
-abstract class CommonsMailer(smtpHost: String, smtpPort: Int,
-                            smtpSsl: Boolean,
-                            smtpTls: Boolean,
-                            smtpUser: Option[String],
-                            smtpPass: Option[String],
-                            debugMode: Boolean,
-                            smtpTimeout: Option[Int],
-                            smtpConnectionTimeout: Option[Int]) extends MailerAPI {
+// Implementations
+
+class CommonsMailer @Inject()(configuration: Configuration) extends MailerClient {
+
+  private lazy val mock = configuration.getBoolean("smtp.mock").getOrElse(false)
+
+  private lazy val instance = {
+    if (mock) {
+      new MockMailer()
+    } else {
+      val smtpHost = configuration.getString("smtp.host").getOrElse(throw new RuntimeException("smtp.host needs to be set in application.conf in order to use this plugin (or set smtp.mock to true)"))
+      val smtpPort = configuration.getInt("smtp.port").getOrElse(25)
+      val smtpSsl = configuration.getBoolean("smtp.ssl").getOrElse(false)
+      val smtpTls = configuration.getBoolean("smtp.tls").getOrElse(false)
+      val smtpUser = configuration.getString("smtp.user")
+      val smtpPassword = configuration.getString("smtp.password")
+      val debugMode = configuration.getBoolean("smtp.debug").getOrElse(false)
+      val smtpTimeout = configuration.getInt("smtp.timeout")
+      val smtpConnectionTimeout = configuration.getInt("smtp.connectiontimeout")
+      new STMPMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode, smtpTimeout, smtpConnectionTimeout) {
+        override def send(email: MultiPartEmail): String = email.send()
+        override def createMultiPartEmail(): MultiPartEmail = new MultiPartEmail()
+        override def createHtmlEmail(): HtmlEmail = new HtmlEmail()
+      }
+    }
+  }
+
+  override def send(data: Email): String = instance.send(data)
+}
+
+abstract class STMPMailer(smtpHost: String, smtpPort: Int,
+                          smtpSsl: Boolean,
+                          smtpTls: Boolean,
+                          smtpUser: Option[String],
+                          smtpPass: Option[String],
+                          debugMode: Boolean,
+                          smtpTimeout: Option[Int],
+                          smtpConnectionTimeout: Option[Int]) extends MailerClient {
 
   def send(email: MultiPartEmail): String
 
@@ -214,18 +158,20 @@ abstract class CommonsMailer(smtpHost: String, smtpPort: Int,
       email.setSslSmtpPort(smtpPort.toString)
     }
     email.setStartTLSEnabled(smtpTls)
-    for(u <- smtpUser; p <- smtpPass) yield email.setAuthenticator(new DefaultAuthenticator(u, p))
+    for (u <- smtpUser; p <- smtpPass) yield email.setAuthenticator(new DefaultAuthenticator(u, p))
     if (debugMode && Logger.isDebugEnabled) {
       email.setDebug(debugMode)
       email.getMailSession.setDebugOut(new PrintStream(new FilterOutputStream(null) {
         override def write(b: Array[Byte]) {
           Logger.debug(new String(b))
         }
+
         override def write(b: Array[Byte], off: Int, len: Int) {
           Logger.debug(new String(b, off, len))
         }
+
         override def write(b: Int) {
-          this.write(new Array(b):Array[Byte])
+          this.write(new Array(b): Array[Byte])
         }
       }))
     }
@@ -277,3 +223,46 @@ abstract class CommonsMailer(smtpHost: String, smtpPort: Int,
     }
   }
 }
+
+class MockMailer @Inject() extends MailerClient {
+
+  override def send(email: Email): String = {
+    Logger.info("mock implementation, send email")
+    Logger.info(s"subject: ${email.subject}")
+    Logger.info(s"from: ${email.from}")
+    email.bodyText.foreach(bodyText => Logger.info(s"bodyText: $bodyText"))
+    email.bodyHtml.foreach(bodyHtml => Logger.info(s"bodyHtml: $bodyHtml"))
+    email.to.foreach(to => Logger.info(s"to: $to"))
+    email.cc.foreach(cc => Logger.info(s"cc: $cc"))
+    email.bcc.foreach(bcc => Logger.info(s"to: $bcc"))
+    email.replyTo.foreach(replyTo => Logger.info(s"replyTo: $replyTo"))
+    email.attachments.foreach(attachment => Logger.info(s"attachment: $attachment"))
+    email.headers.foreach(header => Logger.info(s"header: $header"))
+    ""
+  }
+}
+
+sealed trait Attachment
+
+case class Email(subject: String,
+                 from: String,
+                 to: Seq[String] = Seq.empty,
+                 bodyText: Option[String] = None,
+                 bodyHtml: Option[String] = None,
+                 charset: Option[String] = None,
+                 cc: Seq[String] = Seq.empty,
+                 bcc: Seq[String] = Seq.empty,
+                 replyTo: Option[String] = None,
+                 attachments: Seq[Attachment] = Seq.empty,
+                 headers: Seq[(String, String)] = Seq.empty)
+
+case class AttachmentFile(name: String,
+                          file: File,
+                          description: Option[String] = None,
+                          disposition: Option[String] = None) extends Attachment
+
+case class AttachmentData(name: String,
+                          data: Array[Byte],
+                          mimetype: String,
+                          description: Option[String] = None,
+                          disposition: Option[String] = None) extends Attachment

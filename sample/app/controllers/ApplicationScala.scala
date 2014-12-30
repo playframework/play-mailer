@@ -1,15 +1,16 @@
 package controllers
 
 import java.io.File
+import javax.inject.Inject
 
-import play.api.libs.mailer._
 import org.apache.commons.mail.EmailAttachment
-import play.api.mvc.{Action, Controller}
 import play.api.Play.current
+import play.api.libs.mailer._
+import play.api.mvc.{Action, Controller}
 
-object ApplicationScala  extends Controller {
+class ApplicationScala @Inject()(mailer: MailerClient) extends Controller {
 
-  def index = Action {
+  def send = Action {
     val email = Email(
       "Simple email",
       "Mister FROM <from@email.com>",
@@ -21,7 +22,7 @@ object ApplicationScala  extends Controller {
       bodyText = Some("A text message"),
       bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
     )
-    MailerPlugin.send(email)
-    Ok(views.html.index("Your new application is ready."))
+    val id = mailer.send(email)
+    Ok(s"Email $id sent!")
   }
 }
