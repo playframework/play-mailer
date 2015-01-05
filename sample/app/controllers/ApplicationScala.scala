@@ -9,7 +9,7 @@ import play.api.Play.current
 
 object ApplicationScala  extends Controller {
 
-  def index = Action {
+  def send = Action {
     val email = Email(
       "Simple email",
       "Mister FROM <from@email.com>",
@@ -21,7 +21,7 @@ object ApplicationScala  extends Controller {
       bodyText = Some("A text message"),
       bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
     )
-    MailerPlugin.send(email)
-    Ok(views.html.index("Your new application is ready."))
+    val id = MailerPlugin.send(email)
+    Ok(s"Email $id sent!")
   }
 }
