@@ -94,7 +94,7 @@ class CommonsMailer @Inject()(configuration: Configuration) extends MailerClient
       val debugMode = configuration.getBoolean("smtp.debug").getOrElse(false)
       val smtpTimeout = configuration.getInt("smtp.timeout")
       val smtpConnectionTimeout = configuration.getInt("smtp.connectiontimeout")
-      new STMPMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode, smtpTimeout, smtpConnectionTimeout) {
+      new SMTPMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode, smtpTimeout, smtpConnectionTimeout) {
         override def send(email: MultiPartEmail): String = email.send()
         override def createMultiPartEmail(): MultiPartEmail = new MultiPartEmail()
         override def createHtmlEmail(): HtmlEmail = new HtmlEmail()
@@ -105,7 +105,7 @@ class CommonsMailer @Inject()(configuration: Configuration) extends MailerClient
   override def send(data: Email): String = instance.send(data)
 }
 
-abstract class STMPMailer(smtpHost: String, smtpPort: Int,
+abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
                           smtpSsl: Boolean,
                           smtpTls: Boolean,
                           smtpUser: Option[String],

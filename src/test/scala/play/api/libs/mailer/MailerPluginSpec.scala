@@ -22,10 +22,10 @@ class MailerPluginSpec extends Specification {
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
     override def getContainer = super.getContainer
   }
-  object MockSTMPMailer extends MockSTMPMailerWithTimeouts(None, None)
+  object MockSMTPMailer extends MockSMTPMailerWithTimeouts(None, None)
 
-  class MockSTMPMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
-    extends STMPMailer("typesafe.org", 1234, true, false, Some("user"), Some("password"), false, smtpTimeout, smtpConnectionTimeout) {
+  class MockSMTPMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
+    extends SMTPMailer("typesafe.org", 1234, true, false, Some("user"), Some("password"), false, smtpTimeout, smtpConnectionTimeout) {
     override def send(email: MultiPartEmail) = ""
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
@@ -33,7 +33,7 @@ class MailerPluginSpec extends Specification {
 
   "The CommonsMailer" should {
     "configure SMTP" in {
-      val mailer = MockSTMPMailer
+      val mailer = MockSMTPMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>"
@@ -47,7 +47,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "configure the SMTP timeouts if configured" in {
-      val mailer = new MockSTMPMailerWithTimeouts(Some(10), Some(99))
+      val mailer = new MockSMTPMailerWithTimeouts(Some(10), Some(99))
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>"
@@ -57,7 +57,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "leave default SMTP timeouts if they are not configured" in {
-      val mailer = new MockSTMPMailerWithTimeouts(None, None)
+      val mailer = new MockSMTPMailerWithTimeouts(None, None)
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>"
@@ -67,7 +67,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create an empty email" in {
-      val mailer = MockSTMPMailer
+      val mailer = MockSMTPMailer
       val messageId = mailer.send(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -77,7 +77,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email" in {
-      val mailer = MockSTMPMailer
+      val mailer = MockSMTPMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -93,7 +93,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email with attachment" in {
-      val mailer = MockSTMPMailer
+      val mailer = MockSMTPMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -116,7 +116,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email with inline attachment and description" in {
-      val mailer = MockSTMPMailer
+      val mailer = MockSMTPMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
