@@ -93,7 +93,7 @@ The Play Mailer plugin supports several different versions of Play.
 For Play 2.3:
 
 ```scala
-"com.typesafe.play" %% "play-mailer" % "2.4.0-RC1"
+"com.typesafe.play" %% "play-mailer" % "2.4.0"
 ```
 
 For Play 2.4 **milestone**:
