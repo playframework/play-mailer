@@ -70,6 +70,7 @@ trait MailerClient extends JMailerClient {
       data.getCc.asScala.toSeq,
       data.getBcc.asScala.toSeq,
       Option(data.getReplyTo),
+      Option(data.getBounceAddress),
       attachments,
       data.getHeaders.asScala.toSeq)
   }
@@ -129,6 +130,7 @@ abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
     email.setSubject(data.subject)
     email.setFrom(data.from)
     data.replyTo.foreach(setAddress(_) { (address, name) => email.addReplyTo(address, name)})
+    data.bounceAddress.foreach(email.setBounceAddress)
     data.to.foreach(setAddress(_) { (address, name) => email.addTo(address, name)})
     data.cc.foreach(setAddress(_) { (address, name) => email.addCc(address, name)})
     data.bcc.foreach(setAddress(_) { (address, name) => email.addBcc(address, name)})
@@ -238,6 +240,7 @@ class MockMailer @Inject() extends MailerClient {
     email.cc.foreach(cc => Logger.info(s"cc: $cc"))
     email.bcc.foreach(bcc => Logger.info(s"to: $bcc"))
     email.replyTo.foreach(replyTo => Logger.info(s"replyTo: $replyTo"))
+    email.bounceAddress.foreach(bounce => Logger.info(s"bounceAddress: $bounce"))
     email.attachments.foreach(attachment => Logger.info(s"attachment: $attachment"))
     email.headers.foreach(header => Logger.info(s"header: $header"))
     ""
@@ -255,6 +258,7 @@ case class Email(subject: String,
                  cc: Seq[String] = Seq.empty,
                  bcc: Seq[String] = Seq.empty,
                  replyTo: Option[String] = None,
+                 bounceAddress: Option[String] = None,
                  attachments: Seq[Attachment] = Seq.empty,
                  headers: Seq[(String, String)] = Seq.empty)
 
