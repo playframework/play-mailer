@@ -99,7 +99,7 @@ For Play 2.3:
 For Play 2.4 **milestone**:
 
 ```scala
-"com.typesafe.play" %% "play-mailer" % "3.0.0-M1" // (not yet released)
+"com.typesafe.play" %% "play-mailer" % "3.0.0-M1"
 ```
 
 ## Licence
