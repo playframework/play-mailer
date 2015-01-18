@@ -185,7 +185,7 @@ abstract class CommonsMailer(smtpHost: String, smtpPort: Int,
     email.setSubject(data.subject)
     email.setFrom(data.from)
     data.replyTo.foreach(setAddress(_) { (address, name) => email.addReplyTo(address, name)})
-    data.bounceAddress.map(email.setBounceAddress)
+    data.bounceAddress.foreach(email.setBounceAddress)
     data.to.foreach(setAddress(_) { (address, name) => email.addTo(address, name)})
     data.cc.foreach(setAddress(_) { (address, name) => email.addCc(address, name)})
     data.bcc.foreach(setAddress(_) { (address, name) => email.addBcc(address, name)})
