@@ -128,7 +128,7 @@ abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
   def createEmail(data: Email): MultiPartEmail = {
     val email = createEmail(data.bodyText, data.bodyHtml, data.charset.getOrElse("utf-8"))
     email.setSubject(data.subject)
-    email.setFrom(data.from)
+    setAddress(data.from) { (address, name) => email.setFrom(address, name) }
     data.replyTo.foreach(setAddress(_) { (address, name) => email.addReplyTo(address, name)})
     data.bounceAddress.foreach(email.setBounceAddress)
     data.to.foreach(setAddress(_) { (address, name) => email.addTo(address, name)})
