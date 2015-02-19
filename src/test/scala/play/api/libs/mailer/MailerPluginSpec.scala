@@ -138,6 +138,44 @@ class MailerPluginSpec extends Specification {
       attachmentPart.getDescription mustEqual "A beautiful icon"
       attachmentPart.getDisposition mustEqual Part.INLINE
     }
+
+    "set address with name" in {
+      val mailer = MockSMTPMailer
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>",
+        to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        cc = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        bcc = Seq("Guillaume Grossetie <ggrossetie@localhost.com>")
+      ))
+      email.getFromAddress.getAddress mustEqual "jroper@typesafe.com"
+      email.getFromAddress.getPersonal mustEqual "James Roper"
+      email.getToAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
+      email.getToAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
+      email.getCcAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
+      email.getCcAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
+      email.getBccAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
+      email.getBccAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
+    }
+
+    "set address without name" in {
+      val mailer = MockSMTPMailer
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "jroper@typesafe.com",
+        to = Seq("<ggrossetie@localhost.com>"),
+        cc = Seq("ggrossetie@localhost.com"),
+        bcc = Seq("ggrossetie@localhost.com")
+      ))
+      email.getFromAddress.getAddress mustEqual "jroper@typesafe.com"
+      email.getFromAddress.getPersonal must beNull
+      email.getToAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
+      email.getToAddresses.get(0).getPersonal must beNull
+      email.getCcAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
+      email.getCcAddresses.get(0).getPersonal must beNull
+      email.getBccAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
+      email.getBccAddresses.get(0).getPersonal must beNull
+    }
   }
 
   "The MailerAPI" should {
