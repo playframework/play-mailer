@@ -35,51 +35,58 @@ smtp.connectiontimeout (defaults to 60s)
 
 ```java
 import play.libs.mailer.Email;
-import play.libs.mailer.MailerPlugin;
+import play.libs.mailer.MailerClient;
+import javax.inject.Inject;
 
-Email email = new Email();
-email.setSubject("Simple email");
-email.setFrom("Mister FROM <from@email.com>");
-email.addTo("Miss TO <to@email.com>");
-// adds attachment
-email.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
-// adds inline attachment from byte array
-email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
-// sends text, HTML or both...
-email.setBodyText("A text message");
-email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
-MailerPlugin.send(email);
+public class MyComponent {
+  @Inject MailerClient mailerClient;
+
+
+  public void sendEmail() {
+    Email email = new Email();
+    email.setSubject("Simple email");
+    email.setFrom("Mister FROM <from@email.com>");
+    email.addTo("Miss TO <to@email.com>");
+    // adds attachment
+    email.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
+    // adds inline attachment from byte array
+    email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
+    // sends text, HTML or both...
+    email.setBodyText("A text message");
+    email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
+    mailerClient.send(email);
+  }
+}
 ```
 
 ### Scala
 
 ```scala
 import play.api.libs.mailer._
+import javax.inject.Inject
 
-val email = Email(
-  "Simple email",
-  "Mister FROM <from@email.com>",
-  Seq("Miss TO <to@email.com>"),
-  // adds attachment
-  attachments = Seq(
-    AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
-    // adds inline attachment from byte array
-    AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
-  ),
-  // sends text, HTML or both...
-  bodyText = Some("A text message"),
-  bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
-)
-MailerPlugin.send(email)
+public class MyComponent @Inject() (mailerClient: MailerClient) {
+
+  val email = Email(
+    "Simple email",
+    "Mister FROM <from@email.com>",
+    Seq("Miss TO <to@email.com>"),
+    // adds attachment
+    attachments = Seq(
+      AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
+      // adds inline attachment from byte array
+      AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
+    ),
+    // sends text, HTML or both...
+    bodyText = Some("A text message"),
+    bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
+  )
+  mailerClient.send(email)
+}
 ```
 
-`MailerPlugin.send()` method needs an implicit `play.api.Application` available to it.  If you do not have one available already from where you are trying to create the mailer you may want to add this line to get the current Application.
 
-```scala
-import play.api.Play.current
-```
-
-## Versionning
+## Versioning
 
 The Play Mailer plugin supports several different versions of Play.
 

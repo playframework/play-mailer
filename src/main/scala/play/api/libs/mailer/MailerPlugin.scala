@@ -7,19 +7,29 @@ import javax.mail.internet.InternetAddress
 import org.apache.commons.mail._
 import play.api.inject._
 import play.api.{Logger, Configuration, Environment}
+import play.libs.mailer.{MailerClient => JMailerClient, Email => JEmail}
 
 import scala.collection.JavaConverters._
 
 class MailerModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = Seq(
     bind[MailerClient].to[CommonsMailer],
-    bind[MailerClient].qualifiedWith("mock").to[MockMailer]
+    bind[JMailerClient].to(bind[MailerClient]),
+    bind[MailerClient].qualifiedWith("mock").to[MockMailer],
+    bind[JMailerClient].qualifiedWith("mock").to[MockMailer]
   )
 }
 
 // API
 
-trait MailerClient extends MailerJavaClient {
+@deprecated("Use injected MailerClient instead", "2.4.0")
+object MailerPlugin {
+
+  def send(email: Email)(implicit app: play.api.Application) = app.injector.instanceOf[MailerClient].send(email)
+}
+
+
+trait MailerClient extends JMailerClient {
 
   /**
    * Sends an email with the provided data.
@@ -29,7 +39,7 @@ trait MailerClient extends MailerJavaClient {
    */
   def send(data: Email): String
 
-  override def send(data: play.libs.mailer.Email): String = {
+  override def send(data: JEmail): String = {
     val email = convert(data)
     send(email)
   }
@@ -65,15 +75,7 @@ trait MailerClient extends MailerJavaClient {
   }
 }
 
-trait MailerJavaClient {
-  /**
-   * Sends an email with the provided data.
-   *
-   * @param data data to send
-   * @return the message id
-   */
-  def send(data: play.libs.mailer.Email): String
-}
+
 
 // Implementations
 
