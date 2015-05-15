@@ -1,54 +1,15 @@
-name := "play-mailer"
+lazy val `play-mailer` = (project in file("."))
+  .enablePlugins(PlayLibrary, PlayReleaseBase)
     
-organization := "com.typesafe.play"
-
-scalaVersion := "2.11.1"
-
-crossScalaVersions := Seq("2.11.1", "2.10.4")
-
-resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+val PlayVersion = "2.4.0-RC3"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play" % "2.4.0-M3" % "provided",
+  "com.typesafe.play" %% "play" % PlayVersion % Provided,
   "org.apache.commons" % "commons-email" % "1.3.3",
-  "org.specs2" %% "specs2-core" % "2.4.9" % "test"
+  "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
 )
 
-javacOptions ++= Seq("-source", "1.6", "-target", "1.6", "-Xlint:unchecked", "-encoding", "UTF-8")
+resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
-scalacOptions += "-deprecation"
+playBuildRepoName in ThisBuild := "play-mailer"
 
-// Publish settings
-publishTo := {
-  if (isSnapshot.value) Some(Opts.resolver.sonatypeSnapshots)
-  else Some(Opts.resolver.sonatypeStaging)
-}
-
-homepage := Some(url("https://github.com/playframework/play-mailer"))
-
-licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
-
-pomExtra := {
-  <scm>
-    <url>https://github.com/playframework/play-mailer</url>
-    <connection>scm:git:git@github.com:playframework/play-mailer.git</connection>
-  </scm>
-  <developers>
-    <developer>
-      <id>playframework</id>
-      <name>Play Framework Team</name>
-      <url>https://github.com/playframework</url>
-    </developer>
-  </developers>
-}
-
-pomIncludeRepository := { _ => false }
-
-// Release settings
-releaseSettings
-
-ReleaseKeys.publishArtifactsAction := PgpKeys.publishSigned.value
-    
-ReleaseKeys.crossBuild := true
-
-ReleaseKeys.tagName := (version in ThisBuild).value

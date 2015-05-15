@@ -7,8 +7,6 @@ version := "1.0-SNAPSHOT"
 
 scalaVersion := "2.11.1"
 
-resolvers += Resolver.file("LocalIvy", file(Path.userHome + File.separator + ".ivy2" + File.separator + "local"))(Resolver.ivyStylePatterns)
-
 resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(

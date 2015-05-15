@@ -5,6 +5,7 @@ import javax.mail.Part
 
 import org.apache.commons.mail.{EmailConstants, HtmlEmail, MultiPartEmail}
 import org.specs2.mutable._
+import play.api.test._
 
 class MailerPluginSpec extends Specification {
 
@@ -180,6 +181,25 @@ class MailerPluginSpec extends Specification {
       convert.attachments(1).asInstanceOf[AttachmentData].description mustEqual Some("Simple data")
       convert.attachments(1).asInstanceOf[AttachmentData].disposition mustEqual Some(Part.INLINE)
     }
+  }
+
+  "The mailer module" should {
+    import play.libs.mailer.{MailerClient => JMailerClient}
+    import play.api.inject.bind
+
+    "provide the Scala mailer client" in new WithApplication() {
+      app.injector.instanceOf[MailerClient] must beAnInstanceOf[CommonsMailer]
+    }
+    "provide the Java mailer client" in new WithApplication() {
+      app.injector.instanceOf[JMailerClient] must beAnInstanceOf[CommonsMailer]
+    }
+    "provide the Scala mocked mailer client" in new WithApplication() {
+      app.injector.instanceOf(bind[MailerClient].qualifiedWith("mock")) must beAnInstanceOf[MockMailer]
+    }
+    "provide the Java mocked mailer client" in new WithApplication() {
+      app.injector.instanceOf(bind[JMailerClient].qualifiedWith("mock")) must beAnInstanceOf[MockMailer]
+    }
+
   }
 
   def simpleEmailMust(email: MultiPartEmail) {
