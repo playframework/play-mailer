@@ -16,6 +16,7 @@ public class Email {
   private List<String> cc = new ArrayList<String>();
   private List<String> bcc = new ArrayList<String>();
   private String replyTo;
+  private String bounceAddress;
   private List<Attachment> attachments = new ArrayList<Attachment>();
   private String charset;
   private Map<String, String> headers = new HashMap<String, String>();
@@ -94,6 +95,14 @@ public class Email {
 
   public void setReplyTo(String replyTo) {
     this.replyTo = replyTo;
+  }
+
+  public String getBounceAddress() {
+    return bounceAddress;
+  }
+
+  public void setBounceAddress(String bounceAddress) {
+    this.bounceAddress = bounceAddress;
   }
 
   public void addAttachment(String name, File file) {
