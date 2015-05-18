@@ -1,4 +1,4 @@
-= About
+# About
 
 This plugin provides a simple emailer.
 
@@ -6,7 +6,7 @@ This plugin provides a simple emailer.
 image:https://travis-ci.org/playframework/play-mailer.svg?branch=master["Travis build status", link="https://travis-ci.org/playframework/play-mailer"]
 //endif::env-github[]
 
-== Setup
+## Setup
 
 NOTE: For Play 2.3.x please read https://github.com/playframework/play-mailer/blob/2.3.x/README.md#setup[the README on the 2.3.x branch].
 
@@ -33,9 +33,9 @@ smtp.timeout (defaults to 60s)
 smtp.connectiontimeout (defaults to 60s)
 ```
 
-== Usage
+## Usage
 
-=== Java
+### Java
 
 ```java
 import play.libs.mailer.Email;
@@ -63,7 +63,7 @@ public class MyComponent {
 }
 ```
 
-=== Scala
+### Scala
 
 ```scala
 import play.api.libs.mailer._
@@ -90,11 +90,10 @@ public class MyComponent @Inject() (mailerClient: MailerClient) {
 ```
 
 
-== Versioning
+## Versioning
 
 The Play Mailer plugin supports several different versions of Play.
 
-.Versioning matrix
 |===
 | Plugin version  | Play version
 
@@ -102,7 +101,7 @@ The Play Mailer plugin supports several different versions of Play.
 | 3.x (milestone) | 2.4.x
 |===
 
-== Current Versions
+## Current Versions
 
 For Play 2.3:
 
@@ -116,7 +115,7 @@ For Play 2.4 **milestone**:
 "com.typesafe.play" %% "play-mailer" % "3.0.0-M1"
 ```
 
-== Licence
+## Licence
 
 This software is licensed under the Apache 2 license, quoted below.
 
