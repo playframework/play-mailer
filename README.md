@@ -6,6 +6,8 @@ This plugin provides a simple emailer.
 
 ## Setup
 
+NOTE: For Play 2.3.x please read the [README on the 2.3.x branch](https://github.com/playframework/play-mailer/blob/2.3.x/README.md#setup).
+
  1. Add a library dependency on play-mailer:
 
  ```scala
@@ -13,7 +15,6 @@ This plugin provides a simple emailer.
  ```
  See below for the version matrix.
 
- 1. Add ```1500:play.api.libs.mailer.CommonsMailerPlugin``` to your ```conf/play.plugins```
  1. Configure the mailer in your ```conf/application.conf```:
 
  ```
@@ -100,7 +101,7 @@ The Play Mailer plugin supports several different versions of Play.
 For Play 2.3:
 
 ```scala
-"com.typesafe.play" %% "play-mailer" % "2.4.0"
+"com.typesafe.play" %% "play-mailer" % "2.4.1"
 ```
 
 For Play 2.4 **milestone**:
