@@ -2,22 +2,25 @@
 
 This plugin provides a simple emailer.
 
-![Travis build status](https://travis-ci.org/playframework/play-mailer.svg?branch=master)
+//ifdef::env-github[]
+image:https://travis-ci.org/playframework/play-mailer.svg?branch=master["Travis build status", link="https://travis-ci.org/playframework/play-mailer"]
+//endif::env-github[]
 
 ## Setup
 
-NOTE: For Play 2.3.x please read the [README on the 2.3.x branch](https://github.com/playframework/play-mailer/blob/2.3.x/README.md#setup).
+NOTE: For Play 2.3.x please read https://github.com/playframework/play-mailer/blob/2.3.x/README.md#setup[the README on the 2.3.x branch].
 
  1. Add a library dependency on play-mailer:
-
- ```scala
++
+```scala
 "com.typesafe.play" %% "play-mailer" % "{version}"
- ```
- See below for the version matrix.
+```
++
+See below for the version matrix.
 
- 1. Configure the mailer in your ```conf/application.conf```:
-
- ```
+ 1. Configure the mailer in your `conf/application.conf`:
++
+```
 smtp.host (mandatory)
 smtp.port (defaults to 25)
 smtp.ssl (defaults to no)
@@ -28,7 +31,7 @@ smtp.debug (defaults to no, to take effect you also need to set the log level to
 smtp.mock (defaults to no, will only log all the email properties instead of sending an email)
 smtp.timeout (defaults to 60s)
 smtp.connectiontimeout (defaults to 60s)
- ```
+```
 
 ## Usage
 
@@ -91,10 +94,12 @@ public class MyComponent @Inject() (mailerClient: MailerClient) {
 
 The Play Mailer plugin supports several different versions of Play.
 
-| Plugin version      | Play version       | 
-|---------------------|--------------------|
-| 2.x                 | 2.3.x              |
-| 3.x (milestone)     | 2.4.x              |
+|===
+| Plugin version  | Play version
+
+| 2.x             | 2.3.x
+| 3.x (milestone) | 2.4.x
+|===
 
 ## Current Versions
 
