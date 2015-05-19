@@ -6,7 +6,7 @@ import javax.mail.internet.InternetAddress
 
 import org.apache.commons.mail._
 import play.api.inject._
-import play.api.{Logger, Configuration, Environment}
+import play.api.{PlayConfig, Logger, Configuration, Environment}
 import play.libs.mailer.{MailerClient => JMailerClient, Email => JEmail}
 
 import scala.collection.JavaConverters._
@@ -82,21 +82,22 @@ trait MailerClient extends JMailerClient {
 
 class CommonsMailer @Inject()(configuration: Configuration) extends MailerClient {
 
-  private lazy val mock = configuration.getBoolean("smtp.mock").getOrElse(false)
+  private val mailerConfig = PlayConfig(configuration).getDeprecated[PlayConfig]("play.mailer", "smtp")
+  private lazy val mock = mailerConfig.get[Boolean]("mock")
 
   private lazy val instance = {
     if (mock) {
       new MockMailer()
     } else {
-      val smtpHost = configuration.getString("smtp.host").getOrElse(throw new RuntimeException("smtp.host needs to be set in application.conf in order to use this plugin (or set smtp.mock to true)"))
-      val smtpPort = configuration.getInt("smtp.port").getOrElse(25)
-      val smtpSsl = configuration.getBoolean("smtp.ssl").getOrElse(false)
-      val smtpTls = configuration.getBoolean("smtp.tls").getOrElse(false)
-      val smtpUser = configuration.getString("smtp.user")
-      val smtpPassword = configuration.getString("smtp.password")
-      val debugMode = configuration.getBoolean("smtp.debug").getOrElse(false)
-      val smtpTimeout = configuration.getInt("smtp.timeout")
-      val smtpConnectionTimeout = configuration.getInt("smtp.connectiontimeout")
+      val smtpHost = mailerConfig.getOptional[String]("host").getOrElse(throw new RuntimeException("play.mailer.host needs to be set in application.conf in order to use this plugin (or set play.mailer.mock to true)"))
+      val smtpPort = mailerConfig.get[Int]("port")
+      val smtpSsl = mailerConfig.get[Boolean]("ssl")
+      val smtpTls = mailerConfig.get[Boolean]("tls")
+      val smtpUser = mailerConfig.getOptional[String]("user")
+      val smtpPassword = mailerConfig.getOptional[String]("password")
+      val debugMode = mailerConfig.get[Boolean]("debug")
+      val smtpTimeout = mailerConfig.getOptional[Int]("timeout")
+      val smtpConnectionTimeout = mailerConfig.getOptional[Int]("connectiontimeout")
       new SMTPMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode, smtpTimeout, smtpConnectionTimeout) {
         override def send(email: MultiPartEmail): String = email.send()
         override def createMultiPartEmail(): MultiPartEmail = new MultiPartEmail()
