@@ -1,7 +1,7 @@
 lazy val `play-mailer` = (project in file("."))
   .enablePlugins(PlayLibrary, PlayReleaseBase)
     
-val PlayVersion = playVersion("2.4.0-RC5")
+val PlayVersion = playVersion("2.4.0")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play" % PlayVersion % Provided,
