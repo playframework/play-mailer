@@ -82,7 +82,7 @@ trait MailerClient extends JMailerClient {
 
 class CommonsMailer @Inject()(configuration: Configuration) extends MailerClient {
 
-  private val mailerConfig = PlayConfig(configuration).getDeprecated[PlayConfig]("play.mailer", "smtp")
+  private val mailerConfig = PlayConfig(configuration).getDeprecatedWithFallback("play.mailer", "smtp")
   private lazy val mock = mailerConfig.get[Boolean]("mock")
 
   private lazy val instance = {
