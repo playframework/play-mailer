@@ -21,16 +21,18 @@ See below for the version matrix.
  1. Configure the mailer in your `conf/application.conf`:
 +
 ```
-smtp.host (mandatory)
-smtp.port (defaults to 25)
-smtp.ssl (defaults to no)
-smtp.tls (defaults to no)
-smtp.user (optional)
-smtp.password (optional)
-smtp.debug (defaults to no, to take effect you also need to set the log level to "DEBUG" for the application logger)
-smtp.mock (defaults to no, will only log all the email properties instead of sending an email)
-smtp.timeout (defaults to 60s)
-smtp.connectiontimeout (defaults to 60s)
+play.mailer {
+  host (mandatory)
+  port (defaults to 25)
+  ssl (defaults to no)
+  tls (defaults to no)
+  user (optional)
+  password (optional)
+  debug (defaults to no, to take effect you also need to set the log level to "DEBUG" for the application logger)
+  timeout (defaults to 60s)
+  connectiontimeout (defaults to 60s)
+  mock (defaults to no, will only log all the email properties instead of sending an email)
+}
 ```
 
 ## Usage
@@ -98,7 +100,7 @@ The Play Mailer plugin supports several different versions of Play.
 | Plugin version  | Play version
 
 | 2.x             | 2.3.x
-| 3.x (milestone) | 2.4.x
+| 3.x             | 2.4.x
 |===
 
 ## Current Versions
@@ -109,10 +111,10 @@ For Play 2.3:
 "com.typesafe.play" %% "play-mailer" % "2.4.1"
 ```
 
-For Play 2.4 **milestone**:
+For Play 2.4:
 
 ```scala
-"com.typesafe.play" %% "play-mailer" % "3.0.0-RC1"
+"com.typesafe.play" %% "play-mailer" % "3.0.1"
 ```
 
 ## Licence
