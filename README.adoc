@@ -41,6 +41,8 @@ smtp.connectiontimeout (defaults to 60s)
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import javax.inject.Inject;
+import java.io.File;
+import org.apache.commons.mail.EmailAttachment;
 
 public class MyComponent {
   @Inject MailerClient mailerClient;
