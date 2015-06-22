@@ -43,6 +43,8 @@ play.mailer {
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import javax.inject.Inject;
+import java.io.File;
+import org.apache.commons.mail.EmailAttachment;
 
 public class MyComponent {
   @Inject MailerClient mailerClient;
@@ -69,6 +71,8 @@ public class MyComponent {
 ```scala
 import play.api.libs.mailer._
 import javax.inject.Inject
+import java.io.File
+import org.apache.commons.mail.EmailAttachment
 
 class MyComponent @Inject() (mailerClient: MailerClient) {
 
