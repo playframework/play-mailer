@@ -8,6 +8,7 @@ import org.apache.commons.mail._
 import play.api.inject._
 import play.api.{Configuration, Environment, Logger, PlayConfig}
 import play.libs.mailer.{Email => JEmail, MailerClient => JMailerClient}
+import play.{Configuration => JConfiguration}
 
 import scala.collection.JavaConverters._
 
@@ -28,7 +29,6 @@ object MailerPlugin {
   def send(email: Email)(implicit app: play.api.Application) = app.injector.instanceOf[MailerClient].send(email)
 }
 
-
 trait MailerClient extends JMailerClient {
 
   /**
@@ -39,12 +39,24 @@ trait MailerClient extends JMailerClient {
    */
   def send(data: Email): String
 
+  /**
+   * Configure the underlying instance of mailer.
+   *
+   * @param configuration configuration
+   * @return the mailer client
+   */
+  def configure(configuration: Configuration): MailerClient
+
+  override def configure(configuration: JConfiguration): JMailerClient = {
+    configure(Configuration(configuration.underlying()))
+  }
+
   override def send(data: JEmail): String = {
     val email = convert(data)
     send(email)
   }
 
-  protected def convert(data: play.libs.mailer.Email): Email = {
+  protected def convert(data: JEmail): Email = {
     val attachments = data.getAttachments.asScala.map {
       case attachment =>
         if (Option(attachment.getFile).isDefined) {
@@ -76,29 +88,18 @@ trait MailerClient extends JMailerClient {
   }
 }
 
-
-
 // Implementations
 
 class CommonsMailer @Inject()(configuration: Configuration) extends MailerClient {
 
-  private val mailerConfig = PlayConfig(configuration).getDeprecatedWithFallback("play.mailer", "smtp")
-  private lazy val mock = mailerConfig.get[Boolean]("mock")
+  private val defaultConfig = PlayConfig(configuration).getDeprecatedWithFallback("play.mailer", "smtp")
+  private lazy val mock = defaultConfig.get[Boolean]("mock")
 
   private lazy val instance = {
     if (mock) {
       new MockMailer()
     } else {
-      val smtpHost = mailerConfig.getOptional[String]("host").getOrElse(throw new RuntimeException("play.mailer.host needs to be set in application.conf in order to use this plugin (or set play.mailer.mock to true)"))
-      val smtpPort = mailerConfig.get[Int]("port")
-      val smtpSsl = mailerConfig.get[Boolean]("ssl")
-      val smtpTls = mailerConfig.get[Boolean]("tls")
-      val smtpUser = mailerConfig.getOptional[String]("user")
-      val smtpPassword = mailerConfig.getOptional[String]("password")
-      val debugMode = mailerConfig.get[Boolean]("debug")
-      val smtpTimeout = mailerConfig.getOptional[Int]("timeout")
-      val smtpConnectionTimeout = mailerConfig.getOptional[Int]("connectiontimeout")
-      new SMTPMailer(smtpHost, smtpPort, smtpSsl, smtpTls, smtpUser, smtpPassword, debugMode, smtpTimeout, smtpConnectionTimeout) {
+      new SMTPMailer(defaultConfig) {
         override def send(email: MultiPartEmail): String = email.send()
         override def createMultiPartEmail(): MultiPartEmail = new MultiPartEmail()
         override def createHtmlEmail(): HtmlEmail = new HtmlEmail()
@@ -106,17 +107,16 @@ class CommonsMailer @Inject()(configuration: Configuration) extends MailerClient
     }
   }
 
-  override def send(data: Email): String = instance.send(data)
+  override def send(data: Email): String = {
+    instance.send(data)
+  }
+
+  override def configure(configuration: Configuration) = {
+    instance.configure(configuration)
+  }
 }
 
-abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
-                          smtpSsl: Boolean,
-                          smtpTls: Boolean,
-                          smtpUser: Option[String],
-                          smtpPass: Option[String],
-                          debugMode: Boolean,
-                          smtpTimeout: Option[Int],
-                          smtpConnectionTimeout: Option[Int]) extends MailerClient {
+abstract class SMTPMailer(defaultConfig: PlayConfig, var config: Option[SMTPConfiguration] = None) extends MailerClient {
 
   def send(email: MultiPartEmail): String
 
@@ -126,7 +126,13 @@ abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
 
   override def send(data: Email): String = send(createEmail(data))
 
+  override def configure(configuration: Configuration) = {
+    config = Some(SMTPConfiguration(PlayConfig(Configuration.reference.getConfig("play.mailer").get ++ configuration)))
+    this
+  }
+
   def createEmail(data: Email): MultiPartEmail = {
+    val conf = config.getOrElse(SMTPConfiguration(defaultConfig))
     val email = createEmail(data.bodyText, data.bodyHtml, data.charset.getOrElse("utf-8"))
     email.setSubject(data.subject)
     setAddress(data.from) { (address, name) => email.setFrom(address, name) }
@@ -138,8 +144,8 @@ abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
     data.headers.foreach {
       header => email.addHeader(header._1, header._2)
     }
-    smtpTimeout.foreach(email.setSocketTimeout)
-    smtpConnectionTimeout.foreach(email.setSocketConnectionTimeout)
+    conf.timeout.foreach(email.setSocketTimeout)
+    conf.connectionTimeout.foreach(email.setSocketConnectionTimeout)
     data.attachments.foreach {
       case attachmentData: AttachmentData =>
         val description = attachmentData.description.getOrElse(attachmentData.name)
@@ -156,16 +162,16 @@ abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
         emailAttachment.setDisposition(disposition)
         email.attach(emailAttachment)
     }
-    email.setHostName(smtpHost)
-    email.setSmtpPort(smtpPort)
-    email.setSSLOnConnect(smtpSsl)
-    if (smtpSsl) {
-      email.setSslSmtpPort(smtpPort.toString)
+    email.setHostName(conf.host)
+    email.setSmtpPort(conf.port)
+    email.setSSLOnConnect(conf.ssl)
+    if (conf.ssl) {
+      email.setSslSmtpPort(conf.port.toString)
     }
-    email.setStartTLSEnabled(smtpTls)
-    for (u <- smtpUser; p <- smtpPass) yield email.setAuthenticator(new DefaultAuthenticator(u, p))
-    if (debugMode && Logger.isDebugEnabled) {
-      email.setDebug(debugMode)
+    email.setStartTLSEnabled(conf.tls)
+    for (u <- conf.user; p <- conf.password) yield email.setAuthenticator(new DefaultAuthenticator(u, p))
+    if (conf.debugMode && Logger.isDebugEnabled) {
+      email.setDebug(conf.debugMode)
       email.getMailSession.setDebugOut(new PrintStream(new FilterOutputStream(null) {
         override def write(b: Array[Byte]) {
           Logger.debug(new String(b))
@@ -241,6 +247,8 @@ class MockMailer @Inject() extends MailerClient {
     email.headers.foreach(header => Logger.info(s"header: $header"))
     ""
   }
+
+  override def configure(configuration: Configuration) = this
 }
 
 sealed trait Attachment
@@ -268,3 +276,28 @@ case class AttachmentData(name: String,
                           mimetype: String,
                           description: Option[String] = None,
                           disposition: Option[String] = None) extends Attachment
+
+case class SMTPConfiguration(host: String,
+                             port: Int,
+                             ssl: Boolean = false,
+                             tls: Boolean = false,
+                             user: Option[String],
+                             password: Option[String],
+                             debugMode: Boolean = false,
+                             timeout: Option[Int] = None,
+                             connectionTimeout: Option[Int] = None)
+
+object SMTPConfiguration {
+
+  def apply(config: PlayConfig) = new SMTPConfiguration(
+    config.getOptional[String]("host").getOrElse(throw new RuntimeException("host needs to be set in order to use this plugin (or set play.mailer.mock to true in application.conf)")),
+    config.get[Int]("port"),
+    config.get[Boolean]("ssl"),
+    config.get[Boolean]("tls"),
+    config.getOptional[String]("user"),
+    config.getOptional[String]("password"),
+    config.get[Boolean]("debug"),
+    config.getOptional[Int]("timeout"),
+    config.getOptional[Int]("connectiontimeout")
+  )
+}

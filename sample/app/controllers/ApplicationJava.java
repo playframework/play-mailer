@@ -1,6 +1,7 @@
 package controllers;
 
 import org.apache.commons.mail.EmailAttachment;
+import play.Configuration;
 import play.Play;
 import play.api.libs.mailer.MailerClient;
 import play.libs.mailer.Email;
@@ -9,6 +10,8 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ApplicationJava extends Controller {
 
@@ -31,5 +34,16 @@ public class ApplicationJava extends Controller {
     String id = mailer.send(email);
     return ok("Email " + id + " sent!");
   }
-  
+
+  public Result configureAndSend() {
+    final Email email = new Email();
+    email.setSubject("Simple email");
+    email.setFrom("from@email.com");
+    email.addTo("to@email.com");
+    Map<String, Object> conf = new HashMap<>();
+    conf.put("host", "typesafe.org");
+    conf.put("port", 1234);
+    String id = mailer.configure(new Configuration(conf)).send(email);
+    return ok("Email " + id + " sent!");
+  }
 }
