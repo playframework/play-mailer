@@ -5,6 +5,7 @@ import javax.mail.Part
 
 import org.apache.commons.mail.{EmailConstants, HtmlEmail, MultiPartEmail}
 import org.specs2.mutable._
+import play.api.{PlayConfig, Configuration}
 import play.api.test._
 
 class MailerPluginSpec extends Specification {
@@ -12,6 +13,7 @@ class MailerPluginSpec extends Specification {
   object SimpleMailerClient extends MailerClient {
     override def send(data: Email): String = ""
     override def convert(data: play.libs.mailer.Email) = super.convert(data)
+    override def configure(configuration: Configuration): MailerClient = this
   }
   class MockMultiPartEmail extends MultiPartEmail {
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
@@ -26,7 +28,7 @@ class MailerPluginSpec extends Specification {
   object MockSMTPMailer extends MockSMTPMailerWithTimeouts(None, None)
 
   class MockSMTPMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
-    extends SMTPMailer("typesafe.org", 1234, true, false, Some("user"), Some("password"), false, smtpTimeout, smtpConnectionTimeout) {
+    extends SMTPMailer(PlayConfig(Configuration.empty), Some(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout))) {
     override def send(email: MultiPartEmail) = ""
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
@@ -44,6 +46,27 @@ class MailerPluginSpec extends Specification {
       email.getMailSession.getProperty("mail.smtp.auth") mustEqual "true"
       email.getMailSession.getProperty("mail.smtp.host") mustEqual "typesafe.org"
       email.getMailSession.getProperty("mail.smtp.starttls.enable") mustEqual "false"
+      email.getMailSession.getProperty("mail.debug") mustEqual "false"
+    }
+
+    "reconfigure SMTP" in {
+      val mailer = MockSMTPMailer
+      mailer.configure(Configuration.from(Map(
+        "host" -> "playframework.com",
+        "port" -> 5678,
+        "ssl" -> false,
+        "tls" -> true
+      )))
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>"
+      ))
+      email.getSmtpPort mustEqual "5678"
+      // Default value
+      email.getSslSmtpPort mustEqual "465"
+      email.getMailSession.getProperty("mail.smtp.auth") must beNull
+      email.getMailSession.getProperty("mail.smtp.host") mustEqual "playframework.com"
+      email.getMailSession.getProperty("mail.smtp.starttls.enable") mustEqual "true"
       email.getMailSession.getProperty("mail.debug") mustEqual "false"
     }
 
@@ -208,11 +231,11 @@ class MailerPluginSpec extends Specification {
       convert.headers.size mustEqual 1
       convert.headers.head mustEqual ("key", "value")
       convert.attachments.size mustEqual 2
-      convert.attachments(0) must beAnInstanceOf[AttachmentFile]
-      convert.attachments(0).asInstanceOf[AttachmentFile].name mustEqual "play icon"
-      convert.attachments(0).asInstanceOf[AttachmentFile].file mustEqual getPlayIcon
-      convert.attachments(0).asInstanceOf[AttachmentFile].description mustEqual Some("A beautiful icon")
-      convert.attachments(0).asInstanceOf[AttachmentFile].disposition mustEqual Some(Part.ATTACHMENT)
+      convert.attachments.head must beAnInstanceOf[AttachmentFile]
+      convert.attachments.head.asInstanceOf[AttachmentFile].name mustEqual "play icon"
+      convert.attachments.head.asInstanceOf[AttachmentFile].file mustEqual getPlayIcon
+      convert.attachments.head.asInstanceOf[AttachmentFile].description mustEqual Some("A beautiful icon")
+      convert.attachments.head.asInstanceOf[AttachmentFile].disposition mustEqual Some(Part.ATTACHMENT)
       convert.attachments(1) must beAnInstanceOf[AttachmentData]
       convert.attachments(1).asInstanceOf[AttachmentData].name mustEqual "data.txt"
       convert.attachments(1).asInstanceOf[AttachmentData].data mustEqual "data".getBytes

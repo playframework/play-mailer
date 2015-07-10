@@ -10,7 +10,7 @@ scalaVersion := "2.11.6"
 resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-mailer" % "3.0.1-SNAPSHOT"
+  "com.typesafe.play" %% "play-mailer" % "3.0.2-SNAPSHOT"
 )
 
 routesGenerator := InjectedRoutesGenerator

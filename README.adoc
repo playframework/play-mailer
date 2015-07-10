@@ -35,6 +35,8 @@ play.mailer {
 }
 ```
 
+You can also configure the mailer programmatically, see below.
+
 ## Usage
 
 ### Java
@@ -61,7 +63,11 @@ public class MyComponent {
     // sends text, HTML or both...
     email.setBodyText("A text message");
     email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
-    mailerClient.send(email);
+    // configures the mailer before sending the email
+    Map<String, Object> conf = new HashMap<>();
+    conf.put("host", "typesafe.org");
+    conf.put("port", 1234);
+    mailerClient.configure(new Configuration(conf)).send(email);
   }
 }
 ```
@@ -91,7 +97,8 @@ class MyComponent @Inject() (mailerClient: MailerClient) {
       bodyText = Some("A text message"),
       bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
     )
-    mailerClient.send(email)
+    // configures the mailer before sending the email
+    mailer.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
   }
 }
 ```
