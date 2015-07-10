@@ -6,8 +6,8 @@ import javax.mail.internet.InternetAddress
 
 import org.apache.commons.mail._
 import play.api.inject._
-import play.api.{PlayConfig, Logger, Configuration, Environment}
-import play.libs.mailer.{MailerClient => JMailerClient, Email => JEmail}
+import play.api.{Configuration, Environment, Logger, PlayConfig}
+import play.libs.mailer.{Email => JEmail, MailerClient => JMailerClient}
 
 import scala.collection.JavaConverters._
 
@@ -187,27 +187,22 @@ abstract class SMTPMailer(smtpHost: String, smtpPort: Int,
    * Creates an appropriate email object based on the content type.
    */
   private def createEmail(bodyText: Option[String], bodyHtml: Option[String], charset: String): MultiPartEmail = {
-    val bodyHtmlOpt = bodyHtml.filter(_.trim.nonEmpty)
-    val bodyTextOpt = bodyText.filter(_.trim.nonEmpty)
-    if (bodyHtmlOpt.isDefined) {
-      // HTML...
-      val htmlEmail = createHtmlEmail()
-      htmlEmail.setCharset(charset)
-      htmlEmail.setHtmlMsg(bodyHtmlOpt.get)
-      // ... with text ?
-      if (bodyTextOpt.isDefined) {
-        htmlEmail.setTextMsg(bodyTextOpt.get)
-      }
-      htmlEmail
-    } else if (bodyTextOpt.isDefined) {
-      // Text only
-      val multiPartEmail = createMultiPartEmail()
-      multiPartEmail.setCharset(charset)
-      multiPartEmail.setMsg(bodyTextOpt.get)
-      multiPartEmail
-    } else {
-      // Both empty
-      createMultiPartEmail()
+    (bodyHtml.filter(_.trim.nonEmpty), bodyText.filter(_.trim.nonEmpty)) match {
+      case (Some(bodyHtml), bodyTextOpt) =>
+        val htmlEmail = createHtmlEmail()
+        htmlEmail.setCharset(charset)
+        htmlEmail.setHtmlMsg(bodyHtml)
+        bodyTextOpt.foreach { bodyText =>
+          htmlEmail.setTextMsg(bodyText)
+        }
+        htmlEmail
+      case (None, Some(bodyText)) =>
+        val multiPartEmail = createMultiPartEmail()
+        multiPartEmail.setCharset(charset)
+        multiPartEmail.setMsg(bodyText)
+        multiPartEmail
+      case _ =>
+        createMultiPartEmail()
     }
   }
 
