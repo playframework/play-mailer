@@ -98,7 +98,7 @@ class MyComponent @Inject() (mailerClient: MailerClient) {
       bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
     )
     // configures the mailer before sending the email
-    mailer.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
+    mailerClient.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
   }
 }
 ```
