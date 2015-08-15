@@ -201,18 +201,18 @@ abstract class SMTPMailer(defaultConfig: PlayConfig, var config: Option[SMTPConf
    */
   private def createEmail(bodyText: Option[String], bodyHtml: Option[String], charset: String): MultiPartEmail = {
     (bodyHtml.filter(_.trim.nonEmpty), bodyText.filter(_.trim.nonEmpty)) match {
-      case (Some(bodyHtml), bodyTextOpt) =>
+      case (Some(htmlMsg), bodyTextOpt) =>
         val htmlEmail = createHtmlEmail()
         htmlEmail.setCharset(charset)
-        htmlEmail.setHtmlMsg(bodyHtml)
+        htmlEmail.setHtmlMsg(htmlMsg)
         bodyTextOpt.foreach { bodyText =>
           htmlEmail.setTextMsg(bodyText)
         }
         htmlEmail
-      case (None, Some(bodyText)) =>
+      case (None, Some(msg)) =>
         val multiPartEmail = createMultiPartEmail()
         multiPartEmail.setCharset(charset)
-        multiPartEmail.setMsg(bodyText)
+        multiPartEmail.setMsg(msg)
         multiPartEmail
       case _ =>
         createMultiPartEmail()
