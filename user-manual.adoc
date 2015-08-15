@@ -1,0 +1,57 @@
+= Play mailer plugin User Manual
+
+== Configure mailer instance
+
+=== Runtime Dependency Injection
+
+By default the plugin automatically configure the injected instances with the `application.conf` file:
+
+```scala
+class MyComponent @Inject() (mailer: MailerClient) {
+  // ...
+}
+```
+
+If you want to configure the injected instances from another source, you will need to override the default provider:
+
+ 1. Create a custom configuration provider:
++
+.CustomSMTPConfigurationProvider.scala
+```scala
+class CustomSMTPConfigurationProvider extends Provider[SMTPConfiguration] {
+  override def get() {
+    // Custom configuration
+    new SMTPConfiguration("typesafe.org", 1234)
+  }
+}
+
+class CustomMailerConfigurationModule extends Module {
+  def bindings(environment: Environment, configuration: Configuration) = Seq(
+    bind[SMTPConfiguration].toProvider[CustomSMTPConfigurationProvider]
+  )
+}
+```
+
+ 2. Override the default provider in the `application.conf` file:
++
+.application.conf
+```bash
+play {
+  modules {
+    # Disable the default provider
+    disabled += "play.api.libs.mailer.SMTPConfigurationModule"
+    # Enable the custom provider (see above)
+    enabled += "controllers.CustomMailerConfigurationModule"
+  }
+}
+```
+
+=== New instances
+
+You can also use the `SMTPMailer` constructor to create new instances with custom configuration:
+
+```scala
+val email = Email("Simple email", "Mister FROM <from@email.com>")
+new SMTPMailer(SMTPConfiguration("typesafe.org", 1234)).send(email)
+new SMTPMailer(SMTPConfiguration("playframework.com", 5678)).send(email)
+```
