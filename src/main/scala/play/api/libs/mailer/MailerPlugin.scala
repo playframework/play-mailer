@@ -308,11 +308,11 @@ object SMTPConfiguration {
     config.get[Int]("port"),
     config.get[Boolean]("ssl"),
     config.get[Boolean]("tls"),
-    config.getOptional[String]("user"),
-    config.getOptional[String]("password"),
+    config.get[Option[String]]("user"),
+    config.get[Option[String]]("password"),
     config.get[Boolean]("debug"),
-    config.getOptional[Int]("timeout"),
-    config.getOptional[Int]("connectiontimeout"),
+    config.get[Option[Int]]("timeout"),
+    config.get[Option[Int]]("connectiontimeout"),
     config.get[Boolean]("mock")
   )
 
@@ -321,7 +321,7 @@ object SMTPConfiguration {
       // host won't be used anyway...
       ""
     } else {
-      config.getOptional[String]("host").getOrElse(throw new RuntimeException("host needs to be set in order to use this plugin (or set play.mailer.mock to true in application.conf)"))
+      config.get[Option[String]]("host").getOrElse(throw new RuntimeException("host needs to be set in order to use this plugin (or set play.mailer.mock to true in application.conf)"))
     }
   }
 }
