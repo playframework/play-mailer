@@ -4,7 +4,7 @@ import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
 lazy val `play-mailer` = (project in file("."))
   .enablePlugins(PlayLibrary, PlayReleaseBase)
     
-val PlayVersion = playVersion("2.5.0-SNAPSHOT")
+val PlayVersion = playVersion("2.5.0+")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play" % PlayVersion % Provided,
