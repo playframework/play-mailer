@@ -1,3 +1,4 @@
+sudo: false
 jdk: oraclejdk8
 language: scala
 script: sbt +test
