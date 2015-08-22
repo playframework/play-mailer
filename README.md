@@ -37,17 +37,17 @@ smtp.connectiontimeout (defaults to 60s)
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerPlugin;
 
-Email email = new Email();
-email.setSubject("Simple email");
-email.setFrom("Mister FROM <from@email.com>");
-email.addTo("Miss TO <to@email.com>");
-// adds attachment
-email.addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"));
-// adds inline attachment from byte array
-email.addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE);
-// sends text, HTML or both...
-email.setBodyText("A text message");
-email.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
+Email email = new Email()
+ .setSubject("Simple email")
+ .setFrom("Mister FROM <from@email.com>")
+ .addTo("Miss TO <to@email.com>")
+ // adds attachment
+ .addAttachment("attachment.pdf", new File("/some/path/attachment.pdf"))
+ // adds inline attachment from byte array
+ .addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE)
+ // sends text, HTML or both...
+ .setBodyText("A text message")
+ .setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
 MailerPlugin.send(email);
 ```
 
