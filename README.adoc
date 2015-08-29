@@ -109,7 +109,6 @@ class MyComponent @Inject() (mailerClient: MailerClient) {
 
 ```scala
 import play.api.libs.mailer._
-import javax.inject.Inject
 import java.io.File
 import org.apache.commons.mail.EmailAttachment
 

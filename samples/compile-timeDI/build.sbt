@@ -1,7 +1,7 @@
 import java.io.File
 import PlayKeys._
 
-name := "j"
+name := "compile-time-DI"
 
 version := "1.0-SNAPSHOT"
 
