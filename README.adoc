@@ -74,6 +74,8 @@ public class MyComponent {
 
 ### Scala
 
+#### With runtime injection
+
 ```scala
 import play.api.libs.mailer._
 import javax.inject.Inject
@@ -103,6 +105,56 @@ class MyComponent @Inject() (mailerClient: MailerClient) {
 }
 ```
 
+#### With compile-time injection
+
+```scala
+import play.api.libs.mailer._
+import javax.inject.Inject
+import java.io.File
+import org.apache.commons.mail.EmailAttachment
+
+class MyComponent(mailerClient: MailerClient) {
+
+  def sendEmail {
+    val email = Email(
+      "Simple email",
+      "Mister FROM <from@email.com>",
+      Seq("Miss TO <to@email.com>"),
+      // adds attachment
+      attachments = Seq(
+        AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
+        // adds inline attachment from byte array
+        AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
+      ),
+      // sends text, HTML or both...
+      bodyText = Some("A text message"),
+      bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
+    )
+    // configures the mailer before sending the email
+    mailerClient.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
+  }
+}
+
+//router definition
+
+import play.api._
+import play.api.ApplicationLoader.Context
+import router.Routes
+import play.api.libs.mailer._
+
+class MyApplicationLoader extends ApplicationLoader {
+  def load(context: Context) = {
+    new ApplicationComponents(context).application
+  }
+}
+
+class ApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context) with MailerComponents {  
+  lazy val myComponent = new MyComponent(mailerClient)
+  // create your controllers here ...
+  lazy val router = new Routes(...) // inject your controllers here
+}
+```
+In application.conf, add this line : `play.application.loader=SimpleApplicationLoader`
 
 ## Versioning
 
