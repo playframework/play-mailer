@@ -1,5 +1,5 @@
 # About
-
+:next-branch-uri: https://github.com/playframework/play-mailer/tree/next
 This plugin provides a simple emailer.
 
 //ifdef::env-github[]
@@ -144,10 +144,11 @@ Finally add this line `play.application.loader=SimpleApplicationLoader` in `appl
 The Play Mailer plugin supports several different versions of Play.
 
 |===
-| Plugin version  | Play version
+| Plugin version                     | Play version
 
-| 2.x             | 2.3.x
-| 3.x             | 2.4.x
+| 2.x                                | 2.3.x
+| 3.x                                | 2.4.x
+| {next-branch-uri}[next branch]     | latest snapshot
 |===
 
 ## Current Versions
