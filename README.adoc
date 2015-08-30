@@ -74,68 +74,51 @@ public class MyComponent {
 
 ### Scala
 
-#### With runtime injection
+You need a `MailerClient` instance to send an email :
 
 ```scala
-import play.api.libs.mailer._
-import javax.inject.Inject
-import java.io.File
-import org.apache.commons.mail.EmailAttachment
-
-class MyComponent @Inject() (mailerClient: MailerClient) {
-
-  def sendEmail {
-    val email = Email(
-      "Simple email",
-      "Mister FROM <from@email.com>",
-      Seq("Miss TO <to@email.com>"),
-      // adds attachment
-      attachments = Seq(
-        AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
-        // adds inline attachment from byte array
-        AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
-      ),
-      // sends text, HTML or both...
-      bodyText = Some("A text message"),
-      bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
-    )
-    // configures the mailer before sending the email
-    mailerClient.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
-  }
+def sendEmail {
+  val email = Email(
+    "Simple email",
+    "Mister FROM <from@email.com>",
+    Seq("Miss TO <to@email.com>"),
+    // adds attachment
+    attachments = Seq(
+      AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
+      // adds inline attachment from byte array
+      AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
+    ),
+    // sends text, HTML or both...
+    bodyText = Some("A text message"),
+    bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
+  )
+  // configures the mailer before sending the email
+  mailerClient.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
 }
 ```
 
-#### With compile-time injection
+Since Play 2.4, you can use runtime dependency injection or compile time dependency injection.
+As a result, the `MailerClient` instance can be obtained using runtime dependency injection or compile time dependency injection.
+
+#### With runtime injection
+
+Use the `@Inject` annotation on the constructor of your component or controller:
 
 ```scala
-import play.api.libs.mailer._
-import java.io.File
-import org.apache.commons.mail.EmailAttachment
+class MyComponent @Inject() (mailerClient: MailerClient) 
+```
 
-class MyComponent(mailerClient: MailerClient) {
+#### With compile time injection
 
-  def sendEmail {
-    val email = Email(
-      "Simple email",
-      "Mister FROM <from@email.com>",
-      Seq("Miss TO <to@email.com>"),
-      // adds attachment
-      attachments = Seq(
-        AttachmentFile("attachment.pdf", new File("/some/path/attachment.pdf")),
-        // adds inline attachment from byte array
-        AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
-      ),
-      // sends text, HTML or both...
-      bodyText = Some("A text message"),
-      bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
-    )
-    // configures the mailer before sending the email
-    mailerClient.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
-  }
-}
+Declare the `MailerClient` without the `@Inject` annotation:
 
-//router definition
+```scala
+class MyComponent(mailerClient: MailerClient)
+```
 
+Then in your router definition, use the trait `MailerComponents`:
+
+```scala
 import play.api._
 import play.api.ApplicationLoader.Context
 import router.Routes
@@ -147,13 +130,14 @@ class MyApplicationLoader extends ApplicationLoader {
   }
 }
 
-class ApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context) with MailerComponents {  
+class ApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context) with MailerComponents {
   lazy val myComponent = new MyComponent(mailerClient)
   // create your controllers here ...
   lazy val router = new Routes(...) // inject your controllers here
 }
 ```
-In application.conf, add this line : `play.application.loader=SimpleApplicationLoader`
+
+Finally add this line `play.application.loader=SimpleApplicationLoader` in `application.conf`.
 
 ## Versioning
 
