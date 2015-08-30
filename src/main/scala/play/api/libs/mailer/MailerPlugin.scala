@@ -12,6 +12,13 @@ import play.{Configuration => JConfiguration}
 
 import scala.collection.JavaConverters._
 
+// for compile-time injection
+trait MailerComponents {
+  def configuration: Configuration
+  lazy val mailerClient = new CommonsMailer(configuration)
+}
+
+// for runtime injection
 class MailerModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = Seq(
     bind[MailerClient].to[CommonsMailer],
