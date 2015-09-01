@@ -5,7 +5,6 @@ import javax.mail.Part
 
 import org.apache.commons.mail.{EmailConstants, HtmlEmail, MultiPartEmail}
 import org.specs2.mutable._
-import play.api.{PlayConfig, Configuration}
 import play.api.test._
 
 class MailerPluginSpec extends Specification {
@@ -13,7 +12,6 @@ class MailerPluginSpec extends Specification {
   object SimpleMailerClient extends MailerClient {
     override def send(data: Email): String = ""
     override def convert(data: play.libs.mailer.Email) = super.convert(data)
-    override def configure(configuration: Configuration): MailerClient = this
   }
   class MockMultiPartEmail extends MultiPartEmail {
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
@@ -25,10 +23,10 @@ class MailerPluginSpec extends Specification {
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
     override def getContainer = super.getContainer
   }
-  object MockSMTPMailer extends MockSMTPMailerWithTimeouts(None, None)
+  object MockCommonsMailer extends MockCommonsMailerWithTimeouts(None, None)
 
-  class MockSMTPMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
-    extends SMTPMailer(PlayConfig(Configuration.empty), Some(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout))) {
+  class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
+    extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, mock = false)) {
     override def send(email: MultiPartEmail) = ""
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
@@ -36,7 +34,7 @@ class MailerPluginSpec extends Specification {
 
   "The CommonsMailer" should {
     "configure SMTP" in {
-      val mailer = MockSMTPMailer
+      val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>"
@@ -49,29 +47,8 @@ class MailerPluginSpec extends Specification {
       email.getMailSession.getProperty("mail.debug") mustEqual "false"
     }
 
-    "reconfigure SMTP" in {
-      val mailer = MockSMTPMailer
-      mailer.configure(Configuration.from(Map(
-        "host" -> "playframework.com",
-        "port" -> 5678,
-        "ssl" -> false,
-        "tls" -> true
-      )))
-      val email = mailer.createEmail(Email(
-        subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>"
-      ))
-      email.getSmtpPort mustEqual "5678"
-      // Default value
-      email.getSslSmtpPort mustEqual "465"
-      email.getMailSession.getProperty("mail.smtp.auth") must beNull
-      email.getMailSession.getProperty("mail.smtp.host") mustEqual "playframework.com"
-      email.getMailSession.getProperty("mail.smtp.starttls.enable") mustEqual "true"
-      email.getMailSession.getProperty("mail.debug") mustEqual "false"
-    }
-
     "configure the SMTP timeouts if configured" in {
-      val mailer = new MockSMTPMailerWithTimeouts(Some(10), Some(99))
+      val mailer = new MockCommonsMailerWithTimeouts(Some(10), Some(99))
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>"
@@ -81,7 +58,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "leave default SMTP timeouts if they are not configured" in {
-      val mailer = new MockSMTPMailerWithTimeouts(None, None)
+      val mailer = new MockCommonsMailerWithTimeouts(None, None)
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>"
@@ -91,7 +68,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create an empty email" in {
-      val mailer = MockSMTPMailer
+      val mailer = MockCommonsMailer
       val messageId = mailer.send(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -101,7 +78,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email" in {
-      val mailer = MockSMTPMailer
+      val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -117,7 +94,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email with attachment" in {
-      val mailer = MockSMTPMailer
+      val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -140,7 +117,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "create a simple email with inline attachment and description" in {
-      val mailer = MockSMTPMailer
+      val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -163,7 +140,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "set address with name" in {
-      val mailer = MockSMTPMailer
+      val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
@@ -182,7 +159,7 @@ class MailerPluginSpec extends Specification {
     }
 
     "set address without name" in {
-      val mailer = MockSMTPMailer
+      val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
         from = "jroper@typesafe.com",
@@ -248,11 +225,18 @@ class MailerPluginSpec extends Specification {
     import play.libs.mailer.{MailerClient => JMailerClient}
     import play.api.inject.bind
 
-    "provide the Scala mailer client" in new WithApplication() {
-      app.injector.instanceOf[MailerClient] must beAnInstanceOf[CommonsMailer]
+    val applicationWithMinimalMailerConfiguration = FakeApplication(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25))
+    val applicationWithDeprecatedMailerConfiguration = FakeApplication(additionalConfiguration = Map("smtp.host" -> "typesafe.org", "smtp.port" -> 25))
+
+    "provide the Scala mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
+      app.injector.instanceOf[MailerClient] must beAnInstanceOf[SMTPMailer]
     }
-    "provide the Java mailer client" in new WithApplication() {
-      app.injector.instanceOf[JMailerClient] must beAnInstanceOf[CommonsMailer]
+    "provide the Java mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
+      app.injector.instanceOf[JMailerClient] must beAnInstanceOf[SMTPMailer]
+    }
+    // Deprecated configuration should still works
+    "provide the Scala mailer client (even with deprecated configuration)" in new WithApplication(applicationWithDeprecatedMailerConfiguration) {
+      app.injector.instanceOf[JMailerClient] must beAnInstanceOf[SMTPMailer]
     }
     "provide the Scala mocked mailer client" in new WithApplication() {
       app.injector.instanceOf(bind[MailerClient].qualifiedWith("mock")) must beAnInstanceOf[MockMailer]

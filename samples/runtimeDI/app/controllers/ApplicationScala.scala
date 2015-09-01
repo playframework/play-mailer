@@ -4,7 +4,6 @@ import java.io.File
 import javax.inject.Inject
 
 import org.apache.commons.mail.EmailAttachment
-import play.api.Configuration
 import play.api.Play.current
 import play.api.libs.mailer._
 import play.api.mvc.{Action, Controller}
@@ -27,9 +26,9 @@ class ApplicationScala @Inject()(mailer: MailerClient) extends Controller {
     Ok(s"Email $id sent!")
   }
 
-  def configureAndSend = Action {
-    val email = Email("Simple email", "from@email.com", Seq("to@email.com"))
-    val id = mailer.configure(Configuration.from(Map("host" -> "typesafe.org", "port" -> 1234))).send(email)
+  def sendWithCustomMailer = Action {
+    val mailer = new SMTPMailer(SMTPConfiguration("typesafe.org", 1234))
+    val id = mailer.send(Email("Simple email", "Mister FROM <from@email.com>"))
     Ok(s"Email $id sent!")
   }
 }

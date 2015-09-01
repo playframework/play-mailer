@@ -2,8 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET        /send/java                     controllers.ApplicationJava.send()
-GET        /send/scala                    controllers.ApplicationScala.send()
+GET        /send/java                      controllers.ApplicationJava.send()
+GET        /send/scala                     controllers.ApplicationScala.send()
 
-GET        /configureAndSend/java         controllers.ApplicationJava.configureAndSend()
-GET        /configureAndSend/scala        controllers.ApplicationScala.configureAndSend()
+GET        /send/scala/customMailer        controllers.ApplicationScala.sendWithCustomMailer()
