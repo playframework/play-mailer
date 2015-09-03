@@ -1,8 +1,8 @@
 # About
 :next-branch-uri: https://github.com/playframework/play-mailer/tree/next
 :playframework-24x-docs-uri: https://www.playframework.com/documentation/2.4.x
-:runtime-di-uri: {playframework-24x-docs-uri}/ScalaDependencyInjection
-:compile-time-di-uri: {playframework-24x-docs-uri}/ScalaCompileTimeDependencyInjection
+:runtime-di-uri: {playframework-24x-docs-uri}/ScalaDependencyInjection#Runtime-Dependency-Injection
+:compile-time-di-uri: {playframework-24x-docs-uri}/ScalaCompileTimeDependencyInjection#Compile-Time-Dependency-Injection
 
 This plugin provides a simple emailer.
 
