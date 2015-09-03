@@ -122,6 +122,11 @@ public class Email {
     return this;
   }
 
+  public Email addAttachment(String name, File file, String contentId) {
+    this.attachments.add(new Attachment(name, file, contentId));
+    return this;
+  }
+
   public Email addAttachment(String name, File file, String description, String disposition) {
     this.attachments.add(new Attachment(name, file, description, disposition));
     return this;
@@ -129,6 +134,11 @@ public class Email {
 
   public Email addAttachment(String name, byte[] data, String mimeType) {
     this.attachments.add(new Attachment(name, data, mimeType));
+    return this;
+  }
+
+  public Email addAttachment(String name, byte[] data, String mimeType, String contentId) {
+    this.attachments.add(new Attachment(name, data, mimeType, contentId));
     return this;
   }
 

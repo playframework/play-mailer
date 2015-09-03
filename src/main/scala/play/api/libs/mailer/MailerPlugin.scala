@@ -63,13 +63,13 @@ trait MailerClient extends JMailerClient {
           AttachmentFile(
             attachment.getName,
             attachment.getFile,
-            Option(attachment.getDescription), Option(attachment.getDisposition))
+            Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
         } else {
           AttachmentData(
             attachment.getName,
             attachment.getData,
             attachment.getMimetype,
-            Option(attachment.getDescription), Option(attachment.getDisposition))
+            Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
         }
     }.toSeq
     Email(
