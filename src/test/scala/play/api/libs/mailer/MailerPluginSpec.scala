@@ -116,6 +116,23 @@ class MailerPluginSpec extends Specification {
       attachmentPart.getDisposition mustEqual Part.ATTACHMENT
     }
 
+    "create a simple email with cid" in {
+      val mailer = MockCommonsMailer
+      val cid = "1234"
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>",
+        to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        bodyHtml = Some(s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
+        attachments = Seq(AttachmentFile("play icon", getPlayIcon, contentId = Some(cid)))
+      ))
+      simpleEmailMust(email)
+      email must beAnInstanceOf[HtmlEmail]
+      email must beAnInstanceOf[MockHtmlEmail]
+      email.asInstanceOf[MockHtmlEmail].getHtml mustEqual "<html><body><p>An <b>html</b> message with cid <img src=\"cid:1234\"></p></body></html>"
+      email.asInstanceOf[MockHtmlEmail].getContainer.getContentType startsWith "multipart/mixed;"
+    }
+
     "create a simple email with inline attachment and description" in {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
