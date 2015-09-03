@@ -8,7 +8,7 @@ image:https://travis-ci.org/playframework/play-mailer.svg?branch=master["Travis 
 
 ## Setup
 
-NOTE: For Play 2.3.x please read https://github.com/playframework/play-mailer/blob/2.3.x/README.md#setup[the README on the 2.3.x branch].
+NOTE: For Play 2.3.x please read https://github.com/playframework/play-mailer/blob/2.x/README.md#setup[the README on the 2.x branch].
 
  1. Add a library dependency on play-mailer:
 +
