@@ -20,14 +20,15 @@ public class ApplicationJava extends Controller {
   }
 
   public Result send() {
+    String cid = "1234";
     final Email email = new Email()
       .setSubject("Simple email")
       .setFrom("Mister FROM <from@email.com>")
       .addTo("Miss TO <to@email.com>")
-      .addAttachment("favicon.png", new File(Play.application().classloader().getResource("public/images/favicon.png").getPath()))
+      .addAttachment("favicon.png", new File(Play.application().classloader().getResource("public/images/favicon.png").getPath(), cid))
       .addAttachment("data.txt", "data".getBytes(), "text/plain", "Simple data", EmailAttachment.INLINE)
       .setBodyText("A text message")
-      .setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>");
+      .setBodyHtml("<html><body><p>An <b>html</b> message with cid <img src=\"cid:" + cid + "\"></p></body></html>");
     String id = mailer.send(email);
     return ok("Email " + id + " sent!");
   }

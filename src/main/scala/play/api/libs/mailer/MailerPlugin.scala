@@ -63,13 +63,13 @@ trait MailerClient extends JMailerClient {
           AttachmentFile(
             attachment.getName,
             attachment.getFile,
-            Option(attachment.getDescription), Option(attachment.getDisposition))
+            Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
         } else {
           AttachmentData(
             attachment.getName,
             attachment.getData,
             attachment.getMimetype,
-            Option(attachment.getDescription), Option(attachment.getDisposition))
+            Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
         }
     }.toSeq
     Email(
@@ -135,19 +135,9 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     conf.connectionTimeout.foreach(email.setSocketConnectionTimeout)
     data.attachments.foreach {
       case attachmentData: AttachmentData =>
-        val description = attachmentData.description.getOrElse(attachmentData.name)
-        val disposition = attachmentData.disposition.getOrElse(EmailAttachment.ATTACHMENT)
-        val dataSource = new javax.mail.util.ByteArrayDataSource(attachmentData.data, attachmentData.mimetype)
-        email.attach(dataSource, attachmentData.name, description, disposition)
+        handleAttachmentData(email, attachmentData)
       case attachmentFile: AttachmentFile =>
-        val description = attachmentFile.description.getOrElse(attachmentFile.name)
-        val disposition = attachmentFile.disposition.getOrElse(EmailAttachment.ATTACHMENT)
-        val emailAttachment = new EmailAttachment()
-        emailAttachment.setName(attachmentFile.name)
-        emailAttachment.setPath(attachmentFile.file.getPath)
-        emailAttachment.setDescription(description)
-        emailAttachment.setDisposition(disposition)
-        email.attach(emailAttachment)
+        handleAttachmentFile(email, attachmentFile)
     }
     email.setHostName(conf.host)
     email.setSmtpPort(conf.port)
@@ -215,6 +205,42 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
       }
     }
   }
+
+  private def handleAttachmentData(email: MultiPartEmail, attachmentData: AttachmentData) {
+    val description = attachmentData.description.getOrElse(attachmentData.name)
+    val disposition = attachmentData.disposition.getOrElse(EmailAttachment.ATTACHMENT)
+    val dataSource = new javax.mail.util.ByteArrayDataSource(attachmentData.data, attachmentData.mimetype)
+    attachmentData.contentId match {
+      case Some(cid) =>
+        email match {
+          case htmlEmail: HtmlEmail => htmlEmail.embed(dataSource, attachmentData.name, cid)
+          case _ => if (conf.debugMode && Logger.isDebugEnabled) {
+            Logger.debug("You need to set an HTML body to embed images with cid")
+          }
+        }
+      case None => email.attach(dataSource, attachmentData.name, description, disposition)
+    }
+  }
+
+  private def handleAttachmentFile(email: MultiPartEmail, attachmentFile: AttachmentFile) {
+    val description = attachmentFile.description.getOrElse(attachmentFile.name)
+    val disposition = attachmentFile.disposition.getOrElse(EmailAttachment.ATTACHMENT)
+    val emailAttachment = new EmailAttachment()
+    emailAttachment.setName(attachmentFile.name)
+    emailAttachment.setPath(attachmentFile.file.getPath)
+    emailAttachment.setDescription(description)
+    emailAttachment.setDisposition(disposition)
+    attachmentFile.contentId match {
+      case Some(cid) =>
+        email match {
+          case htmlEmail: HtmlEmail => htmlEmail.embed(attachmentFile.file, cid)
+          case _ => if (conf.debugMode && Logger.isDebugEnabled) {
+            Logger.debug("You need to set an HTML body to embed images with cid")
+          }
+        }
+      case None => email.attach(emailAttachment)
+    }
+  }
 }
 
 class MockMailer @Inject() extends MailerClient {
@@ -254,13 +280,15 @@ case class Email(subject: String,
 case class AttachmentFile(name: String,
                           file: File,
                           description: Option[String] = None,
-                          disposition: Option[String] = None) extends Attachment
+                          disposition: Option[String] = None,
+                          contentId: Option[String] = None) extends Attachment
 
 case class AttachmentData(name: String,
                           data: Array[Byte],
                           mimetype: String,
                           description: Option[String] = None,
-                          disposition: Option[String] = None) extends Attachment
+                          disposition: Option[String] = None,
+                          contentId: Option[String] = None) extends Attachment
 
 case class SMTPConfiguration(host: String,
                              port: Int,

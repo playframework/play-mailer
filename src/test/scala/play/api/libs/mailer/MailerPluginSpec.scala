@@ -116,6 +116,23 @@ class MailerPluginSpec extends Specification {
       attachmentPart.getDisposition mustEqual Part.ATTACHMENT
     }
 
+    "create a simple email with cid" in {
+      val mailer = MockCommonsMailer
+      val cid = "1234"
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>",
+        to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        bodyHtml = Some(s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
+        attachments = Seq(AttachmentFile("play icon", getPlayIcon, contentId = Some(cid)))
+      ))
+      simpleEmailMust(email)
+      email must beAnInstanceOf[HtmlEmail]
+      email must beAnInstanceOf[MockHtmlEmail]
+      email.asInstanceOf[MockHtmlEmail].getHtml mustEqual "<html><body><p>An <b>html</b> message with cid <img src=\"cid:1234\"></p></body></html>"
+      email.asInstanceOf[MockHtmlEmail].getContainer.getContentType startsWith "multipart/mixed;"
+    }
+
     "create a simple email with inline attachment and description" in {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
@@ -192,6 +209,7 @@ class MailerPluginSpec extends Specification {
       data.addHeader("key", "value")
       data.addAttachment("play icon", getPlayIcon, "A beautiful icon", Part.ATTACHMENT)
       data.addAttachment("data.txt", "data".getBytes, "text/plain", "Simple data", Part.INLINE)
+      data.addAttachment("image.jpg", getPlayIcon, "1234")
 
       val convert = SimpleMailerClient.convert(data)
       convert.subject mustEqual "Subject"
@@ -207,7 +225,7 @@ class MailerPluginSpec extends Specification {
       convert.charset mustEqual Some("UTF-16")
       convert.headers.size mustEqual 1
       convert.headers.head mustEqual ("key", "value")
-      convert.attachments.size mustEqual 2
+      convert.attachments.size mustEqual 3
       convert.attachments.head must beAnInstanceOf[AttachmentFile]
       convert.attachments.head.asInstanceOf[AttachmentFile].name mustEqual "play icon"
       convert.attachments.head.asInstanceOf[AttachmentFile].file mustEqual getPlayIcon
@@ -218,6 +236,10 @@ class MailerPluginSpec extends Specification {
       convert.attachments(1).asInstanceOf[AttachmentData].data mustEqual "data".getBytes
       convert.attachments(1).asInstanceOf[AttachmentData].description mustEqual Some("Simple data")
       convert.attachments(1).asInstanceOf[AttachmentData].disposition mustEqual Some(Part.INLINE)
+      convert.attachments(2) must beAnInstanceOf[AttachmentFile]
+      convert.attachments(2).asInstanceOf[AttachmentFile].name mustEqual "image.jpg"
+      convert.attachments(2).asInstanceOf[AttachmentFile].file mustEqual getPlayIcon
+      convert.attachments(2).asInstanceOf[AttachmentFile].contentId mustEqual Some("1234")
     }
   }
 

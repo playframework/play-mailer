@@ -10,6 +10,7 @@ public class Attachment {
   private String disposition;
   private byte[] data;
   private String mimetype;
+  private String contentId;
 
   public Attachment(String name, File file, String description, String disposition) {
     this.name = name;
@@ -23,10 +24,28 @@ public class Attachment {
     this.file = file;
   }
 
+  public Attachment(String name, File file, String contentId) {
+    this.name = name;
+    this.file = file;
+    this.contentId = contentId;
+  }
+
+  public Attachment(String name, byte[] data) {
+    this.name = name;
+    this.data = data;
+  }
+
   public Attachment(String name, byte[] data, String mimetype) {
     this.name = name;
     this.data = data;
     this.mimetype = mimetype;
+  }
+
+  public Attachment(String name, byte[] data, String mimetype, String contentId) {
+    this.name = name;
+    this.data = data;
+    this.mimetype = mimetype;
+    this.contentId = contentId;
   }
 
   public Attachment(String name, byte[] data, String mimetype, String description, String disposition) {
@@ -83,5 +102,13 @@ public class Attachment {
 
   public void setMimetype(String mimetype) {
     this.mimetype = mimetype;
+  }
+
+  public String getContentId() {
+    return contentId;
+  }
+
+  public void setContentId(String contentId) {
+    this.contentId = contentId;
   }
 }
