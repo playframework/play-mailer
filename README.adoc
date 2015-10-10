@@ -160,8 +160,9 @@ The Play Mailer plugin supports several different versions of Play.
 |===
 | Plugin version                     | Play version
 
-| 2.x                                | 2.3.x
+| 4.x                                | 2.4.x
 | 3.x                                | 2.4.x
+| 2.x                                | 2.3.x
 | {next-branch-uri}[next branch]     | latest snapshot
 |===
 
@@ -177,6 +178,12 @@ For Play 2.4:
 
 ```scala
 "com.typesafe.play" %% "play-mailer" % "3.0.1"
+```
+
+For Play 2.4 (milestone):
+
+```scala
+"com.typesafe.play" %% "play-mailer" % "4.0.0-M1"
 ```
 
 ## Licence
