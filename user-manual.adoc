@@ -46,6 +46,8 @@ play {
 }
 ```
 
+IMPORTANT: The `get()` method of your CustomSMTPConfigurationProvider will be called multiple times. As a consequence, we recommend that code inside the `get()` method should be fast.
+
 === New instances
 
 You can also use the `SMTPMailer` constructor to create new instances with custom configuration:

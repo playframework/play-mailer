@@ -20,7 +20,7 @@ trait MailerComponents {
 // for runtime injection
 class MailerModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = Seq(
-    bind[MailerClient].to[SMTPMailer],
+    bind[MailerClient].to[SMTPDynamicMailer],
     bind[JMailerClient].to(bind[MailerClient]),
     bind[MailerClient].qualifiedWith("mock").to[MockMailer],
     bind[JMailerClient].qualifiedWith("mock").to[MockMailer]
@@ -98,7 +98,9 @@ class SMTPMailer @Inject() (smtpConfiguration: SMTPConfiguration) extends Mailer
     } else {
       new CommonsMailer(smtpConfiguration) {
         override def send(email: MultiPartEmail): String = email.send()
+
         override def createMultiPartEmail(): MultiPartEmail = new MultiPartEmail()
+
         override def createHtmlEmail(): HtmlEmail = new HtmlEmail()
       }
     }
@@ -107,6 +109,14 @@ class SMTPMailer @Inject() (smtpConfiguration: SMTPConfiguration) extends Mailer
   override def send(data: Email): String = {
     instance.send(data)
   }
+}
+
+class SMTPDynamicMailer @Inject()(smtpConfigurationProvider: Provider[SMTPConfiguration]) extends MailerClient {
+
+  override def send(data: Email): String = {
+    new SMTPMailer(smtpConfigurationProvider.get()).send(data)
+  }
+
 }
 
 abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
@@ -328,7 +338,7 @@ object SMTPConfiguration {
 
 class SMTPConfigurationProvider @Inject()(configuration: Configuration) extends Provider[SMTPConfiguration] {
   override def get() = {
-    val config  = PlayConfig(configuration).getDeprecatedWithFallback("play.mailer", "smtp")
+    val config = PlayConfig(configuration).getDeprecatedWithFallback("play.mailer", "smtp")
     SMTPConfiguration(config)
   }
 }
