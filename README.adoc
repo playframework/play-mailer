@@ -120,6 +120,13 @@ import javax.inject.Inject
 class MyComponent @Inject() (mailerClient: MailerClient)
 ```
 
+[NOTE]
+====
+Configuration will be retrieved each time `mailerClient.send(email)` is called.
+This means that mailer client will always be up to date if you have a dynamic configuration.
+====
+
+
 #### With compile time injection
 
 Declare the `MailerClient` without the `@Inject` annotation:
