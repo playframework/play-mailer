@@ -1,28 +1,25 @@
 package play.api.libs.mailer
 
-import java.io.{File, FilterOutputStream, PrintStream}
+import java.io.{FilterOutputStream, PrintStream}
 import javax.inject.{Inject, Provider}
 import javax.mail.internet.InternetAddress
 
 import org.apache.commons.mail._
-import play.api.inject._
-import play.api.{Configuration, Environment, Logger, PlayConfig}
+import play.api.Logger
 import play.libs.mailer.{Email => JEmail, MailerClient => JMailerClient}
 
 import scala.collection.JavaConverters._
-
-
 
 
 // API
 trait MailerClient extends JMailerClient {
 
   /**
-   * Sends an email with the provided data.
-   *
-   * @param data data to send
-   * @return the message id
-   */
+    * Sends an email with the provided data.
+    *
+    * @param data data to send
+    * @return the message id
+    */
   def send(data: Email): String
 
   override def send(data: JEmail): String = {
@@ -64,7 +61,7 @@ trait MailerClient extends JMailerClient {
 
 // Implementations
 
-class SMTPMailer @Inject() (smtpConfiguration: SMTPConfiguration) extends MailerClient {
+class SMTPMailer @Inject()(smtpConfiguration: SMTPConfiguration) extends MailerClient {
 
   private lazy val instance = {
     if (smtpConfiguration.mock) {
@@ -107,11 +104,11 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     val email = createEmail(data.bodyText, data.bodyHtml, data.charset.getOrElse("utf-8"))
     email.setSubject(data.subject)
     setAddress(data.from) { (address, name) => email.setFrom(address, name) }
-    data.replyTo.foreach(setAddress(_) { (address, name) => email.addReplyTo(address, name)})
+    data.replyTo.foreach(setAddress(_) { (address, name) => email.addReplyTo(address, name) })
     data.bounceAddress.foreach(email.setBounceAddress)
-    data.to.foreach(setAddress(_) { (address, name) => email.addTo(address, name)})
-    data.cc.foreach(setAddress(_) { (address, name) => email.addCc(address, name)})
-    data.bcc.foreach(setAddress(_) { (address, name) => email.addBcc(address, name)})
+    data.to.foreach(setAddress(_) { (address, name) => email.addTo(address, name) })
+    data.cc.foreach(setAddress(_) { (address, name) => email.addCc(address, name) })
+    data.bcc.foreach(setAddress(_) { (address, name) => email.addBcc(address, name) })
     data.headers.foreach {
       header => email.addHeader(header._1, header._2)
     }
@@ -151,8 +148,8 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
   }
 
   /**
-   * Creates an appropriate email object based on the content type.
-   */
+    * Creates an appropriate email object based on the content type.
+    */
   private def createEmail(bodyText: Option[String], bodyHtml: Option[String], charset: String): MultiPartEmail = {
     (bodyHtml.filter(_.trim.nonEmpty), bodyText.filter(_.trim.nonEmpty)) match {
       case (Some(htmlMsg), bodyTextOpt) =>
@@ -174,8 +171,8 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
   }
 
   /**
-   * Extracts an email address from the given string and passes to the enclosed method.
-   */
+    * Extracts an email address from the given string and passes to the enclosed method.
+    */
   private def setAddress(emailAddress: String)(setter: (String, String) => Unit) = {
     if (emailAddress != null) {
       try {

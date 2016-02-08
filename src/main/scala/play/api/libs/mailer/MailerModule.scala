@@ -1,16 +1,8 @@
 package play.api.libs.mailer
 
-import java.io.{File, FilterOutputStream, PrintStream}
-import javax.inject.{Inject, Provider}
-import javax.mail.internet.InternetAddress
-
-import org.apache.commons.mail._
 import play.api.inject._
-import play.api.{Configuration, Environment, Logger, PlayConfig}
-import play.libs.mailer.{Email => JEmail, MailerClient => JMailerClient}
-
-import scala.collection.JavaConverters._
-
+import play.api.{Configuration, Environment}
+import play.libs.mailer.{MailerClient => JMailerClient}
 
 
 // for runtime injection
@@ -29,8 +21,5 @@ class SMTPConfigurationModule extends Module {
   )
 }
 
-class MailerConfigurationModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = Seq(
-    bind[SMTPConfiguration].toProvider[SMTPConfigurationProvider]
-  )
-}
+@deprecated("Use SMTPConfigurationModule instead", "4.0.0")
+class MailerConfigurationModule extends SMTPConfigurationModule
