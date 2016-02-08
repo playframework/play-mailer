@@ -11,6 +11,7 @@ import play.api.{PlayConfig, Configuration}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
 
+
 class MailerPluginSpec extends Specification with Mockito {
 
   object SimpleMailerClient extends MailerClient {
