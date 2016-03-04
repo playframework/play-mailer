@@ -4,11 +4,11 @@ import java.io.File
 import javax.inject.Inject
 
 import org.apache.commons.mail.EmailAttachment
-import play.api.Play.current
+import play.api.Environment
 import play.api.libs.mailer._
 import play.api.mvc.{Action, Controller}
 
-class ApplicationScala @Inject()(mailer: MailerClient) extends Controller {
+class ApplicationScala @Inject()(mailer: MailerClient, environment: Environment) extends Controller {
 
   def send = Action {
     val cid = "1234"
@@ -17,7 +17,7 @@ class ApplicationScala @Inject()(mailer: MailerClient) extends Controller {
       "Mister FROM <from@email.com>",
       Seq("Miss TO <to@email.com>"),
       attachments = Seq(
-        AttachmentFile("favicon.png", new File(current.classloader.getResource("public/images/favicon.png").getPath), contentId = Some(cid)),
+        AttachmentFile("favicon.png", new File(environment.classLoader.getResource("public/images/favicon.png").getPath), contentId = Some(cid)),
         AttachmentData("data.txt", "data".getBytes, "text/plain", Some("Simple data"), Some(EmailAttachment.INLINE))
       ),
       bodyText = Some("A text message"),

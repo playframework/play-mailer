@@ -10,7 +10,7 @@ class SimpleApplicationLoader extends ApplicationLoader {
 }
 
 class ApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context) with MailerComponents {  
-  lazy val applicationController = new controllers.ApplicationScala(mailerClient)
+  lazy val applicationController = new controllers.ApplicationScala(mailerClient, environment)
   lazy val assets = new controllers.Assets(httpErrorHandler)
   lazy val router = new Routes(httpErrorHandler, applicationController)
 }
