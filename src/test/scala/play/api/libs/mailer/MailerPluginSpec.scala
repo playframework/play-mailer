@@ -1,13 +1,11 @@
 package play.api.libs.mailer
 
 import java.io.File
-import javax.inject.{Inject, Provider}
 import javax.mail.Part
 
 import org.apache.commons.mail.{EmailConstants, HtmlEmail, MultiPartEmail}
 import org.specs2.mock.Mockito
 import org.specs2.mutable._
-import play.api.{PlayConfig, Configuration}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
 

@@ -1,10 +1,10 @@
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
-import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
+import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifacts
 
 lazy val `play-mailer` = (project in file("."))
   .enablePlugins(PlayLibrary, PlayReleaseBase)
     
-val PlayVersion = playVersion("2.4.2")
+val PlayVersion = playVersion("2.5.0")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play" % PlayVersion % Provided,
@@ -18,4 +18,6 @@ playBuildRepoName in ThisBuild := "play-mailer"
 
 mimaDefaultSettings
 
-previousArtifact := Some("com.typesafe.play" % "play-mailer_2.11" % "3.0.1")
+previousArtifacts := Set  (
+  "com.typesafe.play" % "play-mailer_2.11" % "3.0.1"
+)

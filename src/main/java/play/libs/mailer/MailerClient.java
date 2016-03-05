@@ -1,7 +1,5 @@
 package play.libs.mailer;
 
-import play.Configuration;
-
 /**
  * A mailer client.
  */
