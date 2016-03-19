@@ -167,7 +167,7 @@ The Play Mailer plugin supports several different versions of Play.
 |===
 | Plugin version                     | Play version
 
-| 4.x                                | 2.5.x
+| 5.x                                | 2.5.x
 | 4.x                                | 2.4.x
 | 3.x                                | 2.4.x
 | 2.x                                | 2.3.x
@@ -192,6 +192,12 @@ For Play 2.4 (milestone):
 
 ```scala
 "com.typesafe.play" %% "play-mailer" % "4.0.0-M1"
+```
+
+For Play 2.5 (milestone):
+
+```scala
+"com.typesafe.play" %% "play-mailer" % "5.0.0-M1"
 ```
 
 ## Licence
