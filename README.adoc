@@ -158,7 +158,7 @@ class ApplicationComponents(context: Context) extends BuiltInComponentsFromConte
 }
 ```
 
-Finally add this line `play.application.loader=SimpleApplicationLoader` in `application.conf`.
+Finally add this line `play.application.loader=MyApplicationLoader` in `application.conf`.
 
 ## Versioning
 
