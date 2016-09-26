@@ -263,7 +263,7 @@ class MockMailer @Inject() extends MailerClient {
     email.bodyHtml.foreach(bodyHtml => Logger.info(s"bodyHtml: $bodyHtml"))
     email.to.foreach(to => Logger.info(s"to: $to"))
     email.cc.foreach(cc => Logger.info(s"cc: $cc"))
-    email.bcc.foreach(bcc => Logger.info(s"to: $bcc"))
+    email.bcc.foreach(bcc => Logger.info(s"bcc: $bcc"))
     email.replyTo.foreach(replyTo => Logger.info(s"replyTo: $replyTo"))
     email.bounceAddress.foreach(bounce => Logger.info(s"bounceAddress: $bounce"))
     email.attachments.foreach(attachment => Logger.info(s"attachment: $attachment"))
