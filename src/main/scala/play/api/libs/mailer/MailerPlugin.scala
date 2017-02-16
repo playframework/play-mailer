@@ -6,7 +6,7 @@ import javax.mail.internet.InternetAddress
 
 import org.apache.commons.mail._
 import play.api.inject._
-import play.api.{Configuration, Environment, Logger, PlayConfig}
+import play.api.{Configuration, Environment, Logger}
 import play.libs.mailer.{Email => JEmail, MailerClient => JMailerClient}
 
 import scala.collection.JavaConverters._
@@ -57,8 +57,7 @@ trait MailerClient extends JMailerClient {
   }
 
   protected def convert(data: JEmail): Email = {
-    val attachments = data.getAttachments.asScala.map {
-      case attachment =>
+    val attachments = data.getAttachments.asScala.map { attachment =>
         if (Option(attachment.getFile).isDefined) {
           AttachmentFile(
             attachment.getName,
@@ -71,16 +70,16 @@ trait MailerClient extends JMailerClient {
             attachment.getMimetype,
             Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
         }
-    }.toSeq
+    }
     Email(
       Option(data.getSubject).getOrElse(""),
       Option(data.getFrom).getOrElse(""),
-      data.getTo.asScala.toSeq,
+      data.getTo.asScala,
       Option(data.getBodyText),
       Option(data.getBodyHtml),
       Option(data.getCharset),
-      data.getCc.asScala.toSeq,
-      data.getBcc.asScala.toSeq,
+      data.getCc.asScala,
+      data.getBcc.asScala,
       Option(data.getReplyTo),
       Option(data.getBounceAddress),
       attachments,
@@ -313,7 +312,7 @@ case class SMTPConfiguration(host: String,
 
 object SMTPConfiguration {
 
-  def apply(config: PlayConfig) = new SMTPConfiguration(
+  def apply(config: Configuration) = new SMTPConfiguration(
     resolveHost(config),
     config.get[Int]("port"),
     config.get[Boolean]("ssl"),
@@ -326,7 +325,7 @@ object SMTPConfiguration {
     config.get[Boolean]("mock")
   )
 
-  def resolveHost(config: PlayConfig) = {
+  def resolveHost(config: Configuration): String = {
     if (config.get[Boolean]("mock")) {
       // host won't be used anyway...
       ""
@@ -337,8 +336,8 @@ object SMTPConfiguration {
 }
 
 class SMTPConfigurationProvider @Inject()(configuration: Configuration) extends Provider[SMTPConfiguration] {
-  override def get() = {
-    val config = PlayConfig(configuration).getDeprecatedWithFallback("play.mailer", "smtp")
+  override def get(): SMTPConfiguration = {
+    val config = configuration.getDeprecatedWithFallback("play.mailer", "smtp")
     SMTPConfiguration(config)
   }
 }

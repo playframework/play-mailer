@@ -5,9 +5,9 @@ import java.io.File
 import play.api.Environment
 import org.apache.commons.mail.EmailAttachment
 import play.api.libs.mailer._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{AbstractController, Action, Controller, ControllerComponents}
 
-class ApplicationScala(mailer: MailerClient, environment: Environment) extends Controller {
+class ApplicationScala(mailer: MailerClient, environment: Environment, components: ControllerComponents) extends AbstractController(components) {
 
   def send = Action {
     val cid = "1234"

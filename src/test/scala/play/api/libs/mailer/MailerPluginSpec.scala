@@ -6,6 +6,7 @@ import javax.mail.Part
 import org.apache.commons.mail.{EmailConstants, HtmlEmail, MultiPartEmail}
 import org.specs2.mock.Mockito
 import org.specs2.mutable._
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
 
@@ -252,8 +253,12 @@ class MailerPluginSpec extends Specification with Mockito {
     val mockedConfigurationProvider = mock[SMTPConfigurationProvider]
     mockedConfigurationProvider.get() returns SMTPConfiguration("typesafe.org", 25, mock = true)
 
-    val applicationWithMinimalMailerConfiguration = FakeApplication(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25))
-    val applicationWithDeprecatedMailerConfiguration = FakeApplication(additionalConfiguration = Map("smtp.host" -> "typesafe.org", "smtp.port" -> 25))
+    def createApp(additionalConfiguration: Map[String, _]): Application = {
+      new GuiceApplicationBuilder().configure(additionalConfiguration).build()
+    }
+
+    val applicationWithMinimalMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25))
+    val applicationWithDeprecatedMailerConfiguration = createApp(additionalConfiguration = Map("smtp.host" -> "typesafe.org", "smtp.port" -> 25))
     val applicationWithMockedConfigurationProvider = new GuiceApplicationBuilder().overrides(bind[SMTPConfiguration].to(mockedConfigurationProvider)).build()
 
     "provide the Scala mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
