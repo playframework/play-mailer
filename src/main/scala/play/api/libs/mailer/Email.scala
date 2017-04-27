@@ -9,7 +9,7 @@ case class Email(
   charset: Option[String] = None,
   cc: Seq[String] = Seq.empty,
   bcc: Seq[String] = Seq.empty,
-  replyTo: Option[String] = None,
+  replyTo: Seq[String] = Seq.empty,
   bounceAddress: Option[String] = None,
   attachments: Seq[Attachment] = Seq.empty,
   headers: Seq[(String, String)] = Seq.empty)

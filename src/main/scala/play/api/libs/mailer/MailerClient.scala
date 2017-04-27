@@ -43,7 +43,7 @@ trait MailerClient extends JMailerClient {
       Option(data.getCharset),
       data.getCc.asScala,
       data.getBcc.asScala,
-      Option(data.getReplyTo),
+      data.getReplyTo.asScala,
       Option(data.getBounceAddress),
       attachments,
       data.getHeaders.asScala.toSeq)
