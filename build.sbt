@@ -9,7 +9,7 @@ lazy val `play-mailer` = (project in file("."))
     crossScalaVersions := Seq(scala211, scala212)
   )
     
-val PlayVersion = playVersion("2.6.0-M1")
+val PlayVersion = playVersion("2.6.0-M5")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play" % PlayVersion % Provided,
