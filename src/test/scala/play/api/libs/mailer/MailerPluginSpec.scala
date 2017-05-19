@@ -29,7 +29,7 @@ class MailerPluginSpec extends Specification with Mockito {
   object MockCommonsMailer extends MockCommonsMailerWithTimeouts(None, None)
 
   class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
-    extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, mock = false)) {
+    extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, tlsRequired = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, mock = false)) {
     override def send(email: MultiPartEmail) = ""
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
@@ -47,6 +47,7 @@ class MailerPluginSpec extends Specification with Mockito {
       email.getMailSession.getProperty("mail.smtp.auth") mustEqual "true"
       email.getMailSession.getProperty("mail.smtp.host") mustEqual "typesafe.org"
       email.getMailSession.getProperty("mail.smtp.starttls.enable") mustEqual "false"
+      email.getMailSession.getProperty("mail.smtp.starttls.required") mustEqual "false"
       email.getMailSession.getProperty("mail.debug") mustEqual "false"
     }
 

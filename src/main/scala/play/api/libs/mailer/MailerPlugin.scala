@@ -154,7 +154,8 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     if (conf.ssl) {
       email.setSslSmtpPort(conf.port.toString)
     }
-    email.setStartTLSEnabled(conf.tls)
+    email.setStartTLSEnabled(conf.tls || conf.tlsRequired)
+    email.setStartTLSRequired(conf.tlsRequired)
     for (u <- conf.user; p <- conf.password) yield email.setAuthenticator(new DefaultAuthenticator(u, p))
     if (conf.debugMode && Logger.isDebugEnabled) {
       email.setDebug(conf.debugMode)
@@ -303,6 +304,7 @@ case class SMTPConfiguration(host: String,
                              port: Int,
                              ssl: Boolean = false,
                              tls: Boolean = false,
+                             tlsRequired: Boolean = false,
                              user: Option[String] = None,
                              password: Option[String] = None,
                              debugMode: Boolean = false,
@@ -317,6 +319,7 @@ object SMTPConfiguration {
     config.get[Int]("port"),
     config.get[Boolean]("ssl"),
     config.get[Boolean]("tls"),
+    config.get[Boolean]("tlsRequired"),
     config.get[Option[String]]("user"),
     config.get[Option[String]]("password"),
     config.get[Boolean]("debug"),
