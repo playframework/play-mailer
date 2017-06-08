@@ -20,17 +20,13 @@ class MailerModuleSpec extends Specification with Mockito {
     }
 
     val applicationWithMinimalMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25))
-    val applicationWithDeprecatedMailerConfiguration = createApp(additionalConfiguration = Map("smtp.host" -> "typesafe.org", "smtp.port" -> 25))
+    val applicationWithMoreMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25, "play.mailer.user" -> "typesafe", "play.mailer.password" -> "typesafe"))
     val applicationWithMockedConfigurationProvider = new GuiceApplicationBuilder().overrides(bind[SMTPConfiguration].to(mockedConfigurationProvider)).build()
 
     "provide the Scala mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
       app.injector.instanceOf[MailerClient] must beAnInstanceOf[SMTPDynamicMailer]
     }
     "provide the Java mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
-      app.injector.instanceOf[JMailerClient] must beAnInstanceOf[SMTPDynamicMailer]
-    }
-    // Deprecated configuration should still works
-    "provide the Scala mailer client (even with deprecated configuration)" in new WithApplication(applicationWithDeprecatedMailerConfiguration) {
       app.injector.instanceOf[JMailerClient] must beAnInstanceOf[SMTPDynamicMailer]
     }
     "provide the Scala mocked mailer client" in new WithApplication() {
@@ -45,7 +41,9 @@ class MailerModuleSpec extends Specification with Mockito {
       app.injector.instanceOf[MailerClient].send(mail)
       there was two(mockedConfigurationProvider).get()
     }
-
+    "validate the configuration" in new WithApplication(applicationWithMoreMailerConfiguration) {
+      app.injector.instanceOf(bind[SMTPConfiguration]) must ===(SMTPConfiguration("typesafe.org", 25, user = Some("typesafe"), password = Some("typesafe")))
+    }
   }
 
 }
