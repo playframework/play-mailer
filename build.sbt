@@ -9,7 +9,7 @@ lazy val `play-mailer` = (project in file("."))
     crossScalaVersions := Seq(scala211, scala212)
   )
     
-val PlayVersion = playVersion("2.6.0-M5")
+val PlayVersion = playVersion("2.6.0-RC2")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play" % PlayVersion % Provided,
@@ -24,5 +24,5 @@ playBuildRepoName in ThisBuild := "play-mailer"
 mimaDefaultSettings
 
 previousArtifacts := Set  (
-  "com.typesafe.play" % "play-mailer_2.11" % "3.0.1"
+  "com.typesafe.play" % "play-mailer_2.11" % "5.0.0"
 )
