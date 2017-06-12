@@ -1,4 +1,14 @@
 sudo: false
 jdk: oraclejdk8
 language: scala
-script: sbt +test
+
+scala:
+   - 2.11.11
+   - 2.12.2
+
+matrix:
+   include:
+      - env: PLAY_VERSION=2.5.15
+        scala: 2.11.11
+
+script: sbt ++$TRAVIS_SCALA_VERSION test
