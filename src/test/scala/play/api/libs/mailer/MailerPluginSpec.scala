@@ -31,7 +31,7 @@ class MailerPluginSpec extends Specification with Mockito {
   object MockCommonsMailer extends MockCommonsMailerWithTimeouts(None, None)
 
   class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
-    extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, tlsRequired = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, mock = false)) {
+      extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, tlsRequired = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, mock = false)) {
     override def send(email: MultiPartEmail) = ""
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
@@ -129,7 +129,7 @@ class MailerPluginSpec extends Specification with Mockito {
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
-        bodyHtml = Some( s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
+        bodyHtml = Some(s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
         attachments = Seq(AttachmentFile("play icon", getPlayIcon, contentId = Some(cid)))
       ))
       simpleEmailMust(email)
@@ -230,7 +230,7 @@ class MailerPluginSpec extends Specification with Mockito {
       convert.bodyHtml mustEqual Some("<html><body><p>An <b>html</b> message</p></body></html>")
       convert.charset mustEqual Some("UTF-16")
       convert.headers.size mustEqual 1
-      convert.headers.head mustEqual("key", "value")
+      convert.headers.head mustEqual ("key", "value")
       convert.attachments.size mustEqual 3
       convert.attachments.head must beAnInstanceOf[AttachmentFile]
       convert.attachments.head.asInstanceOf[AttachmentFile].name mustEqual "play icon"
