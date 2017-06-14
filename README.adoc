@@ -110,6 +110,9 @@ def sendEmail {
 Since Play 2.4, you can use {runtime-di-uri}[runtime dependency injection] or {compile-time-di-uri}[compile time dependency injection].
 As a result, the `MailerClient` instance can be obtained using runtime dependency injection or compile time dependency injection.
 
+Since Play 2.6, play-mailer is independent from the Play version.
+It might need an additional binding for link:https://typesafehub.github.io/config/latest/api/com/typesafe/config/Config.html[Config].
+
 #### With runtime injection
 
 Use the `@Inject` annotation on the constructor of your component or controller:

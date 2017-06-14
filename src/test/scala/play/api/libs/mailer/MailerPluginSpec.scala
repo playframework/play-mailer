@@ -3,10 +3,12 @@ package play.api.libs.mailer
 import java.io.File
 import javax.mail.Part
 
-import org.apache.commons.mail.{EmailConstants, HtmlEmail, MultiPartEmail}
+import com.typesafe.config.Config
+import org.apache.commons.mail.{ EmailConstants, HtmlEmail, MultiPartEmail }
 import org.specs2.mock.Mockito
 import org.specs2.mutable._
 import play.api.Application
+import play.api.inject.BuiltinModule
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
 
@@ -127,7 +129,7 @@ class MailerPluginSpec extends Specification with Mockito {
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
-        bodyHtml = Some(s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
+        bodyHtml = Some( s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
         attachments = Seq(AttachmentFile("play icon", getPlayIcon, contentId = Some(cid)))
       ))
       simpleEmailMust(email)
@@ -228,7 +230,7 @@ class MailerPluginSpec extends Specification with Mockito {
       convert.bodyHtml mustEqual Some("<html><body><p>An <b>html</b> message</p></body></html>")
       convert.charset mustEqual Some("UTF-16")
       convert.headers.size mustEqual 1
-      convert.headers.head mustEqual ("key", "value")
+      convert.headers.head mustEqual("key", "value")
       convert.attachments.size mustEqual 3
       convert.attachments.head must beAnInstanceOf[AttachmentFile]
       convert.attachments.head.asInstanceOf[AttachmentFile].name mustEqual "play icon"
@@ -248,19 +250,26 @@ class MailerPluginSpec extends Specification with Mockito {
   }
 
   "The mailer module" should {
-    import play.libs.mailer.{MailerClient => JMailerClient}
     import play.api.inject.bind
+    import play.libs.mailer.{ MailerClient => JMailerClient }
 
     val mockedConfigurationProvider = mock[SMTPConfigurationProvider]
     mockedConfigurationProvider.get() returns SMTPConfiguration("typesafe.org", 25, mock = true)
 
     def createApp(additionalConfiguration: Map[String, _]): Application = {
-      new GuiceApplicationBuilder().configure(additionalConfiguration).build()
+      new GuiceApplicationBuilder()
+        .configure(additionalConfiguration)
+        .overrides(new ConfigModule) // Play 2.5.x "hack"
+        .build()
     }
 
     val applicationWithMinimalMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25))
-    val applicationWithDeprecatedMailerConfiguration = createApp(additionalConfiguration = Map("smtp.host" -> "typesafe.org", "smtp.port" -> 25))
-    val applicationWithMockedConfigurationProvider = new GuiceApplicationBuilder().overrides(bind[SMTPConfiguration].to(mockedConfigurationProvider)).build()
+
+    val applicationWithMockedConfigurationProvider = new GuiceApplicationBuilder()
+      .overrides(new ConfigModule) // Play 2.5.x "hack"
+      .overrides(bind[SMTPConfiguration].to(mockedConfigurationProvider))
+      .build()
+    val applicationWithMoreMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25, "play.mailer.user" -> "typesafe", "play.mailer.password" -> "typesafe"))
 
     "provide the Scala mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
       app.injector.instanceOf[MailerClient] must beAnInstanceOf[SMTPDynamicMailer]
@@ -268,14 +277,10 @@ class MailerPluginSpec extends Specification with Mockito {
     "provide the Java mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
       app.injector.instanceOf[JMailerClient] must beAnInstanceOf[SMTPDynamicMailer]
     }
-    // Deprecated configuration should still works
-    "provide the Scala mailer client (even with deprecated configuration)" in new WithApplication(applicationWithDeprecatedMailerConfiguration) {
-      app.injector.instanceOf[JMailerClient] must beAnInstanceOf[SMTPDynamicMailer]
-    }
-    "provide the Scala mocked mailer client" in new WithApplication() {
+    "provide the Scala mocked mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
       app.injector.instanceOf(bind[MailerClient].qualifiedWith("mock")) must beAnInstanceOf[MockMailer]
     }
-    "provide the Java mocked mailer client" in new WithApplication() {
+    "provide the Java mocked mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
       app.injector.instanceOf(bind[JMailerClient].qualifiedWith("mock")) must beAnInstanceOf[MockMailer]
     }
     "call the configuration each time we send an email" in new WithApplication(applicationWithMockedConfigurationProvider) {
@@ -284,7 +289,9 @@ class MailerPluginSpec extends Specification with Mockito {
       app.injector.instanceOf[MailerClient].send(mail)
       there was two(mockedConfigurationProvider).get()
     }
-
+    "validate the configuration" in new WithApplication(applicationWithMoreMailerConfiguration) {
+      app.injector.instanceOf(bind[SMTPConfiguration]) must ===(SMTPConfiguration("typesafe.org", 25, user = Some("typesafe"), password = Some("typesafe")))
+    }
   }
 
   def simpleEmailMust(email: MultiPartEmail) {
