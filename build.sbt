@@ -1,13 +1,24 @@
 import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifacts
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
-import interplay.ScalaVersions._
+import com.typesafe.sbt.SbtScalariform._
+import interplay.ScalaVersions
+
+import scalariform.formatter.preferences._
+
+lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
+  scalaVersion := ScalaVersions.scala212,
+  crossScalaVersions := Seq(ScalaVersions.scala211, ScalaVersions.scala212),
+  ScalariformKeys.preferences := ScalariformKeys.preferences.value
+    .setPreference(SpacesAroundMultiImports, true)
+    .setPreference(SpaceInsideParentheses, false)
+    .setPreference(DanglingCloseParenthesis, Preserve)
+    .setPreference(PreserveSpaceBeforeArguments, true)
+    .setPreference(DoubleIndentClassDeclaration, true)
+)
 
 lazy val `play-mailer` = (project in file("."))
   .enablePlugins(PlayLibrary, PlayReleaseBase)
-  .settings(
-    scalaVersion := scala212,
-    crossScalaVersions := Seq(scala211, scala212)
-  )
+  .settings(commonSettings)
 
 // needs to be changed in .travis-ci.yml
 val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.6.0-RC2"))
