@@ -36,7 +36,7 @@ play.mailer {
 If you are on Play 2.6.x you can skip to [Usage](#Usage).
 For Play 2.5.x you might also need a ConfigModule:
 
-### Scala 2.5.x
+### Play 2.5.x and Scala
 
 You can just create a simple Module:
 
@@ -65,7 +65,7 @@ And register it inside your `application.conf`:
 play.modules.enabled += "playconfig.ConfigModule"
 ```
 
-### Java 2.5.x
+### Play 2.5.x and Java
 
 First you need to create a ConfigProvider:
 
@@ -237,7 +237,7 @@ play.modules {
 ```
 
 > The get() method of your CustomSMTPConfigurationProvider will be called multiple times.
-> s a consequence, we recommend that code inside the get() method should be fast.
+> As a consequence, we recommend that code inside the get() method should be fast.
 
 
 #### Multiple SMTPMailer instances
