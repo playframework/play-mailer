@@ -89,6 +89,7 @@ class MailerPluginSpec extends Specification with Mockito {
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyText = Some("A text message"),
         bodyHtml = Some("<html><body><p>An <b>html</b> message</p></body></html>")
       ))
@@ -105,6 +106,7 @@ class MailerPluginSpec extends Specification with Mockito {
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyText = Some("A text message"),
         attachments = Seq(AttachmentFile("play icon", getPlayIcon))
       ))
@@ -129,6 +131,7 @@ class MailerPluginSpec extends Specification with Mockito {
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyHtml = Some(s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
         attachments = Seq(AttachmentFile("play icon", getPlayIcon, contentId = Some(cid)))
       ))
@@ -145,6 +148,7 @@ class MailerPluginSpec extends Specification with Mockito {
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyText = Some("A text message"),
         attachments = Seq(AttachmentFile("play icon", getPlayIcon, Some("A beautiful icon"), Some(Part.INLINE)))
       ))
@@ -168,6 +172,7 @@ class MailerPluginSpec extends Specification with Mockito {
         subject = "Subject",
         from = "James Roper <jroper@typesafe.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
+        replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         cc = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
         bcc = Seq("Guillaume Grossetie <ggrossetie@localhost.com>")
       ))
@@ -179,6 +184,8 @@ class MailerPluginSpec extends Specification with Mockito {
       email.getCcAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
       email.getBccAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
       email.getBccAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
+      email.getReplyToAddresses.get(0).getPersonal mustEqual "Aviv Shafir"
+      email.getReplyToAddresses.get(0).getAddress mustEqual "avivshafir@github.com"
     }
 
     "set address without name" in {
@@ -188,6 +195,7 @@ class MailerPluginSpec extends Specification with Mockito {
         from = "jroper@typesafe.com",
         to = Seq("<ggrossetie@localhost.com>"),
         cc = Seq("ggrossetie@localhost.com"),
+        replyTo = Seq("avivshafir@github.com"),
         bcc = Seq("ggrossetie@localhost.com")
       ))
       email.getFromAddress.getAddress mustEqual "jroper@typesafe.com"
@@ -198,6 +206,8 @@ class MailerPluginSpec extends Specification with Mockito {
       email.getCcAddresses.get(0).getPersonal must beNull
       email.getBccAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
       email.getBccAddresses.get(0).getPersonal must beNull
+      email.getReplyToAddresses.get(0).getAddress mustEqual "avivshafir@github.com"
+      email.getReplyToAddresses.get(0).getPersonal must beNull
     }
   }
 
@@ -209,6 +219,7 @@ class MailerPluginSpec extends Specification with Mockito {
       data.addTo("Guillaume Grossetie <ggrossetie@localhost.com>")
       data.addCc("Daniel Spasojevic <dspasojevic@github.com>")
       data.addBcc("Sparkbitpl <sparkbitpl@github.com>")
+      data.addReplyTo("Aviv Shafir <avivshafir@github.com>")
       data.setBodyText("A text message")
       data.setBodyHtml("<html><body><p>An <b>html</b> message</p></body></html>")
       data.setCharset("UTF-16")
@@ -226,6 +237,8 @@ class MailerPluginSpec extends Specification with Mockito {
       convert.cc.head mustEqual "Daniel Spasojevic <dspasojevic@github.com>"
       convert.bcc.size mustEqual 1
       convert.bcc.head mustEqual "Sparkbitpl <sparkbitpl@github.com>"
+      convert.replyTo.size mustEqual 1
+      convert.replyTo.head mustEqual "Aviv Shafir <avivshafir@github.com>"
       convert.bodyText mustEqual Some("A text message")
       convert.bodyHtml mustEqual Some("<html><body><p>An <b>html</b> message</p></body></html>")
       convert.charset mustEqual Some("UTF-16")
@@ -301,6 +314,7 @@ class MailerPluginSpec extends Specification with Mockito {
     email.getToAddresses must have size 1
     email.getToAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
     email.getToAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
+    email.getReplyToAddresses.get(0).getAddress mustEqual "avivshafir@github.com"
   }
 
   def getPlayIcon: File = {

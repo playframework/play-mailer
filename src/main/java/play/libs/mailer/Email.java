@@ -15,7 +15,7 @@ public class Email {
   private List<String> to = new ArrayList<String>();
   private List<String> cc = new ArrayList<String>();
   private List<String> bcc = new ArrayList<String>();
-  private String replyTo;
+  private List<String> replyTo = new ArrayList<String>();
   private String bounceAddress;
   private List<Attachment> attachments = new ArrayList<Attachment>();
   private String charset;
@@ -99,11 +99,16 @@ public class Email {
     return this;
   }
 
-  public String getReplyTo() {
+  public List<String> getReplyTo() {
     return replyTo;
   }
 
-  public Email setReplyTo(String replyTo) {
+  public Email addReplyTo(String replyTo) {
+    this.replyTo.add(replyTo);
+    return this;
+  }
+
+  public Email setReplyTo(List<String> replyTo) {
     this.replyTo = replyTo;
     return this;
   }
