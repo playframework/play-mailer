@@ -33,7 +33,7 @@ play.mailer {
 }
 ```
 
-If you are on Play 2.6.x you can skip to [Usage](#Usage).
+If you are on Play 2.6.x you can skip to [Usage](#usage).
 For Play 2.5.x you might also need a ConfigModule:
 
 ### Play 2.5.x and Scala
