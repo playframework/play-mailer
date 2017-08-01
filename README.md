@@ -11,8 +11,8 @@ Play Mailer is a powerful Scala Mailing library. It provides a simple configurab
 To get started you add `play-mailer` and `play-mailer-guice` as a dependency in SBT:
 
 ```scala
-libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.0"
-libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "6.0.0"
+libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.1"
+libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "6.0.1"
 ```
 
 After that you need to configure the mailer inside your `application.conf`:
