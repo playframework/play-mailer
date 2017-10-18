@@ -204,7 +204,7 @@ class ApplicationComponents(context: Context) extends BuiltInComponentsFromConte
 
 #### Dynamic Configuration
 
-By default the Mailer Plugin will automatically configure the injected instace with the `application.conf`.
+By default the Mailer Plugin will automatically configure the injected instance with the `application.conf`.
 
 If you want to configure the injected instances from another source, you will need to override the default provider:
 
