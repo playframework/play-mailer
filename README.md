@@ -212,7 +212,7 @@ Create a new file named `CustomSMTPConfigurationProvider.scala`:
 
 ```scala
 class CustomSMTPConfigurationProvider extends Provider[SMTPConfiguration] {
-  override def get() {
+  override def get() = {
     // Custom configuration
     new SMTPConfiguration("typesafe.org", 1234)
   }
