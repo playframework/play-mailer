@@ -18,7 +18,7 @@ lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.6.2"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.6.11"))
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
@@ -26,7 +26,7 @@ lazy val `play-mailer` = (project in file("play-mailer"))
   .settings(
     libraryDependencies ++= Seq(
       "javax.inject" % "javax.inject" % "1",
-      "com.typesafe" % "config" % "1.3.1",
+      "com.typesafe" % "config" % "1.3.2",
       "org.slf4j" % "slf4j-api" % "1.7.25",
       "org.apache.commons" % "commons-email" % "1.5",
       "com.typesafe.play" %% "play" % PlayVersion % Test,
