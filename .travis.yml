@@ -11,4 +11,6 @@ matrix:
       - env: PLAY_VERSION=2.5.18
         scala: 2.11.12
 
-script: sbt ++$TRAVIS_SCALA_VERSION test
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt ++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues

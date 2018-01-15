@@ -1,11 +1,10 @@
 import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifacts
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import interplay.ScalaVersions
 
 import scalariform.formatter.preferences._
 
-lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
+lazy val commonSettings = mimaDefaultSettings ++ SbtScalariform.scalariformSettings ++ Seq(
   // scalaVersion needs to be kept in sync with travis-ci
   scalaVersion := ScalaVersions.scala212,
   crossScalaVersions := Seq(ScalaVersions.scala211, ScalaVersions.scala212),
@@ -20,6 +19,9 @@ lazy val commonSettings = SbtScalariform.scalariformSettings ++ Seq(
 // needs to be kept in sync with travis-ci
 val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.6.11"))
 
+// Version used to check binary compatibility
+val mimaPreviousArtifactsVersion = "6.0.0"
+
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
   .settings(commonSettings)
@@ -31,6 +33,9 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "org.apache.commons" % "commons-email" % "1.5",
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
+    ),
+    mimaPreviousArtifacts := Set(
+      "com.typesafe.play" %% "play-mailer" % mimaPreviousArtifactsVersion
     )
   )
 
@@ -43,6 +48,9 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
       "com.google.inject" % "guice" % "4.0", // 4.0 to maybe make it work with 2.5 and 2.6
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
+    ),
+    mimaPreviousArtifacts := Set(
+      "com.typesafe.play" %% "play-mailer-guice" % mimaPreviousArtifactsVersion
     )
   )
 
@@ -52,9 +60,3 @@ lazy val `play-mailer-root` = (project in file("."))
   .aggregate(`play-mailer`, `play-mailer-guice`)
 
 playBuildRepoName in ThisBuild := "play-mailer"
-
-mimaDefaultSettings
-
-previousArtifacts := Set(
-  "com.typesafe.play" % "play-mailer_2.11" % "5.0.0"
-)
