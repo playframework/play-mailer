@@ -3,12 +3,12 @@ jdk: oraclejdk8
 language: scala
 
 scala:
-   - 2.11.11
-   - 2.12.2
+   - 2.11.12
+   - 2.12.4
 
 matrix:
    include:
-      - env: PLAY_VERSION=2.5.15
-        scala: 2.11.11
+      - env: PLAY_VERSION=2.5.18
+        scala: 2.11.12
 
 script: sbt ++$TRAVIS_SCALA_VERSION test
