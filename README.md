@@ -30,6 +30,17 @@ play.mailer {
   timeout = null // (defaults to 60s in milliseconds)
   connectiontimeout = null // (defaults to 60s in milliseconds)
   mock = no // (defaults to no, will only log all the email properties instead of sending an email)
+  props {
+    // Additional SMTP properties used by JavaMail. Can override existing configuration keys from above.
+    // A given property will be set for both the "mail.smtp.*" and the "mail.smtps.*" prefix.
+    // For a list of properties see:
+    // https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html#properties
+
+    // Example:
+    // To set the local host name used in the SMTP HELO or EHLO command:
+    // localhost = 127.0.0.1
+    // Results in "mail.smtp.localhost=127.0.0.1" and "mail.smtps.localhost=127.0.0.1" in the JavaMail session.
+  }
 }
 ```
 
