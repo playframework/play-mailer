@@ -21,7 +21,7 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
 val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.6.18"))
 
 // Version used to check binary compatibility
-val mimaPreviousArtifactsVersion = "6.0.0"
+val mimaPreviousArtifactsVersion = "7.0.0"
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
