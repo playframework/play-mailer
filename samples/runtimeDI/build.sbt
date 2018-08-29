@@ -5,7 +5,7 @@ name := "runtime-DI"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.2"
+scalaVersion := "2.12.6"
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer" % "6.0.0-SNAPSHOT"
