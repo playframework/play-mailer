@@ -5,17 +5,17 @@ import com.typesafe.config.Config
 import scala.util.Try
 
 case class SMTPConfiguration(
-  host: String,
-  port: Int,
-  ssl: Boolean = false,
-  tls: Boolean = false,
-  tlsRequired: Boolean = false,
-  user: Option[String] = None,
-  password: Option[String] = None,
-  debugMode: Boolean = false,
-  timeout: Option[Int] = None,
-  connectionTimeout: Option[Int] = None,
-  mock: Boolean = false
+    host: String,
+    port: Int,
+    ssl: Boolean = false,
+    tls: Boolean = false,
+    tlsRequired: Boolean = false,
+    user: Option[String] = None,
+    password: Option[String] = None,
+    debugMode: Boolean = false,
+    timeout: Option[Int] = None,
+    connectionTimeout: Option[Int] = None,
+    mock: Boolean = false
 )
 
 object SMTPConfiguration {
