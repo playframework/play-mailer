@@ -4,11 +4,11 @@ language: scala
 
 scala:
    - 2.11.12
-   - 2.12.4
+   - 2.12.6
 
 matrix:
    include:
-      - env: PLAY_VERSION=2.5.18
+      - env: PLAY_VERSION=2.5.19
         scala: 2.11.12
 
 script:
