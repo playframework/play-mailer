@@ -2,10 +2,12 @@ package play.api.libs.mailer
 
 import java.io.{ FilterOutputStream, PrintStream }
 import javax.mail.internet.InternetAddress
+import javax.mail.Session
 
 import org.apache.commons.mail._
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
 
 abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
@@ -48,7 +50,17 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     }
     email.setStartTLSEnabled(conf.tls || conf.tlsRequired)
     email.setStartTLSRequired(conf.tlsRequired)
-    for (u <- conf.user; p <- conf.password) yield email.setAuthenticator(new DefaultAuthenticator(u, p))
+    val authenticator = for (u <- conf.user; p <- conf.password) yield new DefaultAuthenticator(u, p)
+    authenticator.foreach(email.setAuthenticator(_))
+
+    // After the email was set up we can now also manipulate the session properties directly
+    val mailProperties = email.getMailSession.getProperties();
+    conf.props.entrySet().asScala.foreach(prop => {
+      mailProperties.setProperty("mail.smtp." + prop.getKey(), prop.getValue().unwrapped().toString)
+      mailProperties.setProperty("mail.smtps." + prop.getKey(), prop.getValue().unwrapped().toString)
+    })
+    email.setMailSession(Session.getInstance(mailProperties, authenticator.orNull))
+
     if (conf.debugMode && logger.isDebugEnabled) {
       email.setDebug(conf.debugMode)
       email.getMailSession.setDebugOut(new PrintStream(new FilterOutputStream(null) {

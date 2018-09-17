@@ -1,6 +1,6 @@
 package play.api.libs.mailer
 
-import com.typesafe.config.Config
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.util.Try
 
@@ -15,6 +15,7 @@ case class SMTPConfiguration(
     debugMode: Boolean = false,
     timeout: Option[Int] = None,
     connectionTimeout: Option[Int] = None,
+    props: Config = ConfigFactory.empty(),
     mock: Boolean = false
 )
 
@@ -41,6 +42,7 @@ object SMTPConfiguration {
     config.getBoolean("debug"),
     getOptionInt(config, "timeout"),
     getOptionInt(config, "connectiontimeout"),
+    config.getConfig("props"),
     config.getBoolean("mock")
   )
 

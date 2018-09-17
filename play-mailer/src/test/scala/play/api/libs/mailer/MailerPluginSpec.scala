@@ -3,6 +3,7 @@ package play.api.libs.mailer
 import java.io.File
 import javax.mail.Part
 
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.commons.mail.{ EmailConstants, HtmlEmail, MultiPartEmail }
 import org.specs2.mock.Mockito
 import org.specs2.mutable._
@@ -25,8 +26,10 @@ class MailerPluginSpec extends Specification with Mockito {
   }
   object MockCommonsMailer extends MockCommonsMailerWithTimeouts(None, None)
 
-  class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int])
-    extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, tlsRequired = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, mock = false)) {
+  class MockCommonsMailerWithProps(props: Config = ConfigFactory.empty()) extends MockCommonsMailerWithTimeouts(None, None, props)
+
+  class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int], props: Config = ConfigFactory.empty())
+    extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, tlsRequired = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, props, mock = false)) {
     override def send(email: MultiPartEmail) = ""
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
@@ -45,6 +48,7 @@ class MailerPluginSpec extends Specification with Mockito {
       email.getMailSession.getProperty("mail.smtp.host") mustEqual "typesafe.org"
       email.getMailSession.getProperty("mail.smtp.starttls.enable") mustEqual "false"
       email.getMailSession.getProperty("mail.smtp.starttls.required") mustEqual "false"
+      email.getMailSession.getProperty("mail.smtp.localhost") must beNull
       email.getMailSession.getProperty("mail.debug") mustEqual "false"
     }
 
@@ -66,6 +70,16 @@ class MailerPluginSpec extends Specification with Mockito {
       ))
       email.getSocketTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
       email.getSocketConnectionTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
+    }
+
+    "configure the SMTP local host if configured" in {
+      val mailer = new MockCommonsMailerWithProps(ConfigFactory.parseString("localhost=127.0.0.1"))
+      val email = mailer.createEmail(Email(
+        subject = "Subject",
+        from = "James Roper <jroper@typesafe.com>"
+      ))
+      email.getMailSession.getProperty("mail.smtp.localhost") mustEqual "127.0.0.1"
+      email.getMailSession.getProperty("mail.smtps.localhost") mustEqual "127.0.0.1"
     }
 
     "create an empty email" in {
