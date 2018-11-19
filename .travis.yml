@@ -8,8 +8,6 @@ scala:
 
 matrix:
    include:
-      - env: PLAY_VERSION=2.5.19
-        scala: 2.11.12
       - scala: 2.12.7
         jdk: openjdk8
       - scala: 2.12.7
@@ -21,5 +19,4 @@ matrix:
       - jdk: openjdk11
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test
-#  - sbt ++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues
+  - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues

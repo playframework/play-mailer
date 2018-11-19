@@ -1,5 +1,6 @@
 import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.core._
+import com.typesafe.tools.mima.plugin.MimaPlugin._
 import interplay.ScalaVersions
 
 import scalariform.formatter.preferences._
@@ -19,6 +20,15 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
   javacOptions ++= Seq(
     "-Xlint:unchecked",
     "-Xlint:deprecation"
+  ),
+
+  mimaBinaryIssueFilters ++= Seq(
+    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.apply"),
+    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.apply$default$11"),
+    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.<init>$default$11"),
+    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.copy"),
+    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.copy$default$11"),
+    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.this")
   )
 )
 
@@ -26,7 +36,7 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
 val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0-RC3"))
 
 // Version used to check binary compatibility
-val mimaPreviousArtifactsVersion = "7.0.0"
+val mimaPreviousArtifactsVersion = "6.0.0"
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
