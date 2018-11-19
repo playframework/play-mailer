@@ -19,4 +19,7 @@ matrix:
       - jdk: openjdk11
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
+   - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
+   # Test sample applications
+   - sbt publishLocal && pushd samples/compile-timeDI/ && sbt test && popd
+   - sbt publishLocal && pushd samples/runtimeDI/ && sbt test && popd
