@@ -1,5 +1,6 @@
 import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.core._
+import com.typesafe.tools.mima.plugin.MimaPlugin._
 import interplay.ScalaVersions
 
 import scalariform.formatter.preferences._
@@ -14,14 +15,28 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
     .setPreference(SpaceInsideParentheses, false)
     .setPreference(DanglingCloseParenthesis, Preserve)
     .setPreference(PreserveSpaceBeforeArguments, true)
-    .setPreference(DoubleIndentConstructorArguments, true)
+    .setPreference(DoubleIndentConstructorArguments, true),
+
+  javacOptions ++= Seq(
+    "-Xlint:unchecked",
+    "-Xlint:deprecation"
+  ),
+
+  mimaBinaryIssueFilters ++= Seq(
+    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.apply"),
+    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.apply$default$11"),
+    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.<init>$default$11"),
+    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.copy"),
+    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.copy$default$11"),
+    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.this")
+  )
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.6.18"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0-RC3"))
 
 // Version used to check binary compatibility
-val mimaPreviousArtifactsVersion = "7.0.0"
+val mimaPreviousArtifactsVersion = "6.0.0"
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
@@ -46,7 +61,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   .dependsOn(`play-mailer`)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.inject" % "guice" % "4.1.0", // 4.1.0 to maybe make it work with 2.5 and 2.6
+      "com.google.inject" % "guice" % "4.2.2", // 4.1.0 to maybe make it work with 2.5 and 2.6
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
