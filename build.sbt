@@ -14,11 +14,16 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
     .setPreference(SpaceInsideParentheses, false)
     .setPreference(DanglingCloseParenthesis, Preserve)
     .setPreference(PreserveSpaceBeforeArguments, true)
-    .setPreference(DoubleIndentConstructorArguments, true)
+    .setPreference(DoubleIndentConstructorArguments, true),
+
+  javacOptions ++= Seq(
+    "-Xlint:unchecked",
+    "-Xlint:deprecation"
+  )
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.6.18"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0-RC3"))
 
 // Version used to check binary compatibility
 val mimaPreviousArtifactsVersion = "7.0.0"
@@ -46,7 +51,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   .dependsOn(`play-mailer`)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.inject" % "guice" % "4.1.0", // 4.1.0 to maybe make it work with 2.5 and 2.6
+      "com.google.inject" % "guice" % "4.2.2", // 4.1.0 to maybe make it work with 2.5 and 2.6
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
