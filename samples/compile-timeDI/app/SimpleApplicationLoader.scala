@@ -9,8 +9,8 @@ class SimpleApplicationLoader extends ApplicationLoader {
   }
 }
 
-class ApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context) with MailerComponents {  
-  lazy val applicationController = new controllers.ApplicationScala(mailerClient, environment)
-  lazy val assets = new controllers.Assets(httpErrorHandler)
+class ApplicationComponents(context: Context) extends BuiltInComponentsFromContext(context) with MailerComponents with play.api.NoHttpFiltersComponents {
+  lazy val applicationController = new _root_.controllers.ApplicationScala(mailerClient, environment, controllerComponents)
   lazy val router = new Routes(httpErrorHandler, applicationController)
+  lazy val config = configuration.underlying
 }

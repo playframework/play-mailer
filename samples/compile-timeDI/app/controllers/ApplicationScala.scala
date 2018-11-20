@@ -28,7 +28,7 @@ class ApplicationScala(mailer: MailerClient, environment: Environment, component
 
   def configureAndSend = Action {
     val mailer = new SMTPMailer(SMTPConfiguration("typesafe.org", 1234))
-    val id = mailer.send(Email("Simple email", "Mister FROM <from@email.com>"))
+    val id = mailer.send(Email("Simple email", "Mister FROM <from@email.com>", Seq("Miss TO <to@email.com>")))
     Ok(s"Email $id sent!")
   }
 }
