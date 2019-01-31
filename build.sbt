@@ -8,7 +8,7 @@ import scalariform.formatter.preferences._
 lazy val commonSettings = mimaDefaultSettings ++ Seq(
   // scalaVersion needs to be kept in sync with travis-ci
   scalaVersion := ScalaVersions.scala212,
-  crossScalaVersions := Seq(ScalaVersions.scala211, ScalaVersions.scala212),
+  crossScalaVersions := Seq(ScalaVersions.scala211, ScalaVersions.scala212, "2.13.0-M5"),
   scalariformAutoformat := true,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(SpacesAroundMultiImports, true)
@@ -23,20 +23,14 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
   ),
 
   mimaBinaryIssueFilters ++= Seq(
-    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.apply"),
-    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.apply$default$11"),
-    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.<init>$default$11"),
-    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.copy"),
-    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.copy$default$11"),
-    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.this")
   )
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0-RC3"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0"))
 
 // Version used to check binary compatibility
-val mimaPreviousArtifactsVersion = "6.0.0"
+val mimaPreviousArtifactsVersion = "7.0.0"
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
@@ -61,7 +55,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   .dependsOn(`play-mailer`)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.inject" % "guice" % "4.2.2", // 4.1.0 to maybe make it work with 2.5 and 2.6
+      "com.google.inject" % "guice" % "4.2.2",
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),

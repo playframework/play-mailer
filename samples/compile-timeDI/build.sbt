@@ -5,11 +5,11 @@ name := "compile-time-DI"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.7"
+scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer" % "7.0.0-SNAPSHOT",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.0-RC1" % Test
+  "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.0" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

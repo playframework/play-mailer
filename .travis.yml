@@ -1,25 +1,38 @@
-sudo: false
-jdk: oraclejdk8
 language: scala
 
 scala:
-   - 2.11.12
-   - 2.12.7
+  - 2.12.8
+  - 2.11.12
+  - 2.13.0-M5
+
+env:
+  - TRAVIS_JDK=adopt@1.8.192-12
+  - TRAVIS_JDK=adopt@1.11.0-1
 
 matrix:
-   include:
-      - scala: 2.12.7
-        jdk: openjdk8
-      - scala: 2.12.7
-        jdk: openjdk11
-   allow_failures:
-      # Java 11 is still not fully supported. It is good that we are already
-      # testing our sample applications to better discover possible problems
-      # but we can allow failures here too.
-      - jdk: openjdk11
+  fast_finish: true
+  allow_failures:
+    - env: TRAVIS_JDK=adopt@1.11.0-1 # not fully supported but allows problem discovery
+
+before_install:
+  - curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh
+
+install:
+  - $JABBA_HOME/bin/jabba install $TRAVIS_JDK
+  - export JAVA_HOME="$JABBA_HOME/jdk/$TRAVIS_JDK" && export PATH="$JAVA_HOME/bin:$PATH" && java -Xmx32m -version
 
 script:
-   - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
+   #- sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
    # Test sample applications
    - sbt publishLocal && pushd samples/compile-timeDI/ && sbt test && popd
    - sbt publishLocal && pushd samples/runtimeDI/ && sbt test && popd
+
+cache:
+  directories:
+    - $HOME/.ivy2
+    - $HOME/.jabba/jdk
+    - $HOME/.sbt
+
+before_cache:
+  - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
+  - find $HOME/.sbt -name "*.lock" -delete

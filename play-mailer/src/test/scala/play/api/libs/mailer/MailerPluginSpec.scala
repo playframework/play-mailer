@@ -271,7 +271,7 @@ class MailerPluginSpec extends Specification with Mockito {
     }
   }
 
-  def simpleEmailMust(email: MultiPartEmail) {
+  def simpleEmailMust(email: MultiPartEmail): Unit = {
     email.getSubject mustEqual "Subject"
     email.getFromAddress.getPersonal mustEqual "James Roper"
     email.getFromAddress.getAddress mustEqual "jroper@typesafe.com"
