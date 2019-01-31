@@ -23,12 +23,6 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
   ),
 
   mimaBinaryIssueFilters ++= Seq(
-    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.apply"),
-    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.apply$default$11"),
-    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.<init>$default$11"),
-    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.copy"),
-    ProblemFilters.exclude[IncompatibleResultTypeProblem]("play.api.libs.mailer.SMTPConfiguration.copy$default$11"),
-    ProblemFilters.exclude[DirectMissingMethodProblem]("play.api.libs.mailer.SMTPConfiguration.this")
   )
 )
 
@@ -36,7 +30,7 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
 val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0"))
 
 // Version used to check binary compatibility
-val mimaPreviousArtifactsVersion = "6.0.0"
+val mimaPreviousArtifactsVersion = "7.0.0"
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
