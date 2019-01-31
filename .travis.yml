@@ -22,7 +22,7 @@ install:
   - export JAVA_HOME="$JABBA_HOME/jdk/$TRAVIS_JDK" && export PATH="$JAVA_HOME/bin:$PATH" && java -Xmx32m -version
 
 script:
-   #- sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
+   - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
    # Test sample applications
    - sbt publishLocal && pushd samples/compile-timeDI/ && sbt test && popd
    - sbt publishLocal && pushd samples/runtimeDI/ && sbt test && popd
