@@ -37,15 +37,15 @@ trait MailerClient extends JMailerClient {
     Email(
       Option(data.getSubject).getOrElse(""),
       Option(data.getFrom).getOrElse(""),
-      data.getTo.asScala,
+      data.getTo.asScala.toSeq,
       Option(data.getBodyText),
       Option(data.getBodyHtml),
       Option(data.getCharset),
-      data.getCc.asScala,
-      data.getBcc.asScala,
-      data.getReplyTo.asScala,
+      data.getCc.asScala.toSeq,
+      data.getBcc.asScala.toSeq,
+      data.getReplyTo.asScala.toSeq,
       Option(data.getBounceAddress),
-      attachments,
+      attachments.toSeq,
       data.getHeaders.asScala.toSeq)
   }
 }

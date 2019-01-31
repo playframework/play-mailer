@@ -4,7 +4,7 @@ import java.io.{ FilterOutputStream, PrintStream }
 import javax.mail.internet.InternetAddress
 import javax.mail.Session
 
-import org.apache.commons.mail._
+import org.apache.commons.mail.{ Email => CommonsEmail, _ }
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
@@ -64,15 +64,15 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     if (conf.debugMode && logger.isDebugEnabled) {
       email.setDebug(conf.debugMode)
       email.getMailSession.setDebugOut(new PrintStream(new FilterOutputStream(null) {
-        override def write(b: Array[Byte]) {
+        override def write(b: Array[Byte]): Unit = {
           logger.debug(new String(b))
         }
 
-        override def write(b: Array[Byte], off: Int, len: Int) {
+        override def write(b: Array[Byte], off: Int, len: Int): Unit = {
           logger.debug(new String(b, off, len))
         }
 
-        override def write(b: Int) {
+        override def write(b: Int): Unit = {
           this.write(new Array(b): Array[Byte])
         }
       }))
@@ -119,7 +119,7 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     }
   }
 
-  private def handleAttachmentData(email: MultiPartEmail, attachmentData: AttachmentData) {
+  private def handleAttachmentData(email: MultiPartEmail, attachmentData: AttachmentData): Unit = {
     val description = attachmentData.description.getOrElse(attachmentData.name)
     val disposition = attachmentData.disposition.getOrElse(EmailAttachment.ATTACHMENT)
     val dataSource = new javax.mail.util.ByteArrayDataSource(attachmentData.data, attachmentData.mimetype)
@@ -135,7 +135,7 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     }
   }
 
-  private def handleAttachmentFile(email: MultiPartEmail, attachmentFile: AttachmentFile) {
+  private def handleAttachmentFile(email: MultiPartEmail, attachmentFile: AttachmentFile): Unit = {
     val description = attachmentFile.description.getOrElse(attachmentFile.name)
     val disposition = attachmentFile.disposition.getOrElse(EmailAttachment.ATTACHMENT)
     val emailAttachment = new EmailAttachment()
