@@ -188,7 +188,6 @@ class MyComponent(mailerClient: MailerClient) {
      val email = Email("Simple email", "Mister FROM <from@email.com>", Seq("Miss TO <to@email.com>"), bodyText = Some("A text message"))
      mailerClient.send(email)
   }
-
 }
 ```
 
@@ -210,6 +209,7 @@ class ApplicationComponents(context: Context) extends BuiltInComponentsFromConte
   lazy val myComponent = new MyComponent(mailerClient)
   // create your controllers here ...
   lazy val router = new Routes(...) // inject your controllers here
+  lazy val config = configuration.underlying
 }
 ```
 
