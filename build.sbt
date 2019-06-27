@@ -33,8 +33,8 @@ val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.3"))
 // Version used to check binary compatibility
 val mimaPreviousArtifactsVersion = "7.0.0"
 
-def mimePreviousVersionExcludeScala213(modules: Set[ModuleID]): Set[ModuleID] = {
-  CrossVersion.partialVersion(scalaVersion.value) match {
+def mimePreviousVersionExcludeScala213(scalaVersion: String, modules: Set[ModuleID]): Set[ModuleID] = {
+  CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, v)) if v >= 13 => Set.empty
     case _                       => modules
   }
@@ -53,6 +53,7 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
     mimaPreviousArtifacts := mimePreviousVersionExcludeScala213(
+      scalaVersion.value,
       Set("com.typesafe.play" %% "play-mailer" % mimaPreviousArtifactsVersion)
     )
   )
@@ -68,6 +69,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
     mimaPreviousArtifacts := mimePreviousVersionExcludeScala213(
+      scalaVersion.value,
       Set("com.typesafe.play" %% "play-mailer-guice" % mimaPreviousArtifactsVersion)
     )
   )
