@@ -2,13 +2,12 @@ import com.typesafe.sbt.SbtScalariform._
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.plugin.MimaPlugin._
 import interplay.ScalaVersions
-
 import scalariform.formatter.preferences._
 
 lazy val commonSettings = mimaDefaultSettings ++ Seq(
   // scalaVersion needs to be kept in sync with travis-ci
   scalaVersion := ScalaVersions.scala212,
-  crossScalaVersions := Seq(ScalaVersions.scala211, ScalaVersions.scala212, ScalaVersions.scala213),
+  crossScalaVersions := Seq("2.11.12", ScalaVersions.scala212, ScalaVersions.scala213),
   scalariformAutoformat := true,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(SpacesAroundMultiImports, true)
@@ -23,14 +22,23 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
   ),
 
   mimaBinaryIssueFilters ++= Seq(
-  )
+  ),
+
+  fork in Test := scalaVersion.value.startsWith("2.11") // https://github.com/sbt/sbt/issues/4609
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.3"))
 
 // Version used to check binary compatibility
 val mimaPreviousArtifactsVersion = "7.0.0"
+
+def mimaPreviousVersionExcludeScala213(scalaVersion: String, modules: Set[ModuleID]): Set[ModuleID] = {
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, v)) if v >= 13 => Set.empty
+    case _                       => modules
+  }
+}
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
@@ -44,8 +52,9 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set(
-      "com.typesafe.play" %% "play-mailer" % mimaPreviousArtifactsVersion
+    mimaPreviousArtifacts := mimaPreviousVersionExcludeScala213(
+      scalaVersion.value,
+      Set("com.typesafe.play" %% "play-mailer" % mimaPreviousArtifactsVersion)
     )
   )
 
@@ -59,8 +68,9 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set(
-      "com.typesafe.play" %% "play-mailer-guice" % mimaPreviousArtifactsVersion
+    mimaPreviousArtifacts := mimaPreviousVersionExcludeScala213(
+      scalaVersion.value,
+      Set("com.typesafe.play" %% "play-mailer-guice" % mimaPreviousArtifactsVersion)
     )
   )
 
