@@ -27,7 +27,7 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.0"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.3"))
 
 // Version used to check binary compatibility
 val mimaPreviousArtifactsVersion = "7.0.0"
