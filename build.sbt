@@ -16,6 +16,20 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
     .setPreference(PreserveSpaceBeforeArguments, true)
     .setPreference(DoubleIndentConstructorArguments, true),
 
+  scalacOptions ++= Seq(
+    "-target:jvm-1.8",
+    "-deprecation",
+    "-encoding", "UTF-8",
+    "-feature",
+    "-unchecked",
+
+    "-Ywarn-unused:imports",
+    "-Xlint:nullary-unit",
+
+    "-Xlint",
+    "-Ywarn-dead-code"
+  ),
+
   javacOptions ++= Seq(
     "-Xlint:unchecked",
     "-Xlint:deprecation"

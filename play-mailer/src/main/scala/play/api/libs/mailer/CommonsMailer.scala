@@ -4,7 +4,7 @@ import java.io.{ FilterOutputStream, PrintStream }
 import javax.mail.internet.InternetAddress
 import javax.mail.Session
 
-import org.apache.commons.mail.{ Email => CommonsEmail, _ }
+import org.apache.commons.mail._
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
