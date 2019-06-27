@@ -8,7 +8,7 @@ import scalariform.formatter.preferences._
 lazy val commonSettings = mimaDefaultSettings ++ Seq(
   // scalaVersion needs to be kept in sync with travis-ci
   scalaVersion := ScalaVersions.scala212,
-  crossScalaVersions := Seq(ScalaVersions.scala211, ScalaVersions.scala212, ScalaVersions.scala213),
+  crossScalaVersions := Seq("2.11.12", ScalaVersions.scala212, ScalaVersions.scala213),
   scalariformAutoformat := true,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(SpacesAroundMultiImports, true)
