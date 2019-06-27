@@ -23,7 +23,9 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
   ),
 
   mimaBinaryIssueFilters ++= Seq(
-  )
+  ),
+
+  fork in Test := scalaVersion.value.startsWith("2.11") // https://github.com/sbt/sbt/issues/4609
 )
 
 // needs to be kept in sync with travis-ci
