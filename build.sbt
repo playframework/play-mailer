@@ -7,7 +7,7 @@ import scalariform.formatter.preferences._
 lazy val commonSettings = mimaDefaultSettings ++ Seq(
   // scalaVersion needs to be kept in sync with travis-ci
   scalaVersion := ScalaVersions.scala212,
-  crossScalaVersions := Seq("2.11.12", ScalaVersions.scala212, ScalaVersions.scala213),
+  crossScalaVersions := Seq(ScalaVersions.scala212, ScalaVersions.scala213),
   scalariformAutoformat := true,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(SpacesAroundMultiImports, true)
@@ -36,9 +36,7 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
   ),
 
   mimaBinaryIssueFilters ++= Seq(
-  ),
-
-  fork in Test := scalaVersion.value.startsWith("2.11") // https://github.com/sbt/sbt/issues/4609
+  )
 )
 
 // needs to be kept in sync with travis-ci
