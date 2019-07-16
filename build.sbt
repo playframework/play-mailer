@@ -6,8 +6,8 @@ import scalariform.formatter.preferences._
 
 lazy val commonSettings = mimaDefaultSettings ++ Seq(
   // scalaVersion needs to be kept in sync with travis-ci
-  scalaVersion := ScalaVersions.scala212,
-  crossScalaVersions := Seq("2.11.12", ScalaVersions.scala212, ScalaVersions.scala213),
+  scalaVersion := ScalaVersions.scala213,
+  crossScalaVersions := Seq(ScalaVersions.scala212, ScalaVersions.scala213),
   scalariformAutoformat := true,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(SpacesAroundMultiImports, true)
@@ -16,19 +16,31 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
     .setPreference(PreserveSpaceBeforeArguments, true)
     .setPreference(DoubleIndentConstructorArguments, true),
 
+  scalacOptions ++= Seq(
+    "-target:jvm-1.8",
+    "-deprecation",
+    "-encoding", "UTF-8",
+    "-feature",
+    "-unchecked",
+
+    "-Ywarn-unused:imports",
+    "-Xlint:nullary-unit",
+
+    "-Xlint",
+    "-Ywarn-dead-code"
+  ),
+
   javacOptions ++= Seq(
     "-Xlint:unchecked",
     "-Xlint:deprecation"
   ),
 
   mimaBinaryIssueFilters ++= Seq(
-  ),
-
-  fork in Test := scalaVersion.value.startsWith("2.11") // https://github.com/sbt/sbt/issues/4609
+  )
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.7.3"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.8.0-M3"))
 
 // Version used to check binary compatibility
 val mimaPreviousArtifactsVersion = "7.0.0"

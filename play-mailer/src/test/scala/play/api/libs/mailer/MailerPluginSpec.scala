@@ -252,7 +252,7 @@ class MailerPluginSpec extends Specification with Mockito {
       convert.bodyHtml mustEqual Some("<html><body><p>An <b>html</b> message</p></body></html>")
       convert.charset mustEqual Some("UTF-16")
       convert.headers.size mustEqual 1
-      convert.headers.head mustEqual ("key", "value")
+      convert.headers.head mustEqual ("key" -> "value")
       convert.attachments.size mustEqual 3
       convert.attachments.head must beAnInstanceOf[AttachmentFile]
       convert.attachments.head.asInstanceOf[AttachmentFile].name mustEqual "play icon"
