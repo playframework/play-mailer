@@ -1,10 +1,14 @@
 package play.api.libs.mailer
 
-import java.io.{ FilterOutputStream, PrintStream }
+import java.io.FilterOutputStream
+import java.io.PrintStream
+
 import javax.mail.internet.InternetAddress
 import javax.mail.Session
-
-import org.apache.commons.mail._
+import org.apache.commons.mail.DefaultAuthenticator
+import org.apache.commons.mail.EmailAttachment
+import org.apache.commons.mail.HtmlEmail
+import org.apache.commons.mail.MultiPartEmail
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
@@ -54,7 +58,7 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     authenticator.foreach(email.setAuthenticator(_))
 
     // After the email was set up we can now also manipulate the session properties directly
-    val mailProperties = email.getMailSession.getProperties();
+    val mailProperties = email.getMailSession.getProperties()
     conf.props.entrySet().asScala.foreach(prop => {
       mailProperties.setProperty("mail.smtp." + prop.getKey(), prop.getValue().unwrapped().toString)
       mailProperties.setProperty("mail.smtps." + prop.getKey(), prop.getValue().unwrapped().toString)
