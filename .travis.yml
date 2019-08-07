@@ -18,8 +18,8 @@ install:
 script:
    - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
    # Test sample applications
-   - sbt publishLocal && pushd samples/compile-timeDI/ && sbt test && popd
-   - sbt publishLocal && pushd samples/runtimeDI/ && sbt test && popd
+   - sbt ++$TRAVIS_SCALA_VERSION publishLocal && pushd samples/compile-timeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
+   - sbt ++$TRAVIS_SCALA_VERSION publishLocal && pushd samples/runtimeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
 
 cache:
   directories:
