@@ -342,4 +342,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 The Play Mailer library is *[Community Driven][]*.
 
-[Community Driven]: https://developer.lightbend.com/docs/reactive-platform/2.0/support-terminology/index.html#community-driven
+[Community Driven]: https://developer.lightbend.com/docs/lightbend-platform/introduction/getting-help/support-terminology.html#community-driven
