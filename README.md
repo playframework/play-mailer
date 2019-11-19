@@ -11,8 +11,8 @@ Play Mailer is a powerful Scala Mailing library. It provides a simple configurab
 To get started you add `play-mailer` and `play-mailer-guice` as a dependency in SBT:
 
 ```scala
-libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.1"
-libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "6.0.1"
+libraryDependencies += "com.typesafe.play" %% "play-mailer" % "8.0.0"
+libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "8.0.0"
 ```
 
 After that you need to configure the mailer inside your `application.conf`:
@@ -44,7 +44,7 @@ play.mailer {
 }
 ```
 
-If you are on Play 2.6.x you can skip to [Usage](#usage).
+If you are on Play 2.6.x or later you can skip to [Usage](#usage).
 For Play 2.5.x you might also need a ConfigModule:
 
 ### Play 2.5.x and Scala
@@ -301,6 +301,8 @@ The Play Mailer plugin supports several different versions of Play.
 
 | Plugin version   | Play version    |
 |------------------|-----------------|
+| 8.x              | 2.8.x           |
+| 7.x              | 2.7.x           |
 | 6.x              | 2.5.x and 2.6.x |
 | 5.x              | 2.5.x           |
 | 4.x              | 2.4.x           |
@@ -324,7 +326,19 @@ For Play 2.4:
 For Play 2.5 and Play 2.6:
 
 ```scala
-"com.typesafe.play" %% "play-mailer" % "6.0.0"
+"com.typesafe.play" %% "play-mailer" % "6.0.1"
+```
+
+For Play 2.7:
+
+```scala
+"com.typesafe.play" %% "play-mailer" % "7.0.1"
+```
+
+For Play 2.8:
+
+```scala
+"com.typesafe.play" %% "play-mailer" % "8.0.0"
 ```
 
 ## License
