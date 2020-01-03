@@ -26,7 +26,7 @@ play.mailer {
   tlsRequired = no // (defaults to no)
   user = null // (optional)
   password = null // (optional)
-  debug = no // (defaults to no, to take effect you also need to set the log level to "DEBUG" for the application logger)
+  debug = no // (defaults to no, to take effect you also need to set the log level to "DEBUG" for the "play.mailer" logger)
   timeout = null // (defaults to 60s in milliseconds)
   connectiontimeout = null // (defaults to 60s in milliseconds)
   mock = no // (defaults to no, will only log all the email properties instead of sending an email)
