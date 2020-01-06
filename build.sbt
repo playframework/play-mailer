@@ -40,17 +40,10 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
 )
 
 // needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.8.0-M3"))
+val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.8.0"))
 
 // Version used to check binary compatibility
-val mimaPreviousArtifactsVersion = "7.0.0"
-
-def mimaPreviousVersionExcludeScala213(scalaVersion: String, modules: Set[ModuleID]): Set[ModuleID] = {
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, v)) if v >= 13 => Set.empty
-    case _                       => modules
-  }
-}
+val mimaPreviousArtifactsVersion = "7.0.1"
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(PlayLibrary)
@@ -58,16 +51,13 @@ lazy val `play-mailer` = (project in file("play-mailer"))
   .settings(
     libraryDependencies ++= Seq(
       "javax.inject" % "javax.inject" % "1",
-      "com.typesafe" % "config" % "1.3.3",
-      "org.slf4j" % "slf4j-api" % "1.7.25",
+      "com.typesafe" % "config" % "1.4.0",
+      "org.slf4j" % "slf4j-api" % "1.7.30",
       "org.apache.commons" % "commons-email" % "1.5",
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
-    mimaPreviousArtifacts := mimaPreviousVersionExcludeScala213(
-      scalaVersion.value,
-      Set("com.typesafe.play" %% "play-mailer" % mimaPreviousArtifactsVersion)
-    )
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer" % mimaPreviousArtifactsVersion)
   )
 
 lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
@@ -80,15 +70,13 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
       "com.typesafe.play" %% "play" % PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
     ),
-    mimaPreviousArtifacts := mimaPreviousVersionExcludeScala213(
-      scalaVersion.value,
-      Set("com.typesafe.play" %% "play-mailer-guice" % mimaPreviousArtifactsVersion)
-    )
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer-guice" % mimaPreviousArtifactsVersion)
   )
 
 lazy val `play-mailer-root` = (project in file("."))
   .enablePlugins(PlayRootProject, PlayReleaseBase)
   .settings(commonSettings)
+  .settings(mimaFailOnNoPrevious := false)
   .aggregate(`play-mailer`, `play-mailer-guice`)
 
 playBuildRepoName in ThisBuild := "play-mailer"
