@@ -3,14 +3,14 @@ import PlayKeys._
 
 name := "runtime-DI"
 
-version := "1.0-SNAPSHOT"
+ThisBuild / dynverVTagPrefix := false
 
 scalaVersion := "2.13.1"
 
 crossScalaVersions := Seq("2.12.10", "2.13.1")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-mailer-guice" % "8.0.0-SNAPSHOT",
+  "com.typesafe.play" %% "play-mailer-guice" % version.value,
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
 )
 

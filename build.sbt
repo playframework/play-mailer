@@ -1,8 +1,9 @@
 import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.plugin.MimaPlugin._
 import interplay.ScalaVersions
 import scalariform.formatter.preferences._
+
+ThisBuild / dynverVTagPrefix := false
 
 lazy val commonSettings = mimaDefaultSettings ++ Seq(
   // scalaVersion needs to be kept in sync with travis-ci
