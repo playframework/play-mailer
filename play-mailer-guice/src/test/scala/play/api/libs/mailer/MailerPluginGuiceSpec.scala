@@ -1,5 +1,6 @@
 package play.api.libs.mailer
 
+import com.typesafe.config.ConfigFactory
 import org.specs2.mock.Mockito
 import org.specs2.mutable._
 import play.api.Application
@@ -49,7 +50,8 @@ class MailerPluginGuiceSpec extends Specification with Mockito {
       there was two(mockedConfigurationProvider).get()
     }
     "validate the configuration" in new WithApplication(applicationWithMoreMailerConfiguration) {
-      app.injector.instanceOf(bind[SMTPConfiguration]) must ===(SMTPConfiguration("typesafe.org", 25, user = Some("typesafe"), password = Some("typesafe")))
+      app.injector.instanceOf(bind[SMTPConfiguration]) must ===(SMTPConfiguration("typesafe.org", 25,
+        user = Some("typesafe"), password = Some("typesafe"), props = ConfigFactory.parseString("ssl.checkserveridentity=true")))
     }
   }
 }
