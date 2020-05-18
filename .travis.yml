@@ -17,7 +17,8 @@ install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx
 script:
    - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
    # Test sample applications
-   - export PLAY_MAILER_VERSION=`sbt publishLocal "print play-mailer/version" | tail -1`
+   - sbt publishLocal "print play-mailer/version" | tee /tmp/out.txt
+   - export PLAY_MAILER_VERSION=`tail -1 /tmp/out`
    - pushd samples/compile-timeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
    - pushd samples/runtimeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
 
