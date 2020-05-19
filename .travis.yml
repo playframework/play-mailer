@@ -1,3 +1,5 @@
+version: ~> 1.0
+
 language: scala
 
 scala:
@@ -21,6 +23,22 @@ script:
    - export PLAY_MAILER_VERSION=`tail -1 /tmp/out`
    - pushd samples/compile-timeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
    - pushd samples/runtimeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
+
+jobs:
+  include:
+    - stage: check
+
+    - stage: publish
+      name: "TEMP Publish artifacts to Bintray"
+      script: sbt +mimaReportBinaryIssues
+      scala: 2.13.1
+      env: TRAVIS_JDK=11
+
+stages:
+  - name: check
+
+  - name: publish
+#    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 
 cache:
   directories:
