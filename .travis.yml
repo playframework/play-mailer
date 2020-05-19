@@ -6,8 +6,8 @@ scala:
   - 2.13.0
 
 env:
-  - TRAVIS_JDK=adopt@1.8.192-12
-  - TRAVIS_JDK=adopt@1.11.0-1
+  - TRAVIS_JDK=adopt@1.8.0-0
+  - TRAVIS_JDK=adopt@1.11.0-0
 
 matrix:
   fast_finish: true
