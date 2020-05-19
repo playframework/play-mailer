@@ -72,4 +72,3 @@ lazy val `play-mailer-root` = (project in file("."))
     publish / skip := true
   )
   .aggregate(`play-mailer`, `play-mailer-guice`)
-
