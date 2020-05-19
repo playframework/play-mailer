@@ -26,8 +26,6 @@ script:
 
 jobs:
   include:
-    - stage: check
-
     - stage: publish
       name: "TEMP Publish artifacts to Bintray"
       script: sbt +mimaReportBinaryIssues
@@ -35,8 +33,6 @@ jobs:
       env: TRAVIS_JDK=11
 
 stages:
-  - name: check
-
   - name: publish
 #    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 
