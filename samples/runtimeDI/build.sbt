@@ -8,8 +8,8 @@ version := "1.0-SNAPSHOT"
 scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-mailer-guice" % "7.0.1-SNAPSHOT",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.0" % Test
+  "com.typesafe.play" %% "play-mailer-guice" % "7.0.2-SNAPSHOT",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
