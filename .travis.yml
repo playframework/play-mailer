@@ -25,8 +25,10 @@ script:
    # Binary compatibility check
    - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
    # Test sample applications
-   - sbt publishLocal && pushd samples/compile-timeDI/ && sbt test && popd
-   - sbt publishLocal && pushd samples/runtimeDI/ && sbt test && popd
+   - sbt ++$TRAVIS_SCALA_VERSION publishLocal "print play-mailer/version" | tee /tmp/out.txt
+   - export PLAY_MAILER_VERSION=`tail -1 /tmp/out`
+   - pushd samples/compile-timeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
+   - pushd samples/runtimeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
 
 cache:
   directories:
