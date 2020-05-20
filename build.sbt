@@ -1,14 +1,11 @@
 import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.plugin.MimaPlugin._
-import interplay.ScalaVersions
 import scalariform.formatter.preferences._
 
 ThisBuild / dynverVTagPrefix := false
 
-lazy val commonSettings = mimaDefaultSettings ++ Seq(
-  // scalaVersion needs to be kept in sync with travis-ci
-  scalaVersion := ScalaVersions.scala213,
-  crossScalaVersions := Seq(ScalaVersions.scala212, ScalaVersions.scala213),
+lazy val commonSettings = Seq(
+  scalaVersion := Dependencies.Scala213,
+  crossScalaVersions := Dependencies.ScalaVersions,
   scalariformAutoformat := true,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(SpacesAroundMultiImports, true)
@@ -35,19 +32,10 @@ lazy val commonSettings = mimaDefaultSettings ++ Seq(
     "-Xlint:unchecked",
     "-Xlint:deprecation"
   ),
-
-  mimaBinaryIssueFilters ++= Seq(
-  )
 )
 
-// needs to be kept in sync with travis-ci
-val PlayVersion = playVersion(sys.env.getOrElse("PLAY_VERSION", "2.8.0"))
-
-// Version used to check binary compatibility
-val mimaPreviousArtifactsVersion = "7.0.1"
-
 lazy val `play-mailer` = (project in file("play-mailer"))
-  .enablePlugins(PlayLibrary)
+  .enablePlugins(Common)
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
@@ -55,29 +43,33 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "com.typesafe" % "config" % "1.4.0",
       "org.slf4j" % "slf4j-api" % "1.7.30",
       "org.apache.commons" % "commons-email" % "1.5",
-      "com.typesafe.play" %% "play" % PlayVersion % Test,
-      "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
+      "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
+      "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer" % mimaPreviousArtifactsVersion)
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version")))
   )
 
 lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
-  .enablePlugins(PlayLibrary)
+  .enablePlugins(Common)
   .settings(commonSettings)
   .dependsOn(`play-mailer`)
   .settings(
     libraryDependencies ++= Seq(
       "com.google.inject" % "guice" % "4.2.2",
-      "com.typesafe.play" %% "play" % PlayVersion % Test,
-      "com.typesafe.play" %% "play-specs2" % PlayVersion % Test
+      "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
+      "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer-guice" % mimaPreviousArtifactsVersion)
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer-guice" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version")))
   )
 
 lazy val `play-mailer-root` = (project in file("."))
-  .enablePlugins(PlayRootProject, PlayReleaseBase)
+  .disablePlugins(MimaPlugin)
   .settings(commonSettings)
-  .settings(mimaFailOnNoPrevious := false)
+  .settings(
+    crossScalaVersions := Nil,
+    publish / skip := true
+  )
   .aggregate(`play-mailer`, `play-mailer-guice`)
 
-playBuildRepoName in ThisBuild := "play-mailer"

@@ -1,8 +1,10 @@
+version: ~> 1.0
+
 language: scala
 
 scala:
-  - 2.12.10
-  - 2.13.1
+  - 2.12.11
+  - 2.13.2
 
 git:
   depth: false # Avoid sbt-dynver not seeing the tag
@@ -21,6 +23,19 @@ script:
    - export PLAY_MAILER_VERSION=`tail -1 /tmp/out`
    - pushd samples/compile-timeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
    - pushd samples/runtimeDI/ && sbt ++$TRAVIS_SCALA_VERSION test && popd
+
+jobs:
+  include:
+    - stage: deploy
+      name: "TEMP Publish artifacts to Bintray"
+      script: sbt +mimaReportBinaryIssues
+      scala: 2.13.2
+      env: TRAVIS_JDK=11
+
+stages:
+  - name: test
+  - name: deploy
+    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 
 cache:
   directories:
