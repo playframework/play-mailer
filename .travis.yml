@@ -3,8 +3,8 @@ version: ~> 1.0
 language: scala
 
 scala:
-  - 2.12.10
-  - 2.13.1
+  - 2.12.11
+  - 2.13.2
 
 git:
   depth: false # Avoid sbt-dynver not seeing the tag
@@ -29,7 +29,7 @@ jobs:
     - stage: deploy
       name: "TEMP Publish artifacts to Bintray"
       script: sbt +mimaReportBinaryIssues
-      scala: 2.13.1
+      scala: 2.13.2
       env: TRAVIS_JDK=11
 
 stages:
