@@ -1,10 +1,9 @@
 import com.typesafe.sbt.SbtScalariform._
-import com.typesafe.tools.mima.plugin.MimaPlugin._
 import scalariform.formatter.preferences._
 
 ThisBuild / dynverVTagPrefix := false
 
-lazy val commonSettings = mimaDefaultSettings ++ Seq(
+lazy val commonSettings = Seq(
   scalaVersion := Dependencies.Scala213,
   crossScalaVersions := Dependencies.ScalaVersions,
   scalariformAutoformat := true,
@@ -47,7 +46,8 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer" % previousStableVersion.value.get)
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version")))
   )
 
 lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
@@ -60,7 +60,8 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
       "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer-guice" % previousStableVersion.value.get)
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer-guice" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version")))
   )
 
 lazy val `play-mailer-root` = (project in file("."))
