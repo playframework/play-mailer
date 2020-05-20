@@ -1,3 +1,5 @@
+import bintray.BintrayPlugin
+import bintray.BintrayPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 import sbt.plugins.JvmPlugin
@@ -5,7 +7,7 @@ import sbt.plugins.JvmPlugin
 object Common extends AutoPlugin {
   override def trigger = allRequirements
 
-  override def requires = JvmPlugin
+  override def requires = JvmPlugin && BintrayPlugin
 
   val repoName = "play-mailer"
 
@@ -27,4 +29,10 @@ object Common extends AutoPlugin {
         url("https://github.com/playframework")),
 
       description := "Play mailer plugin")
+
+  override def projectSettings = Seq(
+    bintrayOrganization := Some("playframework"),
+    bintrayRepository := (if (isSnapshot.value) "snapshots" else "maven"),
+    bintrayPackage := repoName,
+  )
 }
