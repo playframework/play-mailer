@@ -34,9 +34,9 @@ jobs:
       env:
       - TRAVIS_JDK=11
         # encrypt with: travis encrypt --pro BINTRAY_USER=...
-      - secure: "WLusgj1xhwIYoVduR3+XPb1HqpM2LsJGg5a0ew8NCOH8DY5cTN0vlBQegIBqIzy96PdLHoeD2uOLBuGf024Val5RyeZRZV/mN0o/ZeOM0Djr6AeqrCBKeYcGPrEu7qvOjV03HoYkPQgAvSiLWnwk6FOZcuRRPKhTzPe/bZYbnxI="
+      - secure: "AsUH32Opr8jA4cHsfG7g0ESqEE0Vn5EjbsvxiFkEeeUdTy0DpVGLuCdJ3qEH7cdY0VCMFxEjN+JqP2ehlylN7esth2VFPO1MatWhHmZfOuo1bv0yyuk0h0tlH8LNmEZnM+v18XLqlYKHHVjgEDsia5if8jxhuFeYJvgrfPk77ZE="
         # encrypt with: travis encrypt --pro BINTRAY_PASS=...
-      - secure: "O2NECglQvftbnrXUS+z7LpzpuzbntCDKQct/ePb9ghZ79BacC0J7PCjiR8bSTszrWb1EIWJ1ECa1ODgkXO99xXmtXGNNdfybhkEkTbOae8sJTy21O1BwHgozlsMKOOPp2FtuLBO4BpkQuqypX7oHkYUf37uEn1Ljic7e48NjraI="
+      - secure: "CnlsQ5fBg4X9JEYGhjIAtWy7HmGmBIbcHMBwIOxJbLDhzkTk6vCZfa8OeIz/NqgMB2i3kmbC9EK+oJYz6JfPFNnOhMSPBi7RAbBwqz/7MoNK8b3xJhSTvUvtsj08HWhYFBReFfD5HdkocpjQ7h5aH8jR/1q6j6aXf1czqIqKSF8="
 
 stages:
   - name: test
