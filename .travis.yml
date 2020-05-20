@@ -13,6 +13,7 @@ env:
   - TRAVIS_JDK=8
   - TRAVIS_JDK=11
 
+
 before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
 install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx32m -version
 
@@ -27,10 +28,15 @@ script:
 jobs:
   include:
     - stage: deploy
-      name: "TEMP Publish artifacts to Bintray"
-      script: sbt +mimaReportBinaryIssues
+      name: "Publish artifacts to Bintray"
+      script: sbt +publish
       scala: 2.13.2
-      env: TRAVIS_JDK=11
+      env:
+      - TRAVIS_JDK=11
+        # encrypt with: travis encrypt --pro BINTRAY_USER=...
+      - secure: "WLusgj1xhwIYoVduR3+XPb1HqpM2LsJGg5a0ew8NCOH8DY5cTN0vlBQegIBqIzy96PdLHoeD2uOLBuGf024Val5RyeZRZV/mN0o/ZeOM0Djr6AeqrCBKeYcGPrEu7qvOjV03HoYkPQgAvSiLWnwk6FOZcuRRPKhTzPe/bZYbnxI="
+        # encrypt with: travis encrypt --pro BINTRAY_PASS=...
+      - secure: "O2NECglQvftbnrXUS+z7LpzpuzbntCDKQct/ePb9ghZ79BacC0J7PCjiR8bSTszrWb1EIWJ1ECa1ODgkXO99xXmtXGNNdfybhkEkTbOae8sJTy21O1BwHgozlsMKOOPp2FtuLBO4BpkQuqypX7oHkYUf37uEn1Ljic7e48NjraI="
 
 stages:
   - name: test
