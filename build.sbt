@@ -64,6 +64,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   )
 
 lazy val `play-mailer-root` = (project in file("."))
+  .disablePlugins(MimaPlugin)
   .settings(commonSettings)
   .settings(
     crossScalaVersions := Nil,
