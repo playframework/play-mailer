@@ -36,7 +36,7 @@ jobs:
         # encrypt with: travis encrypt --pro BINTRAY_USER=...
       - secure: "AsUH32Opr8jA4cHsfG7g0ESqEE0Vn5EjbsvxiFkEeeUdTy0DpVGLuCdJ3qEH7cdY0VCMFxEjN+JqP2ehlylN7esth2VFPO1MatWhHmZfOuo1bv0yyuk0h0tlH8LNmEZnM+v18XLqlYKHHVjgEDsia5if8jxhuFeYJvgrfPk77ZE="
         # encrypt with: travis encrypt --pro BINTRAY_PASS=...
-      - secure: "CnlsQ5fBg4X9JEYGhjIAtWy7HmGmBIbcHMBwIOxJbLDhzkTk6vCZfa8OeIz/NqgMB2i3kmbC9EK+oJYz6JfPFNnOhMSPBi7RAbBwqz/7MoNK8b3xJhSTvUvtsj08HWhYFBReFfD5HdkocpjQ7h5aH8jR/1q6j6aXf1czqIqKSF8="
+      - secure: "W7qZ1gjrJ4jcrXLLeoan9bgLnWQry7wXy1uhWohS1Jo2kZQ5Wy9SAicWXGm6ZWCVSNesjshjKDaiTmrOmC0i97M2dVtGtgbB+v80z7kJqY6ZspmvEleYxPZO7JWWthrSy+VOYffsiKUAZxNAydbbvEMIoB55sSC2GhAeN1uCijQ="
 
 stages:
   - name: test
