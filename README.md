@@ -4,16 +4,25 @@
 
 Play Mailer is a powerful Scala Mailing library. It provides a simple configurable mailer.
 
-> For Play 2.4.x or lower, please read the README on [the older 5.x branch.](https://github.com/playframework/play-mailer/blob/4bdc0cd58e0978f289891807d3ac158ce620e81f/README.adoc)
- 
 ## Getting Started
 
 To get started you add `play-mailer` and `play-mailer-guice` as a dependency in SBT:
 
 ```scala
-libraryDependencies += "com.typesafe.play" %% "play-mailer" % "8.0.0"
-libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "8.0.0"
+libraryDependencies += "com.typesafe.play" %% "play-mailer" % -version-
+libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % -version-
 ```
+
+## Versioning
+
+The Play Mailer plugin supports several different versions of Play.
+
+| Plugin version   | Play version    |
+|------------------|-----------------|
+| 8.x              | 2.8.x           |
+| 7.x              | 2.7.x           |
+
+See [GitHub releases](https://github.com/playframework/play-mailer/releases) for the latest versions.
 
 After that you need to configure the mailer inside your `application.conf`:
  
@@ -42,92 +51,6 @@ play.mailer {
     // Results in "mail.smtp.localhost=127.0.0.1" and "mail.smtps.localhost=127.0.0.1" in the JavaMail session.
   }
 }
-```
-
-If you are on Play 2.6.x or later you can skip to [Usage](#usage).
-For Play 2.5.x you might also need a ConfigModule:
-
-### Play 2.5.x and Scala
-
-You can just create a simple Module:
-
-```scala
-package playconfig
-
-import com.typesafe.config.Config
-import play.api.inject.{ Binding, Module }
-import play.api.{ Configuration, Environment }
-
-/**
- * Config Module to provide a shim for Play 2.5.x
- */
-class ConfigModule extends Module {
-
-  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
-    bind[Config].toInstance(configuration.underlying)
-  )
-
-}
-```
-
-And register it inside your `application.conf`:
-
-```HOCON
-play.modules.enabled += "playconfig.ConfigModule"
-```
-
-### Play 2.5.x and Java
-
-First you need to create a ConfigProvider:
-
-```java
-package playconfig;
-
-import com.typesafe.config.Config;
-import play.Configuration;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-@Singleton
-public class ConfigProvider implements Provider<Config> {
-
-  private final Configuration configuration;
-
-  @Inject
-  public ConfigProvider(Configuration configuration) {
-    this.configuration = configuration;
-  }
-
-  @Override
-  public Config get() {
-    return this.configuration.underlying();
-  }
-
-}
-```
-
-Then you need to create the ConfigModule:
-
-```java
-package playconfig;
-
-import com.google.inject.AbstractModule;
-import com.typesafe.config.Config;
-
-public class ConfigModule extends AbstractModule {
-  @Override
-  protected void configure() {
-    bind(Config.class).toProvider(ConfigProvider.class);
-  }
-}
-```
-
-And finally register it inside your `application.conf`:
-
-```HOCON
-play.modules.enabled += "playconfig.ConfigModule"
 ```
 
 ## Usage
@@ -175,7 +98,7 @@ class MailerService @Inject() (mailerClient: MailerClient) {
 
 #### Compile Time Injection
 
-If you use Compile time Injection you can remove `libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "6.0.0"` from your `build.sbt`.
+If you use Compile time Injection you can remove `libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % -version-` from your `build.sbt`.
 
 Create the MailerService without the `@Inject` annotation:
 
@@ -293,52 +216,6 @@ public class MailerService {
     mailerClient.send(email);
   }
 }
-```
-
-## Versioning
-
-The Play Mailer plugin supports several different versions of Play.
-
-| Plugin version   | Play version    |
-|------------------|-----------------|
-| 8.x              | 2.8.x           |
-| 7.x              | 2.7.x           |
-| 6.x              | 2.5.x and 2.6.x |
-| 5.x              | 2.5.x           |
-| 4.x              | 2.4.x           |
-| 3.x              | 2.4.x           |
-| 2.x              | 2.3.x           |
-
-## Current Versions
-
-For Play 2.3:
-
-```scala
-"com.typesafe.play" %% "play-mailer" % "2.4.1"
-```
-
-For Play 2.4:
-
-```scala
-"com.typesafe.play" %% "play-mailer" % "4.0.0"
-```
-
-For Play 2.5 and Play 2.6:
-
-```scala
-"com.typesafe.play" %% "play-mailer" % "6.0.1"
-```
-
-For Play 2.7:
-
-```scala
-"com.typesafe.play" %% "play-mailer" % "7.0.1"
-```
-
-For Play 2.8:
-
-```scala
-"com.typesafe.play" %% "play-mailer" % "8.0.0"
 ```
 
 ## License
