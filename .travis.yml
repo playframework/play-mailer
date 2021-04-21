@@ -3,8 +3,8 @@ version: ~> 1.0
 language: scala
 
 scala:
-  - 2.12.11
-  - 2.13.2
+  - 2.12.13
+  - 2.13.5
 
 git:
   depth: false # Avoid sbt-dynver not seeing the tag
@@ -30,7 +30,7 @@ jobs:
     - stage: deploy
       name: "Publish artifacts to Bintray"
       script: sbt +publish
-      scala: 2.13.2
+      scala: 2.13.5
       env:
       - TRAVIS_JDK=11
         # encrypt with: travis encrypt --pro BINTRAY_USER=...
