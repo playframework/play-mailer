@@ -11,6 +11,7 @@ import org.apache.commons.mail.HtmlEmail
 import org.apache.commons.mail.MultiPartEmail
 import org.slf4j.LoggerFactory
 
+import javax.activation.URLDataSource
 import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
 
@@ -45,6 +46,10 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
         handleAttachmentData(email, attachmentData)
       case attachmentFile: AttachmentFile =>
         handleAttachmentFile(email, attachmentFile)
+      case attachmentDataSource: AttachmentDataSource =>
+        handleAttachmentDataSource(email, attachmentDataSource)
+      case attachmentURL: AttachmentURL =>
+        handleAttachmentURL(email, attachmentURL)
     }
     email.setHostName(conf.host)
     email.setSmtpPort(conf.port)
@@ -156,6 +161,38 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
           }
         }
       case None => email.attach(emailAttachment)
+    }
+  }
+
+  private def handleAttachmentDataSource(email: MultiPartEmail, attachmentDataSource: AttachmentDataSource): Unit = {
+    val description = attachmentDataSource.description.getOrElse(attachmentDataSource.name)
+    val disposition = attachmentDataSource.disposition.getOrElse(EmailAttachment.ATTACHMENT)
+    val dataSource = attachmentDataSource.dataSource
+    attachmentDataSource.contentId match {
+      case Some(cid) =>
+        email match {
+          case htmlEmail: HtmlEmail => htmlEmail.embed(dataSource, attachmentDataSource.name, cid)
+          case _ => if (conf.debugMode && logger.isDebugEnabled) {
+            logger.debug("You need to set an HTML body to embed images with cid")
+          }
+        }
+      case None => email.attach(dataSource, attachmentDataSource.name, description, disposition)
+    }
+  }
+
+  private def handleAttachmentURL(email: MultiPartEmail, attachmentURL: AttachmentURL): Unit = {
+    val description = attachmentURL.description.getOrElse(attachmentURL.name)
+    val disposition = attachmentURL.disposition.getOrElse(EmailAttachment.ATTACHMENT)
+    val url = attachmentURL.url
+    attachmentURL.contentId match {
+      case Some(cid) =>
+        email match {
+          case htmlEmail: HtmlEmail => htmlEmail.embed(new URLDataSource(url), attachmentURL.name, cid)
+          case _ => if (conf.debugMode && logger.isDebugEnabled) {
+            logger.debug("You need to set an HTML body to embed images with cid")
+          }
+        }
+      case None => email.attach(url, attachmentURL.name, description, disposition)
     }
   }
 }

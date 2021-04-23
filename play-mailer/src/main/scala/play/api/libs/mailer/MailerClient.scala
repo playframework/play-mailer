@@ -26,11 +26,21 @@ trait MailerClient extends JMailerClient {
           attachment.getName,
           attachment.getFile,
           Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
-      } else {
+      } else if (Option(attachment.getData).isDefined) {
         AttachmentData(
           attachment.getName,
           attachment.getData,
           attachment.getMimetype,
+          Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
+      } else if (Option(attachment.getDataSource).isDefined) {
+        AttachmentDataSource(
+          attachment.getName,
+          attachment.getDataSource,
+          Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
+      } else {
+        AttachmentURL(
+          attachment.getName,
+          attachment.getUrl,
           Option(attachment.getDescription), Option(attachment.getDisposition), Option(attachment.getContentId))
       }
     }

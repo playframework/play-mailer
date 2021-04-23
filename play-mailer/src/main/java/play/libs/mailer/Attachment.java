@@ -1,6 +1,8 @@
 package play.libs.mailer;
 
+import javax.activation.DataSource;
 import java.io.File;
+import java.net.URL;
 
 public class Attachment {
 
@@ -9,6 +11,8 @@ public class Attachment {
   private String description;
   private String disposition;
   private byte[] data;
+  private DataSource dataSource;
+  private URL url;
   private String mimetype;
   private String contentId;
 
@@ -56,6 +60,42 @@ public class Attachment {
     this.disposition = disposition;
   }
 
+  public Attachment(String name, DataSource dataSource) {
+    this.name = name;
+    this.dataSource = dataSource;
+  }
+
+  public Attachment(String name, DataSource dataSource, String contentId) {
+    this.name = name;
+    this.dataSource = dataSource;
+    this.contentId = contentId;
+  }
+
+  public Attachment(String name, DataSource dataSource, String description, String disposition) {
+    this.name = name;
+    this.dataSource = dataSource;
+    this.description = description;
+    this.disposition = disposition;
+  }
+
+  public Attachment(String name, URL url) {
+    this.name = name;
+    this.url = url;
+  }
+
+  public Attachment(String name, URL url, String contentId) {
+    this.name = name;
+    this.url = url;
+    this.contentId = contentId;
+  }
+
+  public Attachment(String name, URL url, String description, String disposition) {
+    this.name = name;
+    this.url = url;
+    this.description = description;
+    this.disposition = disposition;
+  }
+
   public String getName() {
     return name;
   }
@@ -94,6 +134,22 @@ public class Attachment {
 
   public void setData(byte[] data) {
     this.data = data;
+  }
+
+  public DataSource getDataSource() {
+    return dataSource;
+  }
+
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
+  }
+
+  public URL getUrl() {
+    return url;
+  }
+
+  public void setUrl(URL url) {
+    this.url = url;
   }
 
   public String getMimetype() {

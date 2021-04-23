@@ -3,8 +3,8 @@ version: ~> 1.0
 language: scala
 
 scala:
-  - 2.12.11
-  - 2.13.2
+  - 2.12.13
+  - 2.13.5
 
 git:
   depth: false # Avoid sbt-dynver not seeing the tag
@@ -14,8 +14,15 @@ env:
   - TRAVIS_JDK=11
 
 
-before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
-install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx32m -version
+before_install:
+  - |
+    curl -Ls https://git.io/sbt -o sbt || travis_terminate 1
+    chmod 0755 sbt || travis_terminate 1
+    sudo mv sbt /usr/local/bin/sbt || travis_terminate 1
+  - curl --version # for debug purpose
+  - if [ ! -f ~/.jabba/jabba.sh ]; then curl -L -v --retry 5 -o jabba-install.sh https://git.io/jabba && bash jabba-install.sh; fi
+  - . ~/.jabba/jabba.sh
+install: jabba install $(jabba ls-remote "adopt@~1.$TRAVIS_JDK.0-0" --latest=patch) && jabba use "$_" && java -Xmx32m -version
 
 script:
    - sbt ++$TRAVIS_SCALA_VERSION test mimaReportBinaryIssues
@@ -30,7 +37,7 @@ jobs:
     - stage: deploy
       name: "Publish artifacts to Bintray"
       script: sbt +publish
-      scala: 2.13.2
+      scala: 2.13.5
       env:
       - TRAVIS_JDK=11
         # encrypt with: travis encrypt --pro BINTRAY_USER=...
@@ -45,9 +52,9 @@ stages:
 
 cache:
   directories:
-    - $HOME/.coursier/cache
-    - $HOME/.ivy2
-    - $HOME/.jabba/jdk
+    - $HOME/.cache/coursier
+    - $HOME/.ivy2/cache
+    - $HOME/.jabba
     - $HOME/.sbt
 
 before_cache:

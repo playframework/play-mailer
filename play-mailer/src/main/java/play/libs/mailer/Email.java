@@ -1,6 +1,8 @@
 package play.libs.mailer;
 
+import javax.activation.DataSource;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -149,6 +151,36 @@ public class Email {
 
   public Email addAttachment(String name, byte[] data, String mimeType, String description, String disposition) {
     this.attachments.add(new Attachment(name, data, mimeType, description, disposition));
+    return this;
+  }
+
+  public Email addAttachment(String name, DataSource dataSource) {
+    this.attachments.add(new Attachment(name, dataSource));
+    return this;
+  }
+
+  public Email addAttachment(String name, DataSource dataSource, String contentId) {
+    this.attachments.add(new Attachment(name, dataSource, contentId));
+    return this;
+  }
+
+  public Email addAttachment(String name, DataSource dataSource, String description, String disposition) {
+    this.attachments.add(new Attachment(name, dataSource, description, disposition));
+    return this;
+  }
+
+  public Email addAttachment(String name, URL url) {
+    this.attachments.add(new Attachment(name, url));
+    return this;
+  }
+
+  public Email addAttachment(String name, URL url, String contentId) {
+    this.attachments.add(new Attachment(name, url, contentId));
+    return this;
+  }
+
+  public Email addAttachment(String name, URL url, String description, String disposition) {
+    this.attachments.add(new Attachment(name, url, description, disposition));
     return this;
   }
 

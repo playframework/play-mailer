@@ -5,9 +5,9 @@ name := "runtime-DI"
 
 ThisBuild / dynverVTagPrefix := false
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.5"
 
-crossScalaVersions := Seq("2.12.10", "2.13.1")
+crossScalaVersions := Seq("2.12.13", "2.13.5")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer-guice" % version.value,
