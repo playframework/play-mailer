@@ -1,6 +1,6 @@
 # Play-Mailer
 
-[![Build Status](https://travis-ci.org/playframework/play-mailer.svg?branch=master)](https://travis-ci.org/playframework/play-mailer)
+[![Build Status](https://travis-ci.org/playframework/play-mailer.svg?branch=main)](https://travis-ci.org/playframework/play-mailer)
 
 Play Mailer is a powerful Scala Mailing library. It provides a simple configurable mailer.
 
