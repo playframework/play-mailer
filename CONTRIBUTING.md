@@ -35,20 +35,20 @@ This is the process for a contributor (that is, a non Play core developer) to co
         * Java and Scala APIs should be implemented the following way:
             * implement the core API in scala (`play.api.xxx`)
             * if your component requires life cycle management or needs to be swappable, create a plugin, otherwise skip this step
-            * wrap core API for scala users ([example]  (https://github.com/playframework/playframework/blob/master/framework/src/play-cache/src/main/scala/play/api/cache/Cache.scala#L69))
-            * wrap scala API for java users ([example](https://github.com/playframework/playframework/blob/master/framework/src/play-cache/src/main/java/play/cache/Cache.java))
+            * wrap core API for scala users ([example]  (https://github.com/playframework/playframework/blob/main/framework/src/play-cache/src/main/scala/play/api/cache/Cache.scala#L69))
+            * wrap scala API for java users ([example](https://github.com/playframework/playframework/blob/main/framework/src/play-cache/src/main/java/play/cache/Cache.java))
         * Features are forever, always think about whether a new feature really belongs to the core framework or it should be implemented as a plugin
-        * Code must conform to standard style guidelines and pass all tests (see [validatePullRequest](https://github.com/playframework/playframework/blob/master/framework/validatePullRequest))
+        * Code must conform to standard style guidelines and pass all tests (see [validatePullRequest](https://github.com/playframework/playframework/blob/main/framework/validatePullRequest))
     6. New files must:
        *  Have a Typesafe copyright header in the style of ``Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com>``.
        * Not use ``@author`` tags since it does not encourage [Collective Code Ownership](http://www.extremeprogramming.org/rules/collective.html).
 3. Submit a pull request.  If an issue already exists for the pull request, then follow [these](http://opensoul.org/blog/archives/2012/11/09/convert-a-github-issue-into-a-pull-request/) instructions for converting an issue into a pull request.
 
-If the pull request does not meet the above requirements then the code should **not** be merged into master, or even reviewed - regardless of how good or important it is. No exceptions.
+If the pull request does not meet the above requirements then the code should **not** be merged into main, or even reviewed - regardless of how good or important it is. No exceptions.
 
 ## Core Developer Workflow
 
-This is the process for committing code into master. There are of course exceptions to these rules, for example minor changes to comments and documentation, fixing a broken build etc.
+This is the process for committing code into main. There are of course exceptions to these rules, for example minor changes to comments and documentation, fixing a broken build etc.
 
 1. Make sure you have signed the [Typesafe CLA](http://www.typesafe.com/contribute/cla), if not, sign it online.
 2. Before starting to work on a feature or a fix, you have to make sure that:
@@ -60,7 +60,7 @@ This is the process for committing code into master. There are of course excepti
 4. When the feature or fix is completed you should open a [Pull Request](https://help.github.com/articles/using-pull-requests) on GitHub.  In order to avoid excess issues in GitHub, use the GitHub CLI to [attach the pull request to an existing issue](http://opensoul.org/blog/archives/2012/11/09/convert-a-github-issue-into-a-pull-request/).
 5. The Pull Request should be reviewed by other maintainers (as many as feasible/practical). Note that the maintainers can consist of outside contributors, both within and outside the Play team. Outside contributors are encouraged to participate in the review process, it is not a closed process.
 6. After the review you should fix the issues as needed (pushing a new commit for new review etc.), iterating until the reviewers give their thumbs up.
-7. Once the code has passed review the Pull Request can be merged into the master branch. 
+7. Once the code has passed review the Pull Request can be merged into the main branch. 
 
 ## Developer group & discussions
 
@@ -73,7 +73,7 @@ The documentation lives as markdown pages in the `documentation/manual` director
 
 ## Work In Progress
 
-It is ok to work on a public feature branch in the GitHub repository. Something that can sometimes be useful for early feedback etc. If so then it is preferable to name the branch accordingly. This can be done by either prefix the name with ``wip-`` as in ‘Work In Progress’, or use hierarchical names like ``wip/..``, ``feature/..`` or ``topic/..``. Either way is fine as long as it is clear that it is work in progress and not ready for merge. This work can temporarily have a lower standard. However, to be merged into master it will have to go through the regular process outlined above, with Pull Request, review etc.. 
+It is ok to work on a public feature branch in the GitHub repository. Something that can sometimes be useful for early feedback etc. If so then it is preferable to name the branch accordingly. This can be done by either prefix the name with ``wip-`` as in ‘Work In Progress’, or use hierarchical names like ``wip/..``, ``feature/..`` or ``topic/..``. Either way is fine as long as it is clear that it is work in progress and not ready for merge. This work can temporarily have a lower standard. However, to be merged into main it will have to go through the regular process outlined above, with Pull Request, review etc.. 
 
 Also, to facilitate both well-formed commits and working together, the ``wip`` and ``feature``/``topic`` identifiers also have special meaning.   Any branch labelled with ``wip`` is considered “git-unstable” and may be rebased and have its history rewritten.   Any branch with ``feature``/``topic`` in the name is considered “stable” enough for others to depend on when a group is working on a feature.
 
@@ -98,7 +98,7 @@ Example:
 
 ## Backporting policy
 
-Generally, all bug fixes, improvements and new features will go to the master branch.  Backports and other commits to stable branches will only be accepted if they meet the following conditions:
+Generally, all bug fixes, improvements and new features will go to the main branch.  Backports and other commits to stable branches will only be accepted if they meet the following conditions:
 
 * The change only affects the documentation
 * The change fixes a regression that was introduced in a previous stable release from that branch

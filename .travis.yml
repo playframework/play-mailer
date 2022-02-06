@@ -48,7 +48,7 @@ jobs:
 stages:
   - name: test
   - name: deploy
-    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
+    if: ((branch = main AND type = push) OR (tag IS present)) AND NOT fork
 
 cache:
   directories:
