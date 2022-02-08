@@ -1,8 +1,0 @@
-name-template: 'Play Mailer $NEXT_PATCH_VERSION'
-tag-template: '$NEXT_PATCH_VERSION'
-
-change-template: '- $TITLE [#$NUMBER] by [@$AUTHOR](https://github.com/$AUTHOR)'
-template: |
-  ## Changes
-
-  $CHANGES
