@@ -7,7 +7,7 @@ ThisBuild / dynverVTagPrefix := false
 
 scalaVersion := "2.13.5"
 
-crossScalaVersions := Seq("2.12.13", "2.13.5")
+crossScalaVersions := Seq("2.12.15", "2.13.5")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer-guice" % version.value,
