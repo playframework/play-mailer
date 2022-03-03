@@ -3,8 +3,8 @@ version: ~> 1.0
 language: scala
 
 scala:
-  - 2.12.13
-  - 2.13.5
+  - 2.12.15
+  - 2.13.8
 
 git:
   depth: false # Avoid sbt-dynver not seeing the tag
