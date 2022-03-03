@@ -1,4 +1,4 @@
-addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.6")
+addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.6.1")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.9.2")
 
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.8.3")

@@ -37,7 +37,7 @@ jobs:
     - stage: deploy
       name: "Publish artifacts to Bintray"
       script: sbt +publish
-      scala: 2.13.5
+      scala: 2.13.8
       env:
       - TRAVIS_JDK=11
         # encrypt with: travis encrypt --pro BINTRAY_USER=...
