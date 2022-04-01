@@ -6,5 +6,5 @@ object Dependencies {
   val Scala213 = "2.13.8"
   val ScalaVersions = Seq(Scala212, Scala213)
 
-  val PlayVersion = sys.props.getOrElse("play.version", sys.env.getOrElse("PLAY_VERSION", "2.8.14"))
+  val PlayVersion = sys.props.getOrElse("play.version", sys.env.getOrElse("PLAY_VERSION", "2.8.15"))
 }
