@@ -5,6 +5,8 @@ name := "runtime-DI"
 
 ThisBuild / dynverVTagPrefix := false
 
+ThisBuild / dynverSonatypeSnapshots := true
+
 scalaVersion := "2.13.8"
 
 crossScalaVersions := Seq("2.12.15", "2.13.8")
