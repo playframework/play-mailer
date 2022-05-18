@@ -16,8 +16,3 @@ insert_final_newline = false
 
 [*.scala]
 insert_final_newline = false
-
-# Matches the exact files either package.json or .travis.yml
-[.travis.yml]
-indent_style = space
-indent_size = 2
