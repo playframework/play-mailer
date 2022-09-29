@@ -15,7 +15,8 @@ lazy val commonSettings = Seq(
     .setPreference(DoubleIndentConstructorArguments, true),
 
   scalacOptions ++= Seq(
-    "-target:jvm-1.8",
+    "-release",
+    "11",
     "-deprecation",
     "-encoding", "UTF-8",
     "-feature",
