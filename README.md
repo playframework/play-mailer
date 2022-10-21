@@ -230,6 +230,10 @@ public class MailerService {
 }
 ```
 
+## Releasing a new version
+
+See https://github.com/playframework/.github/blob/main/RELEASING.md
+
 ## License
 
 
