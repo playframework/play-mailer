@@ -21,9 +21,9 @@ object Common extends AutoPlugin {
       javacOptions ++= Seq("-encoding", "UTF-8", "-Xlint:-options"),
 
       scmInfo := Some(ScmInfo(url(s"https://github.com/playframework/${repoName}"), s"scm:git:git@github.com:playframework/${repoName}.git")),
-      developers += Developer("contributors",
-        "Contributors",
-        "https://gitter.im/playframework/contributors",
+      developers += Developer("playframework",
+        "Play Framework Team",
+        "contact@playframework.com",
         url("https://github.com/playframework")),
 
       description := "Play mailer plugin")
