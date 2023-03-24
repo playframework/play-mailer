@@ -13,17 +13,9 @@ permissions:
   contents: write # this permission is needed to submit the dependency graph
 
 jobs:
-  publish-local:
-    name: Publish local
-    uses: playframework/.github/.github/workflows/cmd.yml@v3
-    with:
-      cmd: |
-        sbt +publishLocal
   dependency-graph:
     name: Submit dependencies to GitHub
     runs-on: ubuntu-latest
-    needs:
-      - "publish-local"
     steps:
       - uses: actions/checkout@v3
         with:
