@@ -1,8 +1,10 @@
 name: Dependency Graph
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Check"]
+    branches: [main]
+    types:
+      - completed
 
 concurrency:
   # Only run once for latest commit per ref and cancel other (previous) runs.
@@ -13,17 +15,10 @@ permissions:
   contents: write # this permission is needed to submit the dependency graph
 
 jobs:
-  publish-local:
-    name: Publish local
-    uses: playframework/.github/.github/workflows/cmd.yml@v3
-    with:
-      cmd: |
-        sbt +publishLocal
   dependency-graph:
     name: Submit dependencies to GitHub
     runs-on: ubuntu-latest
-    needs:
-      - "publish-local"
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
         with:

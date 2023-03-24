@@ -28,3 +28,5 @@ javacOptions ++= Seq(
   "-Xlint:deprecation",
   "-Werror"
 )
+
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")

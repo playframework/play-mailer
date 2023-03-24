@@ -19,3 +19,5 @@ libraryDependencies ++= Seq(
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalacOptions ++= Seq("-deprecation", "-Xfatal-warnings")
+
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
