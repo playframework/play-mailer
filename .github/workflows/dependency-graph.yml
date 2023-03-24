@@ -21,4 +21,10 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref }}
+      - uses: scalacenter/sbt-dependency-submission@v2 # for root project
       - uses: scalacenter/sbt-dependency-submission@v2
+        with:
+          working-directory: ./samples/compile-timeDI/
+      - uses: scalacenter/sbt-dependency-submission@v2
+        with:
+          working-directory: ./samples/runtimeDI/
