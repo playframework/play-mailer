@@ -9,7 +9,7 @@ ThisBuild / dynverSonatypeSnapshots := true
 
 scalaVersion := "2.13.10"
 
-crossScalaVersions := Seq("2.13.10")
+crossScalaVersions := Seq("2.13.10", "3.3.0-RC3")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer" % version.value,
@@ -18,6 +18,6 @@ libraryDependencies ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalacOptions ++= Seq("-deprecation", "-Xfatal-warnings")
+scalacOptions ++= Seq("-Werror") // "-deprecation" gets set by Play already
 
 resolvers ++= Resolver.sonatypeOssRepos("snapshots")
