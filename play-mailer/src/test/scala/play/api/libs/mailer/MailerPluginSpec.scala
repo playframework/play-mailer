@@ -5,10 +5,9 @@ import javax.mail.Part
 
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.commons.mail.{ EmailConstants, HtmlEmail, MultiPartEmail }
-import org.specs2.mock.Mockito
 import org.specs2.mutable._
 
-class MailerPluginSpec extends Specification with Mockito {
+class MailerPluginSpec extends Specification {
 
   object SimpleMailerClient extends MailerClient {
     override def send(data: Email): String = ""
