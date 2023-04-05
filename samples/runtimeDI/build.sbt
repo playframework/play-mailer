@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-scalacOptions ++= Seq("-deprecation", "-Xfatal-warnings")
+scalacOptions ++= Seq("-Werror") // "-deprecation" gets set by Play already
 
 // This sample project has both Scala and Java code.
 javacOptions ++= Seq(
