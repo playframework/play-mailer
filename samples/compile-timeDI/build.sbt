@@ -9,7 +9,7 @@ ThisBuild / dynverSonatypeSnapshots := true
 
 scalaVersion := "2.13.10"
 
-crossScalaVersions := Seq("2.13.10", "3.3.0-RC3")
+crossScalaVersions := Seq("2.13.10", "3.3.0-RC5")
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer" % version.value,
