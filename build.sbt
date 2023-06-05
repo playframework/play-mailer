@@ -61,7 +61,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   .dependsOn(`play-mailer`)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.inject" % "guice" % "6.0.0",
+      "com.google.inject" % "guice" % "7.0.0",
       "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
