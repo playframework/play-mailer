@@ -2,7 +2,7 @@ name: Dependency Graph
 on:
   workflow_run:
     workflows: ["Check"]
-    branches: [main]
+    branches: [9.0.x]
     types:
       - completed
 
