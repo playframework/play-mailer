@@ -47,12 +47,8 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := {
-      if (scalaBinaryVersion.value == "3") Set.empty[ModuleID]
-      else
-        Set("com.typesafe.play" %% "play-mailer" % previousStableVersion.value
-          .getOrElse(throw new Error("Unable to determine previous version")))
-    },
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version"))),
   )
 
 lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
@@ -65,12 +61,9 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
       "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := {
-      if (scalaBinaryVersion.value == "3") Set.empty[ModuleID]
-      else
-        Set("com.typesafe.play" %% "play-mailer-guice" % previousStableVersion.value
-          .getOrElse(throw new Error("Unable to determine previous version")))
-    },
+    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer-guice" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version")))
+    ,
   )
 
 lazy val `play-mailer-root` = (project in file("."))
