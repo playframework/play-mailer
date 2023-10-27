@@ -28,7 +28,7 @@ class MailerPluginSpec extends Specification {
   class MockCommonsMailerWithProps(props: Config = ConfigFactory.empty()) extends MockCommonsMailerWithTimeouts(None, None, props)
 
   class MockCommonsMailerWithTimeouts(smtpTimeout: Option[Int], smtpConnectionTimeout: Option[Int], props: Config = ConfigFactory.empty())
-    extends CommonsMailer(SMTPConfiguration("typesafe.org", 1234, ssl = true, tls = false, tlsRequired = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, props, mock = false)) {
+    extends CommonsMailer(SMTPConfiguration("example.org", 1234, ssl = true, tls = false, tlsRequired = false, Some("user"), Some("password"), debugMode = false, smtpTimeout, smtpConnectionTimeout, props, mock = false)) {
     override def send(email: MultiPartEmail) = ""
     override def createMultiPartEmail(): MultiPartEmail = new MockMultiPartEmail
     override def createHtmlEmail(): HtmlEmail = new MockHtmlEmail
@@ -39,12 +39,12 @@ class MailerPluginSpec extends Specification {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>"
+        from = "John Doe <john.doe@example.com>"
       ))
       email.getSmtpPort mustEqual "1234"
       email.getSslSmtpPort mustEqual "1234"
       email.getMailSession.getProperty("mail.smtp.auth") mustEqual "true"
-      email.getMailSession.getProperty("mail.smtp.host") mustEqual "typesafe.org"
+      email.getMailSession.getProperty("mail.smtp.host") mustEqual "example.org"
       email.getMailSession.getProperty("mail.smtp.starttls.enable") mustEqual "false"
       email.getMailSession.getProperty("mail.smtp.starttls.required") mustEqual "false"
       email.getMailSession.getProperty("mail.smtp.localhost") must beNull
@@ -55,7 +55,7 @@ class MailerPluginSpec extends Specification {
       val mailer = new MockCommonsMailerWithTimeouts(Some(10), Some(99))
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>"
+        from = "John Doe <john.doe@example.com>"
       ))
       email.getSocketTimeout mustEqual 10
       email.getSocketConnectionTimeout mustEqual 99
@@ -65,7 +65,7 @@ class MailerPluginSpec extends Specification {
       val mailer = new MockCommonsMailerWithTimeouts(None, None)
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>"
+        from = "John Doe <john.doe@example.com>"
       ))
       email.getSocketTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
       email.getSocketConnectionTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
@@ -75,7 +75,7 @@ class MailerPluginSpec extends Specification {
       val mailer = new MockCommonsMailerWithProps(ConfigFactory.parseString("localhost=127.0.0.1"))
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>"
+        from = "John Doe <john.doe@example.com>"
       ))
       email.getMailSession.getProperty("mail.smtp.localhost") mustEqual "127.0.0.1"
       email.getMailSession.getProperty("mail.smtps.localhost") mustEqual "127.0.0.1"
@@ -85,7 +85,7 @@ class MailerPluginSpec extends Specification {
       val mailer = MockCommonsMailer
       val messageId = mailer.send(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>",
+        from = "John Doe <john.doe@example.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>")
       ))
       messageId mustEqual ""
@@ -95,7 +95,7 @@ class MailerPluginSpec extends Specification {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>",
+        from = "John Doe <john.doe@example.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
         replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyText = Some("A text message"),
@@ -112,7 +112,7 @@ class MailerPluginSpec extends Specification {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>",
+        from = "John Doe <john.doe@example.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
         replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyText = Some("A text message"),
@@ -137,7 +137,7 @@ class MailerPluginSpec extends Specification {
       val cid = "1234"
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>",
+        from = "John Doe <john.doe@example.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
         replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyHtml = Some(s"""<html><body><p>An <b>html</b> message with cid <img src="cid:$cid"></p></body></html>"""),
@@ -154,7 +154,7 @@ class MailerPluginSpec extends Specification {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>",
+        from = "John Doe <john.doe@example.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
         replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         bodyText = Some("A text message"),
@@ -178,14 +178,14 @@ class MailerPluginSpec extends Specification {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "James Roper <jroper@typesafe.com>",
+        from = "John Doe <john.doe@example.com>",
         to = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
         replyTo = Seq("Aviv Shafir <avivshafir@github.com>"),
         cc = Seq("Guillaume Grossetie <ggrossetie@localhost.com>"),
         bcc = Seq("Guillaume Grossetie <ggrossetie@localhost.com>")
       ))
-      email.getFromAddress.getAddress mustEqual "jroper@typesafe.com"
-      email.getFromAddress.getPersonal mustEqual "James Roper"
+      email.getFromAddress.getAddress mustEqual "john.doe@example.com"
+      email.getFromAddress.getPersonal mustEqual "John Doe"
       email.getToAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
       email.getToAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
       email.getCcAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
@@ -200,13 +200,13 @@ class MailerPluginSpec extends Specification {
       val mailer = MockCommonsMailer
       val email = mailer.createEmail(Email(
         subject = "Subject",
-        from = "jroper@typesafe.com",
+        from = "john.doe@example.com",
         to = Seq("<ggrossetie@localhost.com>"),
         cc = Seq("ggrossetie@localhost.com"),
         replyTo = Seq("avivshafir@github.com"),
         bcc = Seq("ggrossetie@localhost.com")
       ))
-      email.getFromAddress.getAddress mustEqual "jroper@typesafe.com"
+      email.getFromAddress.getAddress mustEqual "john.doe@example.com"
       email.getFromAddress.getPersonal must beNull
       email.getToAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
       email.getToAddresses.get(0).getPersonal must beNull
@@ -223,7 +223,7 @@ class MailerPluginSpec extends Specification {
     "convert email from Java to Scala" in {
       val data = new play.libs.mailer.Email()
       data.setSubject("Subject")
-      data.setFrom("James Roper <jroper@typesafe.com>")
+      data.setFrom("John Doe <john.doe@example.com>")
       data.addTo("Guillaume Grossetie <ggrossetie@localhost.com>")
       data.addCc("Daniel Spasojevic <dspasojevic@github.com>")
       data.addBcc("Sparkbitpl <sparkbitpl@github.com>")
@@ -238,7 +238,7 @@ class MailerPluginSpec extends Specification {
 
       val convert = SimpleMailerClient.convert(data)
       convert.subject mustEqual "Subject"
-      convert.from mustEqual "James Roper <jroper@typesafe.com>"
+      convert.from mustEqual "John Doe <john.doe@example.com>"
       convert.to.size mustEqual 1
       convert.to.head mustEqual "Guillaume Grossetie <ggrossetie@localhost.com>"
       convert.cc.size mustEqual 1
@@ -272,8 +272,8 @@ class MailerPluginSpec extends Specification {
 
   def simpleEmailMust(email: MultiPartEmail): Unit = {
     email.getSubject mustEqual "Subject"
-    email.getFromAddress.getPersonal mustEqual "James Roper"
-    email.getFromAddress.getAddress mustEqual "jroper@typesafe.com"
+    email.getFromAddress.getPersonal mustEqual "John Doe"
+    email.getFromAddress.getAddress mustEqual "john.doe@example.com"
     email.getToAddresses must have size 1
     email.getToAddresses.get(0).getPersonal mustEqual "Guillaume Grossetie"
     email.getToAddresses.get(0).getAddress mustEqual "ggrossetie@localhost.com"
