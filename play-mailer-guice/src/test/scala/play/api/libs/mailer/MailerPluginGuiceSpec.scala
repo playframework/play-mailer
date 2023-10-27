@@ -30,7 +30,7 @@ class MailerPluginGuiceSpec extends Specification {
       .overrides(new ConfigModule) // Play 2.5.x "hack"
       .overrides(bind[SMTPConfiguration].to(mockedConfigurationProvider))
       .build()
-    val applicationWithMoreMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "example.org", "play.mailer.port" -> 25, "play.mailer.user" -> "typesafe", "play.mailer.password" -> "typesafe"))
+    val applicationWithMoreMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "example.org", "play.mailer.port" -> 25, "play.mailer.user" -> "johndoe", "play.mailer.password" -> "randompw"))
 
     "provide the Scala mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
       override def running() = {
@@ -63,7 +63,7 @@ class MailerPluginGuiceSpec extends Specification {
     "validate the configuration" in new WithApplication(applicationWithMoreMailerConfiguration) {
       override def running() = {
         app.injector.instanceOf(bind[SMTPConfiguration]) must ===(SMTPConfiguration("example.org", 25,
-          user = Some("typesafe"), password = Some("typesafe"), props = ConfigFactory.parseString("ssl.checkserveridentity=true")))
+          user = Some("johndoe"), password = Some("randompw"), props = ConfigFactory.parseString("ssl.checkserveridentity=true")))
       }
     }
   }
