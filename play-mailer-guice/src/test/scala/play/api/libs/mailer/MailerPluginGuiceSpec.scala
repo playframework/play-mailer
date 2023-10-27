@@ -15,7 +15,7 @@ class MailerPluginGuiceSpec extends Specification {
     import play.libs.mailer.{ MailerClient => JMailerClient }
 
     val mockedConfigurationProvider = mock(classOf[SMTPConfigurationProvider])
-    when(mockedConfigurationProvider.get()).thenReturn(SMTPConfiguration("typesafe.org", 25, mock = true))
+    when(mockedConfigurationProvider.get()).thenReturn(SMTPConfiguration("example.org", 25, mock = true))
 
     def createApp(additionalConfiguration: Map[String, _]): Application = {
       new GuiceApplicationBuilder()
@@ -24,13 +24,13 @@ class MailerPluginGuiceSpec extends Specification {
         .build()
     }
 
-    val applicationWithMinimalMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25))
+    val applicationWithMinimalMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "example.org", "play.mailer.port" -> 25))
 
     val applicationWithMockedConfigurationProvider = new GuiceApplicationBuilder()
       .overrides(new ConfigModule) // Play 2.5.x "hack"
       .overrides(bind[SMTPConfiguration].to(mockedConfigurationProvider))
       .build()
-    val applicationWithMoreMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "typesafe.org", "play.mailer.port" -> 25, "play.mailer.user" -> "typesafe", "play.mailer.password" -> "typesafe"))
+    val applicationWithMoreMailerConfiguration = createApp(additionalConfiguration = Map("play.mailer.host" -> "example.org", "play.mailer.port" -> 25, "play.mailer.user" -> "typesafe", "play.mailer.password" -> "typesafe"))
 
     "provide the Scala mailer client" in new WithApplication(applicationWithMinimalMailerConfiguration) {
       override def running() = {
@@ -54,7 +54,7 @@ class MailerPluginGuiceSpec extends Specification {
     }
     "call the configuration each time we send an email" in new WithApplication(applicationWithMockedConfigurationProvider) {
       override def running() = {
-        val mail = Email("Test Configurable Mailer", "root@typesafe.org")
+        val mail = Email("Test Configurable Mailer", "root@example.org")
         app.injector.instanceOf[MailerClient].send(mail)
         app.injector.instanceOf[MailerClient].send(mail)
         Mockito.verify(mockedConfigurationProvider, times(2)).get()
@@ -62,7 +62,7 @@ class MailerPluginGuiceSpec extends Specification {
     }
     "validate the configuration" in new WithApplication(applicationWithMoreMailerConfiguration) {
       override def running() = {
-        app.injector.instanceOf(bind[SMTPConfiguration]) must ===(SMTPConfiguration("typesafe.org", 25,
+        app.injector.instanceOf(bind[SMTPConfiguration]) must ===(SMTPConfiguration("example.org", 25,
           user = Some("typesafe"), password = Some("typesafe"), props = ConfigFactory.parseString("ssl.checkserveridentity=true")))
       }
     }

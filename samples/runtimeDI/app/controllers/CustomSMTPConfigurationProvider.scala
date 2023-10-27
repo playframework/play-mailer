@@ -7,7 +7,7 @@ import play.api.{Configuration, Environment}
 import play.api.inject.Module
 
 class CustomSMTPConfigurationProvider extends Provider[SMTPConfiguration] {
-  override def get() = new SMTPConfiguration("typesafe.org", 1234)
+  override def get() = new SMTPConfiguration("example.org", 1234)
 }
 
 class CustomMailerConfigurationModule extends Module {
