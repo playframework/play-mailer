@@ -9,7 +9,7 @@
 [![OpenCollective](https://img.shields.io/opencollective/all/playframework?label=financial%20contributors&logo=open-collective)](https://opencollective.com/playframework)
 
 [![Build Status](https://github.com/playframework/play-mailer/actions/workflows/build-test.yml/badge.svg)](https://github.com/playframework/play-mailer/actions/workflows/build-test.yml)
-[![Maven](https://img.shields.io/maven-central/v/com.typesafe.play/play-mailer_2.13.svg?logo=apache-maven)](https://mvnrepository.com/artifact/com.typesafe.play/play-mailer_2.13)
+[![Maven](https://img.shields.io/maven-central/v/org.playframework/play-mailer_2.13.svg?logo=apache-maven)](https://mvnrepository.com/artifact/org.playframework/play-mailer_2.13)
 [![Repository size](https://img.shields.io/github/repo-size/playframework/play-mailer.svg?logo=git)](https://github.com/playframework/play-mailer)
 [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 [![Mergify Status](https://img.shields.io/endpoint.svg?url=https://api.mergify.com/v1/badges/playframework/play-mailer&style=flat)](https://mergify.com)
@@ -21,8 +21,8 @@ Play Mailer is a powerful Scala Mailing library. It provides a simple configurab
 To get started you add `play-mailer` and `play-mailer-guice` as a dependency in SBT:
 
 ```scala
-libraryDependencies += "com.typesafe.play" %% "play-mailer" % -version-
-libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % -version-
+libraryDependencies += "org.playframework" %% "play-mailer" % -version-
+libraryDependencies += "org.playframework" %% "play-mailer-guice" % -version-
 ```
 
 ## Versioning
@@ -110,7 +110,7 @@ class MailerService @Inject() (mailerClient: MailerClient) {
 
 #### Compile Time Injection
 
-If you use Compile time Injection you can remove `libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % -version-` from your `build.sbt`.
+If you use Compile time Injection you can remove `libraryDependencies += "org.playframework" %% "play-mailer-guice" % -version-` from your `build.sbt`.
 
 Create the MailerService without the `@Inject` annotation:
 
