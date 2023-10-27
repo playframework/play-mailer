@@ -28,7 +28,7 @@ class ApplicationScala @Inject()(mailer: MailerClient, environment: Environment,
   }
 
   def sendWithCustomMailer = Action {
-    val mailer = new SMTPMailer(SMTPConfiguration("typesafe.org", 1234))
+    val mailer = new SMTPMailer(SMTPConfiguration("example.org", 1234))
     val id = mailer.send(Email("Simple email", "Mister FROM <from@email.com>"))
     Ok(s"Email $id sent!")
   }

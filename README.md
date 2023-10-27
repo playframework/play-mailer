@@ -160,7 +160,7 @@ Create a new file named `CustomSMTPConfigurationProvider.scala`:
 class CustomSMTPConfigurationProvider extends Provider[SMTPConfiguration] {
   override def get() = {
     // Custom configuration
-    new SMTPConfiguration("typesafe.org", 1234)
+    new SMTPConfiguration("example.org", 1234)
   }
 }
 
@@ -192,7 +192,7 @@ You can also use the SMTPMailer constructor to create new instances with custom 
 
 ```scala
 val email = Email("Simple email", "Mister FROM <from@email.com>")
-new SMTPMailer(SMTPConfiguration("typesafe.org", 1234)).send(email)
+new SMTPMailer(SMTPConfiguration("example.org", 1234)).send(email)
 new SMTPMailer(SMTPConfiguration("playframework.com", 5678)).send(email)
 ```
 
