@@ -41,18 +41,14 @@ lazy val `play-mailer` = (project in file("play-mailer"))
   .settings(
     libraryDependencies ++= Seq(
       "javax.inject" % "javax.inject" % "1",
-      "com.typesafe" % "config" % "1.4.2",
-      "org.slf4j" % "slf4j-api" % "2.0.7",
+      "com.typesafe" % "config" % "1.4.3",
+      "org.slf4j" % "slf4j-api" % "2.0.9",
       "org.apache.commons" % "commons-email" % "1.5",
-      "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
-      "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
+      "org.playframework" %% "play" % Dependencies.PlayVersion % Test,
+      "org.playframework" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := {
-      if (scalaBinaryVersion.value == "3") Set.empty[ModuleID]
-      else
-        Set("com.typesafe.play" %% "play-mailer" % previousStableVersion.value
-          .getOrElse(throw new Error("Unable to determine previous version")))
-    },
+    mimaPreviousArtifacts := Set("org.playframework" %% "play-mailer" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version"))),
   )
 
 lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
@@ -62,15 +58,12 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   .settings(
     libraryDependencies ++= Seq(
       "com.google.inject" % "guice" % "6.0.0",
-      "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
-      "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
+      "org.playframework" %% "play" % Dependencies.PlayVersion % Test,
+      "org.playframework" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := {
-      if (scalaBinaryVersion.value == "3") Set.empty[ModuleID]
-      else
-        Set("com.typesafe.play" %% "play-mailer-guice" % previousStableVersion.value
-          .getOrElse(throw new Error("Unable to determine previous version")))
-    },
+    mimaPreviousArtifacts := Set("org.playframework" %% "play-mailer-guice" % previousStableVersion.value
+      .getOrElse(throw new Error("Unable to determine previous version")))
+    ,
   )
 
 lazy val `play-mailer-root` = (project in file("."))
