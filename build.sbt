@@ -35,6 +35,8 @@ lazy val commonSettings = Seq(
   ),
 )
 
+val previousVersion: Option[String] = Some("9.0.0")
+
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(Common)
   .settings(commonSettings)
@@ -47,8 +49,7 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer" % previousStableVersion.value
-      .getOrElse(throw new Error("Unable to determine previous version"))),
+    mimaPreviousArtifacts := previousVersion.map(organization.value %% moduleName.value % _).toSet,
   )
 
 lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
@@ -61,9 +62,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
       "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
       "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
-    mimaPreviousArtifacts := Set("com.typesafe.play" %% "play-mailer-guice" % previousStableVersion.value
-      .getOrElse(throw new Error("Unable to determine previous version")))
-    ,
+    mimaPreviousArtifacts := previousVersion.map(organization.value %% moduleName.value % _).toSet,
   )
 
 lazy val `play-mailer-root` = (project in file("."))
