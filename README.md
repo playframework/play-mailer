@@ -23,6 +23,10 @@ To get started you add `play-mailer` and `play-mailer-guice` as a dependency in 
 ```scala
 libraryDependencies += "org.playframework" %% "play-mailer" % -version-
 libraryDependencies += "org.playframework" %% "play-mailer-guice" % -version-
+
+// Until version 9.x:
+libraryDependencies += "com.typesafe.play" %% "play-mailer" % -version-
+libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % -version-
 ```
 
 ## Versioning
@@ -31,6 +35,8 @@ The Play Mailer plugin supports several different versions of Play.
 
 | Plugin version   | Play version    |
 |------------------|-----------------|
+| 10.x             | 3.0.x           |
+| 9.x              | 2.9.x           |
 | 8.x              | 2.8.x           |
 | 7.x              | 2.7.x           |
 
