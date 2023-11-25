@@ -46,8 +46,8 @@ lazy val `play-mailer` = (project in file("play-mailer"))
       "com.typesafe" % "config" % "1.4.3",
       "org.slf4j" % "slf4j-api" % "2.0.9",
       "org.apache.commons" % "commons-email" % "1.5",
-      "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
-      "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
+      "org.playframework" %% "play" % Dependencies.PlayVersion % Test,
+      "org.playframework" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
     mimaPreviousArtifacts := previousVersion.map(organization.value %% moduleName.value % _).toSet,
   )
@@ -59,8 +59,8 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   .settings(
     libraryDependencies ++= Seq(
       "com.google.inject" % "guice" % "6.0.0",
-      "com.typesafe.play" %% "play" % Dependencies.PlayVersion % Test,
-      "com.typesafe.play" %% "play-specs2" % Dependencies.PlayVersion % Test
+      "org.playframework" %% "play" % Dependencies.PlayVersion % Test,
+      "org.playframework" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),
     mimaPreviousArtifacts := previousVersion.map(organization.value %% moduleName.value % _).toSet,
   )
