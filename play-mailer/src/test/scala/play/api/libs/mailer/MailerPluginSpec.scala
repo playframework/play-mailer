@@ -1,11 +1,12 @@
 package play.api.libs.mailer
 
-import java.io.File
-import javax.mail.Part
-
 import com.typesafe.config.{ Config, ConfigFactory }
-import org.apache.commons.mail.{ EmailConstants, HtmlEmail, MultiPartEmail }
+import jakarta.mail.Part
+import org.apache.commons.mail2.core.EmailConstants
+import org.apache.commons.mail2.jakarta.{ HtmlEmail, MultiPartEmail }
 import org.specs2.mutable._
+
+import java.io.File
 
 class MailerPluginSpec extends Specification {
 
@@ -18,8 +19,6 @@ class MailerPluginSpec extends Specification {
     override def getContainer = super.getContainer
   }
   class MockHtmlEmail extends HtmlEmail {
-    def getHtml = this.html
-    def getText = this.text
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
     override def getContainer = super.getContainer
   }
@@ -67,8 +66,8 @@ class MailerPluginSpec extends Specification {
         subject = "Subject",
         from = "John Doe <john.doe@example.com>"
       ))
-      email.getSocketTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
-      email.getSocketConnectionTimeout mustEqual EmailConstants.SOCKET_TIMEOUT_MS
+      email.getSocketTimeout mustEqual EmailConstants.SOCKET_TIMEOUT.toMillis.toInt
+      email.getSocketConnectionTimeout mustEqual EmailConstants.SOCKET_TIMEOUT.toMillis.toInt
     }
 
     "configure the SMTP local host if configured" in {
