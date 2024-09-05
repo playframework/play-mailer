@@ -1,6 +1,6 @@
 package controllers;
 
-import org.apache.commons.mail.EmailAttachment;
+import org.apache.commons.mail2.jakarta.EmailAttachment;
 import play.api.libs.mailer.MailerClient;
 import play.libs.mailer.Email;
 import play.mvc.Controller;
