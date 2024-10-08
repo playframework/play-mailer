@@ -3,7 +3,7 @@ name: Publish
 on:
   push:
     branches: # Snapshots
-      - 10.0.x
+      - 10.1.x
     tags: ["**"] # Releases
 
 jobs:
