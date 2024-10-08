@@ -35,7 +35,7 @@ lazy val commonSettings = Seq(
   ),
 )
 
-val previousVersion: Option[String] = None
+val previousVersion: Option[String] = Some("11.0.0-M1")
 
 lazy val `play-mailer` = (project in file("play-mailer"))
   .enablePlugins(Common)
