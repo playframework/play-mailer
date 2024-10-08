@@ -82,7 +82,7 @@ Use the `@Inject` annotation on the constructor, service of your component or co
 ```scala
 import play.api.libs.mailer._
 import java.io.File
-import org.apache.commons.mail.EmailAttachment
+import org.apache.commons.mail2.jakarta.EmailAttachment
 import javax.inject.Inject
 
 class MailerService @Inject() (mailerClient: MailerClient) {

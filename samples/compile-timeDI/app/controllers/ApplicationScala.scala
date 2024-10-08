@@ -3,7 +3,7 @@ package controllers
 import java.io.File
 
 import play.api.Environment
-import org.apache.commons.mail.EmailAttachment
+import org.apache.commons.mail2.jakarta.EmailAttachment
 import play.api.libs.mailer._
 import play.api.mvc._
 

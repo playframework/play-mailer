@@ -1,8 +1,8 @@
 package play.api.libs.mailer
 
+import jakarta.activation.DataSource
 import java.io.File
 import java.net.URL
-import javax.activation.DataSource
 
 sealed trait Attachment
 

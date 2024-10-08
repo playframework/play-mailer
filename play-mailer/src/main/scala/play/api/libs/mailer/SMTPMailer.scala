@@ -1,8 +1,8 @@
 package play.api.libs.mailer
 
-import javax.inject.Inject
+import org.apache.commons.mail2.jakarta.{ HtmlEmail, MultiPartEmail }
 
-import org.apache.commons.mail.{ HtmlEmail, MultiPartEmail }
+import javax.inject.Inject
 
 class SMTPMailer @Inject() (smtpConfiguration: SMTPConfiguration) extends MailerClient {
 

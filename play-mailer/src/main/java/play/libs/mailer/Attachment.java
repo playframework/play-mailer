@@ -1,6 +1,6 @@
 package play.libs.mailer;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 import java.io.File;
 import java.net.URL;
 

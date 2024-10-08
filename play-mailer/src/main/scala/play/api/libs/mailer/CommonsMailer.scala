@@ -1,17 +1,13 @@
 package play.api.libs.mailer
 
-import java.io.FilterOutputStream
-import java.io.PrintStream
-
-import javax.mail.internet.InternetAddress
-import javax.mail.Session
-import org.apache.commons.mail.DefaultAuthenticator
-import org.apache.commons.mail.EmailAttachment
-import org.apache.commons.mail.HtmlEmail
-import org.apache.commons.mail.MultiPartEmail
+import jakarta.activation.URLDataSource
+import jakarta.mail.Session
+import jakarta.mail.internet.InternetAddress
+import org.apache.commons.mail2.jakarta.{ DefaultAuthenticator, EmailAttachment, HtmlEmail, MultiPartEmail }
 import org.slf4j.LoggerFactory
 
-import javax.activation.URLDataSource
+import java.io.{ FilterOutputStream, PrintStream }
+import java.time
 import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
 
@@ -39,8 +35,8 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
     data.headers.foreach {
       header => email.addHeader(header._1, header._2)
     }
-    conf.timeout.foreach(email.setSocketTimeout)
-    conf.connectionTimeout.foreach(email.setSocketConnectionTimeout)
+    conf.timeout.foreach(timeout => email.setSocketTimeout(java.time.Duration.ofMillis(timeout)))
+    conf.connectionTimeout.foreach(timeout => email.setSocketConnectionTimeout(time.Duration.ofMillis(timeout)))
     data.attachments.foreach {
       case attachmentData: AttachmentData =>
         handleAttachmentData(email, attachmentData)
@@ -131,7 +127,7 @@ abstract class CommonsMailer(conf: SMTPConfiguration) extends MailerClient {
   private def handleAttachmentData(email: MultiPartEmail, attachmentData: AttachmentData): Unit = {
     val description = attachmentData.description.getOrElse(attachmentData.name)
     val disposition = attachmentData.disposition.getOrElse(EmailAttachment.ATTACHMENT)
-    val dataSource = new javax.mail.util.ByteArrayDataSource(attachmentData.data, attachmentData.mimetype)
+    val dataSource = new jakarta.mail.util.ByteArrayDataSource(attachmentData.data, attachmentData.mimetype)
     attachmentData.contentId match {
       case Some(cid) =>
         email match {
