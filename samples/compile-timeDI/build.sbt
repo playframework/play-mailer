@@ -7,9 +7,9 @@ ThisBuild / dynverVTagPrefix := false
 
 ThisBuild / dynverSonatypeSnapshots := true
 
-scalaVersion := "2.13.14"
+scalaVersion := "2.13.15"
 
-crossScalaVersions := Seq("2.13.14", "3.3.3")
+crossScalaVersions := Seq("2.13.15", "3.3.4")
 
 libraryDependencies ++= Seq(
   "org.playframework" %% "play-mailer" % version.value,
