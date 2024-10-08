@@ -18,8 +18,8 @@ class MailerPluginSpec extends Specification {
     override def getContainer = super.getContainer
   }
   class MockHtmlEmail extends HtmlEmail {
-    def getHtml = this.html
-    def getText = this.text
+    override def getHtml = this.html
+    override def getText = this.text
     override def getPrimaryBodyPart = super.getPrimaryBodyPart
     override def getContainer = super.getContainer
   }
