@@ -8,13 +8,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "10.0.x"
+    target-branch: "10.1.x"
     commit-message:
-      prefix: "[10.0.x] "
+      prefix: "[10.1.x] "
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "9.0.x"
+    target-branch: "9.1.x"
     commit-message:
-      prefix: "[9.0.x] "
+      prefix: "[9.1.x] "
