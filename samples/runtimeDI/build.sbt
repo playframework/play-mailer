@@ -13,7 +13,7 @@ crossScalaVersions := Seq("2.13.16", "3.3.4")
 
 libraryDependencies ++= Seq(
   "org.playframework" %% "play-mailer-guice" % version.value,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.1" % Test
+  "org.scalatestplus.play" %% "scalatestplus-play" % "8.0.0-M1" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
