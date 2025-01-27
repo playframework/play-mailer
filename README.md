@@ -83,7 +83,7 @@ Use the `@Inject` annotation on the constructor, service of your component or co
 import play.api.libs.mailer._
 import java.io.File
 import org.apache.commons.mail2.jakarta.EmailAttachment
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class MailerService @Inject() (mailerClient: MailerClient) {
 
@@ -209,7 +209,7 @@ For Java you can just create a simple MailerService and Inject the MailerClient 
 ```java
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import org.apache.commons.mail.EmailAttachment;
 

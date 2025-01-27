@@ -1,6 +1,6 @@
 package play.api.libs.mailer
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 import org.slf4j.LoggerFactory
 
