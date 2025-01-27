@@ -16,7 +16,7 @@ lazy val commonSettings = Seq(
 
   scalacOptions ++= Seq(
     "-release",
-    "11",
+    "17",
     "-deprecation",
     "-encoding", "UTF-8",
     "-feature",
