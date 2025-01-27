@@ -1,7 +1,7 @@
 package controllers
 
 import java.io.File
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 import org.apache.commons.mail2.jakarta.EmailAttachment
 import play.api.Environment

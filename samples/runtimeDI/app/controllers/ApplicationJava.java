@@ -7,7 +7,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.Environment;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 
 public class ApplicationJava extends Controller {

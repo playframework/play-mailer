@@ -1,6 +1,6 @@
 package play.api.libs.mailer
 
-import javax.inject.{ Inject, Provider }
+import jakarta.inject.{ Inject, Provider }
 
 import com.typesafe.config.Config
 

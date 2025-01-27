@@ -1,4 +1,7 @@
 import com.typesafe.sbt.SbtScalariform._
+import com.typesafe.tools.mima.core.IncompatibleMethTypeProblem
+import com.typesafe.tools.mima.core.MissingTypesProblem
+import com.typesafe.tools.mima.core.ProblemFilters
 import scalariform.formatter.preferences._
 
 ThisBuild / dynverVTagPrefix := false
@@ -33,6 +36,11 @@ lazy val commonSettings = Seq(
     "-Xlint:unchecked",
     "-Xlint:deprecation"
   ),
+
+  mimaBinaryIssueFilters ++= Seq(
+    ProblemFilters.exclude[IncompatibleMethTypeProblem]("play.api.libs.mailer.SMTPDynamicMailer.this"),
+    ProblemFilters.exclude[MissingTypesProblem]("play.api.libs.mailer.SMTPConfigurationProvider"),
+  ),
 )
 
 val previousVersion: Option[String] = Some("11.0.0-M1")
@@ -42,7 +50,7 @@ lazy val `play-mailer` = (project in file("play-mailer"))
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "javax.inject" % "javax.inject" % "1",
+      "jakarta.inject" % "jakarta.inject-api" % "2.0.1",
       "com.typesafe" % "config" % "1.4.3",
       "org.slf4j" % "slf4j-api" % "2.0.16",
       "org.apache.commons" % "commons-email2-jakarta" % "2.0.0-M1",
@@ -58,7 +66,7 @@ lazy val `play-mailer-guice` = (project in file("play-mailer-guice"))
   .dependsOn(`play-mailer`)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.inject" % "guice" % "6.0.0",
+      "com.google.inject" % "guice" % "7.0.0",
       "org.playframework" %% "play" % Dependencies.PlayVersion % Test,
       "org.playframework" %% "play-specs2" % Dependencies.PlayVersion % Test
     ),

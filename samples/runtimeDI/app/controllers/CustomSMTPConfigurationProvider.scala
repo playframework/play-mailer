@@ -1,6 +1,6 @@
 package controllers
 
-import javax.inject.Provider
+import jakarta.inject.Provider
 
 import play.api.libs.mailer.SMTPConfiguration
 import play.api.{Configuration, Environment}
