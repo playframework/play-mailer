@@ -1,4 +1,7 @@
 import com.typesafe.sbt.SbtScalariform._
+import com.typesafe.tools.mima.core.IncompatibleMethTypeProblem
+import com.typesafe.tools.mima.core.MissingTypesProblem
+import com.typesafe.tools.mima.core.ProblemFilters
 import scalariform.formatter.preferences._
 
 ThisBuild / dynverVTagPrefix := false
@@ -32,6 +35,11 @@ lazy val commonSettings = Seq(
   javacOptions ++= Seq(
     "-Xlint:unchecked",
     "-Xlint:deprecation"
+  ),
+
+  mimaBinaryIssueFilters ++= Seq(
+    ProblemFilters.exclude[IncompatibleMethTypeProblem]("play.api.libs.mailer.SMTPDynamicMailer.this"),
+    ProblemFilters.exclude[MissingTypesProblem]("play.api.libs.mailer.SMTPConfigurationProvider"),
   ),
 )
 
