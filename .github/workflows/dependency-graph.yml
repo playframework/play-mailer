@@ -1,10 +1,8 @@
 name: Dependency Graph
 on:
-  workflow_run:
-    workflows: ["Check"]
-    branches: [9.1.x]
-    types:
-      - completed
+  push:
+    branches:
+      - 9.1.x
 
 concurrency:
   # Only run once for latest commit per ref and cancel other (previous) runs.
@@ -18,7 +16,6 @@ jobs:
   dependency-graph:
     name: Submit dependencies to GitHub
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
         with:
