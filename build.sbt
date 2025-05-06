@@ -1,21 +1,12 @@
-import com.typesafe.sbt.SbtScalariform._
 import com.typesafe.tools.mima.core.IncompatibleMethTypeProblem
 import com.typesafe.tools.mima.core.MissingTypesProblem
 import com.typesafe.tools.mima.core.ProblemFilters
-import scalariform.formatter.preferences._
 
 ThisBuild / dynverVTagPrefix := false
 
 lazy val commonSettings = Seq(
   scalaVersion := Dependencies.Scala213,
   crossScalaVersions := Dependencies.ScalaVersions,
-  scalariformAutoformat := true,
-  ScalariformKeys.preferences := ScalariformKeys.preferences.value
-    .setPreference(SpacesAroundMultiImports, true)
-    .setPreference(SpaceInsideParentheses, false)
-    .setPreference(DanglingCloseParenthesis, Preserve)
-    .setPreference(PreserveSpaceBeforeArguments, true)
-    .setPreference(DoubleIndentConstructorArguments, true),
 
   scalacOptions ++= Seq(
     "-release",
