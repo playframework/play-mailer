@@ -2,7 +2,7 @@ package play.api.libs.mailer
 
 import play.libs.mailer.{ Email => JEmail, MailerClient => JMailerClient }
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait MailerClient extends JMailerClient {
 
