@@ -9,7 +9,7 @@ import play.api.{ Configuration, Environment }
  */
 class ConfigModule extends Module {
 
-  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
+  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[?]] = Seq(
     bind[Config].toInstance(configuration.underlying)
   )
 

@@ -17,7 +17,7 @@ class MailerPluginGuiceSpec extends Specification {
     val mockedConfigurationProvider = mock(classOf[SMTPConfigurationProvider])
     when(mockedConfigurationProvider.get()).thenReturn(SMTPConfiguration("example.org", 25, mock = true))
 
-    def createApp(additionalConfiguration: Map[String, _]): Application = {
+    def createApp(additionalConfiguration: Map[String, ?]): Application = {
       new GuiceApplicationBuilder()
         .configure(additionalConfiguration)
         .overrides(new ConfigModule) // Play 2.5.x "hack"
