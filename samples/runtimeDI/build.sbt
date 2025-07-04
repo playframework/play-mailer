@@ -9,7 +9,7 @@ ThisBuild / dynverSonatypeSnapshots := true
 
 scalaVersion := "2.13.16"
 
-crossScalaVersions := Seq("2.13.16", "3.3.5")
+crossScalaVersions := Seq("2.13.16", "3.3.6")
 
 libraryDependencies ++= Seq(
   "org.playframework" %% "play-mailer-guice" % version.value,
@@ -29,4 +29,4 @@ javacOptions ++= Seq(
   "-Werror"
 )
 
-resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+resolvers += Resolver.sonatypeCentralSnapshots
