@@ -43,7 +43,7 @@ lazy val `play-mailer` = (project in file("play-mailer"))
     libraryDependencies ++= Seq(
       "jakarta.inject" % "jakarta.inject-api" % "2.0.1",
       "com.typesafe" % "config" % "1.4.3",
-      "org.slf4j" % "slf4j-api" % "2.0.16",
+      "org.slf4j" % "slf4j-api" % "2.0.17",
       "org.apache.commons" % "commons-email2-jakarta" % "2.0.0-M1",
       "org.playframework" %% "play" % Dependencies.PlayVersion % Test,
       "org.playframework" %% "play-specs2" % Dependencies.PlayVersion % Test
