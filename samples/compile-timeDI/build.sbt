@@ -20,4 +20,4 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalacOptions ++= Seq("-Werror") // "-deprecation" gets set by Play already
 
-resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+resolvers += Resolver.sonatypeCentralSnapshots
