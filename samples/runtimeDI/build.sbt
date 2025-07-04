@@ -29,4 +29,4 @@ javacOptions ++= Seq(
   "-Werror"
 )
 
-resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+resolvers += Resolver.sonatypeCentralSnapshots
