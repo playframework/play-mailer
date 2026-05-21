@@ -1,2 +1,2 @@
-addSbtPlugin("org.playframework" % "sbt-plugin" % sys.env.getOrElse("PLAY_VERSION", "3.0.10"))
+addSbtPlugin("org.playframework" % "sbt-plugin" % sys.env.getOrElse("PLAY_VERSION", "3.0.11"))
 addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.1.1")
