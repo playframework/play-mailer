@@ -40,11 +40,11 @@ jobs:
       java: 21, 17
       scala: 2.13.x, 3.x
       cmd: |
-        sbt ++$MATRIX_SCALA test
+        sbt "++$MATRIX_SCALA ; test"
         # Test sample applications
-        sbt ++$MATRIX_SCALA publishLocal
-        pushd samples/compile-timeDI/ && sbt ++$MATRIX_SCALA test && popd
-        pushd samples/runtimeDI/ && sbt ++$MATRIX_SCALA test && popd
+        sbt "++$MATRIX_SCALA ; publishLocal"
+        pushd samples/compile-timeDI/ && sbt "++$MATRIX_SCALA ; test" && popd
+        pushd samples/runtimeDI/ && sbt "++$MATRIX_SCALA ; test" && popd
 
   finish:
     name: Finish
