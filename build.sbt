@@ -28,6 +28,8 @@ lazy val commonSettings = Seq(
     "-Xlint:deprecation"
   ),
 
+  exportJars := false,
+
   mimaBinaryIssueFilters ++= Seq(
     ProblemFilters.exclude[IncompatibleMethTypeProblem]("play.api.libs.mailer.SMTPDynamicMailer.this"),
     ProblemFilters.exclude[MissingTypesProblem]("play.api.libs.mailer.SMTPConfigurationProvider"),
