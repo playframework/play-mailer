@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   // scalaVersion needs to be kept in sync with ci
-  val Scala213 = "2.13.18"
+  val Scala213 = "3.9.0"
   val Scala3 = "3.8.4"
   val ScalaVersions = Seq(Scala213, Scala3)
 
