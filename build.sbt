@@ -4,9 +4,14 @@ import com.typesafe.tools.mima.core.ProblemFilters
 
 ThisBuild / dynverVTagPrefix := false
 
+ThisBuild / resolvers ++= Seq(
+  Resolver.sonatypeCentralSnapshots,
+  Resolver.ApacheMavenSnapshotsRepo
+)
+
 lazy val commonSettings = Seq(
-  scalaVersion := Dependencies.Scala213,
-  crossScalaVersions := Dependencies.ScalaVersions,
+  scalaVersion := Dependencies.resolveScalaVersion(sys.props.getOrElse("scala.version", Dependencies.scala213Version)),
+  crossScalaVersions := Dependencies.publishedScalaVersions,
 
   scalacOptions ++= Seq(
     "-release",
@@ -21,7 +26,7 @@ lazy val commonSettings = Seq(
 
     "-Xlint",
     "-Ywarn-dead-code"
-  ),
+  ) ++ (if (scalaVersion.value.startsWith("3.3.")) Seq("-Yfuture-lazy-vals") else Seq.empty),
 
   javacOptions ++= Seq(
     "-Xlint:unchecked",
@@ -74,4 +79,3 @@ lazy val `play-mailer-root` = (project in file("."))
     publish / skip := true
   )
   .aggregate(`play-mailer`, `play-mailer-guice`)
-
