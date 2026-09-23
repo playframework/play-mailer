@@ -27,7 +27,7 @@ scalacOptions ++= {
 
 libraryDependencies ++= Seq(
   "org.playframework" %% "play-mailer-guice" % version.value,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "8.0.0-M2" % Test
+  "org.scalatestplus.play" %% "scalatestplus-play" % "8.0.0-M2+52-be104c90-SNAPSHOT" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
