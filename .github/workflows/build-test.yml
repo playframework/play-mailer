@@ -38,13 +38,19 @@ jobs:
     uses: playframework/.github/.github/workflows/cmd.yml@v4
     with:
       java: 21, 17
-      scala: 2.13.x, 3.x
+      # Symbolic lanes resolve to exact versions in project/Dependencies.scala.
+      scala: 2.13.x, 3.3.x, 3.9.x, 3.next
       cmd: |
-        sbt "++$MATRIX_SCALA ; test"
+        sbt -Dscala.version="$MATRIX_SCALA" testFull
         # Test sample applications
-        sbt "++$MATRIX_SCALA ; publishLocal"
-        pushd samples/compile-timeDI/ && sbt "++$MATRIX_SCALA ; test" && popd
-        pushd samples/runtimeDI/ && sbt "++$MATRIX_SCALA ; test" && popd
+        if [[ "$MATRIX_SCALA" == 2.* ]]; then
+          published_scala=2.13.x
+        else
+          published_scala=3.3.x
+        fi
+        sbt "++$published_scala ; publishLocal"
+        pushd samples/compile-timeDI/ && sbt -Dscala.version="$MATRIX_SCALA" test && popd
+        pushd samples/runtimeDI/ && sbt -Dscala.version="$MATRIX_SCALA" test && popd
 
   finish:
     name: Finish
