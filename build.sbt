@@ -19,14 +19,14 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-encoding", "UTF-8",
     "-feature",
-    "-unchecked",
-
-    "-Ywarn-unused:imports",
-    "-Xlint:nullary-unit",
-
-    "-Xlint",
-    "-Ywarn-dead-code"
-  ) ++ (if (scalaVersion.value.startsWith("3.3.")) Seq("-Yfuture-lazy-vals") else Seq.empty),
+    "-unchecked"
+  ) ++ {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, _)) => Seq("-Ywarn-unused:imports", "-Xlint:nullary-unit", "-Xlint", "-Ywarn-dead-code")
+      case Some((3, _)) => Seq("-Wunused:imports", "-Wshadow:all")
+      case _            => Seq.empty
+    }
+  } ++ (if (scalaVersion.value.startsWith("3.3.")) Seq("-Yfuture-lazy-vals") else Seq.empty),
 
   javacOptions ++= Seq(
     "-Xlint:unchecked",

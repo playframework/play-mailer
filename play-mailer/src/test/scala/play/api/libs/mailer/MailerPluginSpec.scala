@@ -146,7 +146,7 @@ class MailerPluginSpec extends Specification {
       email must beAnInstanceOf[HtmlEmail]
       email must beAnInstanceOf[MockHtmlEmail]
       email.asInstanceOf[MockHtmlEmail].getHtml mustEqual "<html><body><p>An <b>html</b> message with cid <img src=\"cid:1234\"></p></body></html>"
-      email.asInstanceOf[MockHtmlEmail].getContainer.getContentType startsWith "multipart/mixed;"
+      email.asInstanceOf[MockHtmlEmail].getContainer.getContentType.startsWith("multipart/mixed;")
     }
 
     "create a simple email with inline attachment and description" in {
