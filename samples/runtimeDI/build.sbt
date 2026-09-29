@@ -11,7 +11,7 @@ val scalaVersionAliases = Map(
   "2.13.x" -> "2.13.18",
   "3.3.x"  -> "3.3.8",
   "3.9.x"  -> "3.9.0",
-  "3.next" -> "3.10.0-RC2",
+  "3.next" -> "3.10.0-RC3",
 )
 
 scalaVersion := {
